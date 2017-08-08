@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta name="generator" content="Hugo 0.25.1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Security Reference </title>
+
+  
+  <meta name="description" content="Security mechanisms in Hexya"> 
+  
+  
+  
+  
+  
+
+    
+
+  <meta name="author" content="NDP Systèmes">
+
+
+  <meta property="og:title" content="Security Reference" />
+<meta property="og:description" content="Security mechanisms in Hexya" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/security/" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  
+  
+
+  <link rel="canonical" href="/docs/security/">  
+
+  <link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>
+
+  <link href="/css/font.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.legenda.css" rel="stylesheet" type="text/css">
+  <link href="/css/highlight.css" rel="stylesheet" type="text/css">
+  <link href="/css/master.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+ 
+
+  <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
+  </script>
+
+  <script type="text/javascript" src="/js/tocbot.min.js"></script>
+</head>
+
+
+<body class="page-kube">
+  <header> <div class="show-sm">
+    <div id="nav-toggle-box">
+      <div id="nav-toggle-brand">
+        <a href="/"><img src="/img/logo.png"/></a>
+      </div><a data-component="toggleme" data-target="#top" href="#" id="nav-toggle"><i class="kube-menu"></i></a>
+    </div>
+  </div>
+  <div class="hide-sm" id="top">
+    <div id="top-brand">
+      <a href="/" title="home"><img src="/img/logo.png"/></a>
+    </div>
+    <nav id="top-nav-main">
+      <ul>
+       
+       
+    <li><a href="/blog/" >Blog</a></li>
+    
+    <li><a href="/docs/" >Docs</a></li>
+    
+    <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
+    
+      </ul>
+    </nav>
+    <nav id="top-nav-extra">
+    </nav>
+  </div> </header>
+  <main>
+
+<div id="hero" class="wrap">
+  <h1>Security Reference</h1>
+    <p>Security mechanisms in Hexya</p>
+</div>
+<ul id="posts">
+
+ <div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#_groups">1.1. Groups</a></li>
+<li><a href="#_mechanisms">1.2. Mechanisms</a></li>
+<li><a href="#_permissions">1.3. Permissions</a></li>
+</ul>
+</li>
+<li><a href="#_method_execution_control_mec">2. Method Execution Control (MEC)</a>
+<ul class="sectlevel2">
+<li><a href="#_rationale">2.1. Rationale</a></li>
+<li><a href="#_defining_method_execution_permissions">2.2. Defining Method Execution Permissions</a></li>
+</ul>
+</li>
+<li><a href="#_field_access_control_fac">3. Field Access Control (FAC)</a>
+<ul class="sectlevel2">
+<li><a href="#_rationale_2">3.1. Rationale</a></li>
+<li><a href="#_defining_field_access_permissions">3.2. Defining Field Access Permissions</a></li>
+</ul>
+</li>
+<li><a href="#_record_rules_rr">4. Record Rules (RR)</a>
+<ul class="sectlevel2">
+<li><a href="#_definition">4.1. Definition</a></li>
+<li><a href="#_adding_or_removing_record_rules">4.2. Adding or removing Record Rules</a></li>
+<li><a href="#_record_rules_combination">4.3. Record Rules combination</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Security is implemented in Hexya at the ORM level to limit the risks of
+inappropriate privilege elevation.</p>
+</div>
+<div class="sect2">
+<h3 id="_groups">1.1. Groups</h3>
+<div class="paragraph">
+<p>It is based on the concept of <em>group</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Permissions are granted or denied to groups</p>
+</li>
+<li>
+<p>Groups can inherit from other groups and get access to these groups
+permissions.</p>
+</li>
+<li>
+<p>A user can belong to one or several groups, and thus inherit from the
+permissions of the groups.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mechanisms">1.2. Mechanisms</h3>
+<div class="paragraph">
+<p>Permissions are given to groups by three distinct mechanisms:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Method Execution Control</dt>
+<dd>
+<p>Model methods can be executed only by members of given groups. This includes
+CRUD methods.</p>
+</dd>
+<dt class="hdlist1">Field Access Control</dt>
+<dd>
+<p>Fields in models can be given <code>Read</code> and/or <code>Write</code> permissions to specific
+groups to fine tune their access.</p>
+</dd>
+<dt class="hdlist1">Record Rules</dt>
+<dd>
+<p>Grant permissions (<code>Read</code>, <code>Write</code>, <code>Unlink</code>) on some records of a model only</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_permissions">1.3. Permissions</h3>
+<div class="paragraph">
+<p>There are four permissions defined in the <code>security</code> package.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">type Permission uint8
+
+const (
+    Read = 1 &lt;&lt; Permission(iota)
+    Write
+    Unlink
+    All = Read | Write | Unlink
+)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>They are used when defining Record Rules or Field Access Controls.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_method_execution_control_mec">2. Method Execution Control (MEC)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_rationale">2.1. Rationale</h3>
+<div class="paragraph">
+<p>Unlike other frameworks, Hexya does not enforce access control lists to its
+objects, but instead control execution of model methods. While this system
+still enables mocking ACLs by controlling the execution of CRUD methods, it is
+much more powerful as it allows to give access to a model depending on the
+context.</p>
+</div>
+<div class="paragraph">
+<p>For example, suppose that we have a group of salesmen and a group of stock
+pickers. In normal operation, salesmen deal with sale orders and pickers deal
+with picking lists and we do not want them to have access to the other&#8217;s
+objects. However, when a picker has finished picking an order and shipped it,
+we want to update the sale order to the <code>Shipped</code> state:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>With classical ACLs, we would need to grant the pickers the permission to
+write sale orders (or at least its <code>State</code> field) or <code>sudo</code> the operation
+which leads to potential security risk.</p>
+</li>
+<li>
+<p>With MEC, we can define a specific method on sale orders (<code>SetToShipped()</code>)
+that only updates the status of the sale order to <code>Shipped</code> and we
+will grant execution permission on this method to stock pickers.</p>
+<div class="paragraph">
+<p><code>SetToShipped()</code> will be allowed to update the sale order without <code>sudo</code>
+because we will have allowed execution on the <code>Write()</code> method to stock pickers
+only when called from <code>SetToShipped()</code>.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_method_execution_permissions">2.2. Defining Method Execution Permissions</h3>
+<div class="paragraph">
+<p>By default, only members of <code>security.AdminGroup</code> are allowed to execute a
+method. Other groups should be manually added to allowed groups.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Method) AllowGroup(group *security.Group, callers &#8230;&#8203;*Method) *Method</strong></code></dt>
+<dd>
+<p>Grant the execution permission on the method to the given group. If callers
+are defined, then the permission is granted only when this method is called
+from one of the callers, otherwise it is granted whatever the caller.</p>
+</dd>
+<dt class="hdlist1"><code><strong>(*Method) RevokeGroup(group *security.Group) *Method</strong></code></dt>
+<dd>
+<p>Revoke the execution permission on the method to the given group if it has been
+given previously, otherwise does nothing. This methods revokes all permissions,
+whatever the caller.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+These methods return a pointer to the receiver so that they can be
+chained
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Users().Methods().SayHello().DeclareMethod(
+    "SayHello returns Hello",
+    func(rs pool.UsersSet) {
+        return "Hello"
+    }).
+    AllowGroup(sale.GroupSalesman).
+    AllowGroup(stock.GroupPicker, pool.Users().Methods().Create())
+    // Pickers can say hello only from the 'Create' method</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*MethodCollection) AllowAllToGroup(group *security.Group)</strong></code></dt>
+<dd>
+<p>This is a helper method to grant access to all methods of a model at once:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Users().Methods().AllowAllToGroup(GroupERPManager)</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*MethodCollection) RevokeAllFromGroup(group *security.Group)</strong></code></dt>
+<dd>
+<p>Revokes permissions on all methods given by AllowAllToGroup.
+It simply removes the group from the groups allowed on every method, but does
+not change any specific permission granted on a per method basis.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_field_access_control_fac">3. Field Access Control (FAC)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_rationale_2">3.1. Rationale</h3>
+<div class="paragraph">
+<p>While MEC is the main security mechanism used in Hexya, it is sometimes necessary
+to limit read or write access for some users to some fields. This is
+particularly true in the user interface.</p>
+</div>
+<div class="paragraph">
+<p>This is done through Field Access Control. The following rules apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If a user without <code>Read</code> permission on a field retrieve a record, the value of
+the field will be replaced by its Go zero value.</p>
+</li>
+<li>
+<p>If a user without <code>Write</code> permission on a field writes a record, the value of
+the field will not be updated.</p>
+</li>
+<li>
+<p>Clients <strong>should</strong> make this behaviour explicit in their UI by removing non
+readable fields and marking as read only fields without <code>Write</code> permission.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_field_access_permissions">3.2. Defining Field Access Permissions</h3>
+<div class="paragraph">
+<p>Two permissions are applicable to fields: <code>security.Read</code> and
+<code>security.Write</code>.</p>
+</div>
+<div class="paragraph">
+<p>By default, <code>security.GroupEveryone</code> is granted <code>security.Read</code> and
+<code>security.Write</code> permissions on all fields.</p>
+</div>
+<div class="paragraph">
+<p>Field permissions can be modified with the following methods:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Field) GrantAccess(group *security.Group, perm security.Permission) *Field</strong></code></dt>
+<dd>
+<p>Grant the given <code>perm</code> to the given <code>group</code> on this field.</p>
+</dd>
+<dt class="hdlist1"><code><strong>(*Field) RevokeAccess(group *security.Group, perm security.Permission) *Field</strong></code></dt>
+<dd>
+<p>Revoke the given <code>perm</code> to the given <code>group</code> on this field if it has been
+granted previously, otherwise does nothing.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+These methods return a pointer to the receiver so that they can be
+chained.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">salesManager := security.Registry.GetGroup("sale_manager")
+pool.Partner().Fields().Phone().
+    RevokeAccess(security.GroupEveryOne, security.Read).
+    AllowAccess(salesManager, security.Read)</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_record_rules_rr">4. Record Rules (RR)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_definition">4.1. Definition</h3>
+<div class="paragraph">
+<p>Record Rules allow to grant or deny a group some permissions on a selection of
+records. This could be the case for example to allow a salesman only to see his
+own sales.</p>
+</div>
+<div class="paragraph">
+<p>A Record Rule is a struct with the following definition, in the models package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">type RecordRule struct {
+    Name      string
+    Global    bool
+    Group     *Group
+    Condition *models.Condition
+    Perms     Permission
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the <code>Global</code> field of a <code>RecordRule</code> is set, then the rule applies to all
+groups and the <code>Group</code> field is ignored. The <code>Condition</code> fields is the
+filter to apply on the model to retrieve the records. <code>Perms</code> define on which
+operation the rule will be called. For example, if <code>security.Read</code> is set then
+the rule will be applied only on reading operations. Condition value may be
+functions just like any other Condition. This may be particularly useful to
+get the current user.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_adding_or_removing_record_rules">4.2. Adding or removing Record Rules</h3>
+<div class="paragraph">
+<p>Record Rules are added or removed from the Record Rules Registry with the
+following functions:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Model) AddRecordRule(rule *RecordRule)</strong></code></dt>
+<dd>
+<p>Register the given <code>RecordRule</code> to the registry for the given <code>model</code>. If the
+rule&#8217;s <code>Name</code> already exists, then the rule is overwritten.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">salesman := security.Registry.GetGroup("sale_user")
+
+func getUserID(rs pool.PartnerSet) interface{} {
+    return rs.Env().Uid()
+}
+
+cond := pool.Partner().UserFilteredOn(pool.User().ID().EqualsFunc(getUserID))
+
+rule := models.RecordRule {
+    Name:      "salesman_own_partner",
+    Group:     salesman,
+    Condition: cond,
+    Perms:     security.All,
+}
+pool.Partner().AddRecordRule(&amp;rule)</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Model) RemoveRecordRule(name string)</strong></code></dt>
+<dd>
+<p>Removes the Record Rule with the given <code>name</code> from the rule registry of the
+given <code>model</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Partner().RemoveRecordRule("salesman_own_partner")</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_record_rules_combination">4.3. Record Rules combination</h3>
+<div class="paragraph">
+<p>Global rules and group rules (rules restricted to specific groups versus groups
+applying to all users) are used quite differently:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global rules are subtractive, they must all be matched for a record to be
+accessible</p>
+</li>
+<li>
+<p>Group rules are additive, if any of them matches (and all global rules match)
+then the record is accessible</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This means the first group rule restricts access, but any further group rule
+expands it, while global rules can only ever restrict access (or have no
+effect).</p>
+</div>
+</div>
+</div>
+</div>
+
+  
+</ul>
+</main>
+  <footer> 
+    <footer id="footer">
+    <nav>
+      <ul>
+        <li><span>Hexya</span></li>
+        <li>
+          <a href="/blog/">Blog</a>
+        </li>
+          <li>
+          <a href="/docs/">Docs</a>
+        </li>
+        <li>
+          <i class="fa fa-github"></i>
+          <a href="https://github.com/hexya-erp">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+    <p>&copy; NDP Systèmes.</p>
+  </footer> 
+</footer>
+
+
+  <script src="/js/kube.js" type="text/javascript">
+  </script>
+  <script src="/js/kube.legenda.js" type="text/javascript">
+  </script>
+  <script src="/js/master.js" type="text/javascript">
+  </script>
+</body>
+
+</html>

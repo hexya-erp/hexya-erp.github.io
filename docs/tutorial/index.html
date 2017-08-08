@@ -1,0 +1,2856 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta name="generator" content="Hugo 0.25.1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Module Development Tutorial </title>
+
+  
+  <meta name="description" content="How to develop a custom module with Hexya"> 
+  
+  
+  
+  
+  
+
+    
+
+  <meta name="author" content="NDP Systèmes">
+
+
+  <meta property="og:title" content="Module Development Tutorial" />
+<meta property="og:description" content="How to develop a custom module with Hexya" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/tutorial/" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  
+  
+
+  <link rel="canonical" href="/docs/tutorial/">  
+
+  <link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>
+
+  <link href="/css/font.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.legenda.css" rel="stylesheet" type="text/css">
+  <link href="/css/highlight.css" rel="stylesheet" type="text/css">
+  <link href="/css/master.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+ 
+
+  <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
+  </script>
+
+  <script type="text/javascript" src="/js/tocbot.min.js"></script>
+</head>
+
+
+<body class="page-kube">
+  <header> <div class="show-sm">
+    <div id="nav-toggle-box">
+      <div id="nav-toggle-brand">
+        <a href="/"><img src="/img/logo.png"/></a>
+      </div><a data-component="toggleme" data-target="#top" href="#" id="nav-toggle"><i class="kube-menu"></i></a>
+    </div>
+  </div>
+  <div class="hide-sm" id="top">
+    <div id="top-brand">
+      <a href="/" title="home"><img src="/img/logo.png"/></a>
+    </div>
+    <nav id="top-nav-main">
+      <ul>
+       
+       
+    <li><a href="/blog/" >Blog</a></li>
+    
+    <li><a href="/docs/" >Docs</a></li>
+    
+    <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
+    
+      </ul>
+    </nav>
+    <nav id="top-nav-extra">
+    </nav>
+  </div> </header>
+  <main>
+
+<div id="hero" class="wrap">
+  <h1>Module Development Tutorial</h1>
+    <p>How to develop a custom module with Hexya</p>
+</div>
+<ul id="posts">
+
+ <div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_prerequisites">1. Prerequisites</a></li>
+<li><a href="#_start_stop_the_hexya_server">2. Start/Stop the Hexya server</a></li>
+<li><a href="#_build_an_hexya_module">3. Build an Hexya module</a>
+<ul class="sectlevel2">
+<li><a href="#_composition_of_a_module">3.1. Composition of a module</a></li>
+<li><a href="#_module_structure">3.2. Module structure</a></li>
+</ul>
+</li>
+<li><a href="#_object_relational_mapping">4. Object-Relational Mapping</a>
+<ul class="sectlevel2">
+<li><a href="#_models">4.1. Models</a></li>
+<li><a href="#_code_generation">4.2. Code generation</a></li>
+<li><a href="#_model_fields">4.3. Model fields</a></li>
+</ul>
+</li>
+<li><a href="#_resource_files">5. Resource files</a>
+<ul class="sectlevel2">
+<li><a href="#_actions">5.1. Actions</a></li>
+<li><a href="#_menus">5.2. Menus</a></li>
+<li><a href="#_views">5.3. Views</a></li>
+</ul>
+</li>
+<li><a href="#_basic_views">6. Basic views</a>
+<ul class="sectlevel2">
+<li><a href="#_generic_view_declaration">6.1. Generic view declaration</a></li>
+<li><a href="#_form_views">6.2. Form views</a></li>
+<li><a href="#_search_views">6.3. Search views</a></li>
+</ul>
+</li>
+<li><a href="#_synchronising_the_database_and_starting_the_server">7. Synchronising the database and starting the server</a></li>
+<li><a href="#_relations_between_models">8. Relations between models</a>
+<ul class="sectlevel2">
+<li><a href="#_relational_fields">8.1. Relational fields</a></li>
+</ul>
+</li>
+<li><a href="#_inheritance">9. Inheritance</a>
+<ul class="sectlevel2">
+<li><a href="#_model_inheritance">9.1. Model inheritance</a></li>
+<li><a href="#_view_inheritance">9.2. View inheritance</a></li>
+<li><a href="#_example">9.3. Example</a></li>
+<li><a href="#_conditions_on_related_fields">9.4. Conditions on related fields</a></li>
+</ul>
+</li>
+<li><a href="#_model_methods">10. Model methods</a></li>
+<li><a href="#_computed_fields_and_default_values">11. Computed fields and default values</a>
+<ul class="sectlevel2">
+<li><a href="#_dependencies">11.1. Dependencies</a></li>
+<li><a href="#_default_values">11.2. Default values</a></li>
+</ul>
+</li>
+<li><a href="#_onchange">12. Onchange</a></li>
+<li><a href="#_model_constraints">13. Model constraints</a>
+<ul class="sectlevel2">
+<li><a href="#_filtering_relation_record_candidates">13.1. Filtering Relation Record Candidates</a></li>
+<li><a href="#_sql_constraints">13.2. SQL Constraints</a></li>
+<li><a href="#_constraint_by_method">13.3. Constraint by method</a></li>
+</ul>
+</li>
+<li><a href="#_advanced_views">14. Advanced Views</a>
+<ul class="sectlevel2">
+<li><a href="#_list_views_2">14.1. List views</a></li>
+<li><a href="#_calendars">14.2. Calendars</a></li>
+<li><a href="#_search_views_2">14.3. Search views</a></li>
+<li><a href="#_gantt">14.4. Gantt</a></li>
+<li><a href="#_graph_views">14.5. Graph views</a></li>
+<li><a href="#_kanban">14.6. Kanban</a></li>
+</ul>
+</li>
+<li><a href="#_security">15. Security</a>
+<ul class="sectlevel2">
+<li><a href="#_group_based_access_control_mechanisms">15.1. Group-based access control mechanisms</a></li>
+<li><a href="#_method_execution_control">15.2. Method Execution Control</a></li>
+<li><a href="#_field_access_control">15.3. Field Access Control</a></li>
+<li><a href="#_record_rules">15.4. Record rules</a></li>
+</ul>
+</li>
+<li><a href="#_wizards">16. Wizards</a>
+<ul class="sectlevel2">
+<li><a href="#_launching_wizards">16.1. Launching wizards</a></li>
+</ul>
+</li>
+<li><a href="#_internationalization">17. Internationalization</a>
+<ul class="sectlevel2">
+<li><a href="#_translating_the_application">17.1. Translating the application</a></li>
+<li><a href="#_translating_record_data">17.2. Translating record data</a></li>
+</ul>
+</li>
+<li><a href="#_reporting">18. Reporting</a>
+<ul class="sectlevel2">
+<li><a href="#_printed_reports">18.1. Printed reports</a></li>
+<li><a href="#_dashboards">18.2. Dashboards</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites">1. Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial requires having installed Hexya <a href="#install.adoc">[install.adoc]</a>.</p>
+</div>
+<div class="paragraph">
+<p>During this tutorial, you will create an <code>openacademy</code> module for managing
+training courses. We create this module inside the hexya-demo directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
+$ mkdir openacademy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we also need to declare our new module inside the <code>config/project.go</code> file.
+Edit the file to make it look as follow:</p>
+</div>
+<div class="listingblock">
+<div class="title">config/project.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package project
+
+// Import here anonymously all hexya addons you need in your application
+import (
+	// Import webclient module
+	_ "github.com/hexya-erp/hexya-base/web"
+	_ "github.com/hexya-erp/hexya-demo/openacademy"
+)
+
+NOTE: We highly recommend that you use a Go IDE or editor with autocompletion
+to benefit from the static typing of the Hexya framework.</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+All file paths in this tutorial are relative to the
+<code>$GOPATH/src/github.com/hexya-erp/hexya-demo</code> directory.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_start_stop_the_hexya_server">2. Start/Stop the Hexya server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Hexya uses a client/server architecture in which clients are web browsers
+accessing the Hexya server via RPC.</p>
+</div>
+<div class="paragraph">
+<p>Business logic and extension is generally performed on the server side,
+although supporting client features (e.g. new data representation such as
+interactive maps) can be added to the client.</p>
+</div>
+<div class="paragraph">
+<p>In order to start the server, simply invoke the command <code>hexya server</code>
+in the shell. Add the <code>-o</code> flag to have the logs printed to the standard
+output.</p>
+</div>
+<div class="paragraph">
+<p>The server is stopped by hitting <code>Ctrl-C</code> from the terminal, or by
+killing the corresponding OS process.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_build_an_hexya_module">3. Build an Hexya module</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Both server and client extensions are packaged as <strong>modules</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Hexya modules can either add brand new business logic to an Hexya system, or
+alter and extend existing business logic: a module can be created to add your
+country&#8217;s accounting rules to Hexya&#8217;s generic accounting support, while the
+next module adds support for real-time visualisation of a bus fleet.</p>
+</div>
+<div class="paragraph">
+<p>Everything in Hexya thus starts and ends with modules.</p>
+</div>
+<div class="sect2">
+<h3 id="_composition_of_a_module">3.1. Composition of a module</h3>
+<div class="paragraph">
+<p>An Hexya module can contain a number of elements:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Business objects</dt>
+<dd>
+<p>Declared in Go code, these resources are automatically persisted by Hexya based
+on their configuration</p>
+</dd>
+<dt class="hdlist1">View files</dt>
+<dd>
+<p>XML files declaring views, actions and menus</p>
+</dd>
+<dt class="hdlist1">Data files</dt>
+<dd>
+<p>CSV files declaring configuration data (modules parameterization)</p>
+</dd>
+<dt class="hdlist1">Web controllers</dt>
+<dd>
+<p>Handle requests from web browsers</p>
+</dd>
+<dt class="hdlist1">Static web data</dt>
+<dd>
+<p>Images, CSS or javascript files used by the web interface or website</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_module_structure">3.2. Module structure</h3>
+<div class="paragraph">
+<p>Each module is a directory which is also a Go package. Optionally, a module
+may contain other Go packages as subdirectories of the main module.</p>
+</div>
+<div class="paragraph">
+<p>An Hexya module is declared by code. By convention, this is in a file called
+<code>hexya.go</code>. The declaration consists in:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>defining a <code>MODULE_NAME</code> string content with the module&#8217;s name</p>
+</li>
+<li>
+<p>registering the module with the <code>RegisterModule()</code> function.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create an <code>hexya.go</code> inside the <code>hexya-demo/openacademy</code> folder we
+created above:</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/hexya.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/server"
+)
+
+const MODULE_NAME string = "openacademy"
+
+func init() {
+    server.RegisterModule(&amp;server.Module{
+		Name: MODULE_NAME,
+		PostInit: func() {},
+	})
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The declared <code>PostInit</code> function allows to execute some code at server startup
+after the models are bootstrapped. We leave it as an empty function for the
+moment.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_object_relational_mapping">4. Object-Relational Mapping</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A key component of Hexya is the ORM (Object-Relational Mapping) layer.
+This layer avoids having to write most SQL by hand and provides extensibility
+and security services.</p>
+</div>
+<div class="sect2">
+<h3 id="_models">4.1. Models</h3>
+<div class="paragraph">
+<p>Business objects are declared in Go code and the framework integrates them into
+the automated persistence system. They must be declared either :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>in an <code>init()</code> function of the package at the module root</p>
+</li>
+<li>
+<p>in an <code>init()</code> function of a package in a subdirectory of the module, with
+this package imported in the root package.</p>
+</li>
+<li>
+<p>in a function called by one of the above-mentioned <code>init()</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To put it short, the models definition must be read at the program startup
+during the module loading phase
+(see also <a href="https://golang.org/doc/effective_go.html#init" class="bare">https://golang.org/doc/effective_go.html#init</a>)</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create a new <code>OpenAcademyCourse</code> model in our <strong>openacademy</strong> module. We will do it
+in a new file named <code>course.go</code>, but it could have been done in any file of
+the module.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/course.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models"
+)
+
+func init() {
+    pool.OpenAcademyCourse().DeclareModel()
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>DeclareModel</code> is called on our new not-yet-created model instance. This
+is because the above statement is a placeholder. The actual model declaration
+will be automatically generated by <code>hexya generate</code> command.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code_generation">4.2. Code generation</h3>
+<div class="paragraph">
+<p>In order to use our newly created model, we need to generate the code that
+will provide the structs and methods of this model.</p>
+</div>
+<div class="paragraph">
+<p>This is done with the <code>hexya generate</code> command that must be executed at the
+project&#8217;s root (i.e. <code>$GOPATH/src/github.com/hexya-erp/hexya-demo</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-bash" data-lang="bash">$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
+$ hexya generate</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command will output several warnings during its execution. Just check
+that it terminated correctly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">(...)
+Generating pool...Ok
+Checking the generated code...Ok
+Pool generated successfully</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After generation, our models can be accessed in the <code>pool</code> package.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>hexya generate</code> must be called before starting the server or synchronizing the
+database whenever there is a modification in a model definition, i.e.:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A model is created or removed</p>
+</li>
+<li>
+<p>A field is added or removed</p>
+</li>
+<li>
+<p>A method is added or removed</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_model_fields">4.3. Model fields</h3>
+<div class="paragraph">
+<p>Fields are used to define what the model can store and where. Fields are
+defined by an <code>Add&#8230;&#8203;Field</code> method of the model, where <code>&#8230;&#8203;</code> is the type of
+field to add.</p>
+</div>
+<div class="paragraph">
+<p>Update the <code>OpenAcademyCourse</code> model to include a name and a description to our course.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/course.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models"
+	"github.com/hexya-erp/hexya/pool" <b class="conum">(1)</b>
+)
+
+func init() {
+    pool.OpenAcademyCourse().DeclareModel()
+    pool.OpenAcademyCourse().AddCharField("Name", models.StringFieldParams{})
+    pool.OpenAcademyCourse().AddTextField("Description", models.StringFieldParams{})
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Note that we need to import the generated <code>pool</code> package to use it</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="_common_attributes">4.3.1. Common Attributes</h4>
+<div class="paragraph">
+<p>Fields can be configured, by passing configuration attributes in the params
+struct:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Course().AddCharField("Name", models.StringFieldParams{Required: true})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Some attributes are available on all fields, here are the most common ones:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">String</dt>
+<dd>
+<p>The label of the field in UI (visible by users). Defaults to the field&#8217;s name
+with spaces before capital letters (<code>SaleOrder</code> &#8658; <code>Sale Order</code>)</p>
+</dd>
+<dt class="hdlist1">Required</dt>
+<dd>
+<p>If <code>true</code>, the field can not be empty, it must either have a default
+value or always be given a value when creating a record.</p>
+</dd>
+<dt class="hdlist1">Help</dt>
+<dd>
+<p>Long-form, provides a help tooltip to users in the user interface.</p>
+</dd>
+<dt class="hdlist1">Index</dt>
+<dd>
+<p>Requests that Hexya create a database index on the column.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_simple_fields">4.3.2. Simple fields</h4>
+<div class="paragraph">
+<p>There are two broad categories of fields: "simple" fields which are atomic
+values stored directly in the model&#8217;s table and "relational" fields linking
+records (of the same model or of different models).</p>
+</div>
+<div class="paragraph">
+<p>Example of simple fields are <code>Boolean</code>, <code>Date</code>, <code>Char</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_reserved_fields">4.3.3. Reserved fields</h4>
+<div class="paragraph">
+<p>Hexya creates a few fields in all models. These fields are managed by the
+framework and shouldn&#8217;t be written to. They can be read if useful or
+necessary:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">ID</dt>
+<dd>
+<p>The unique identifier for a record in its model.</p>
+</dd>
+<dt class="hdlist1">CreateDate</dt>
+<dd>
+<p>Creation date of the record.</p>
+</dd>
+<dt class="hdlist1">CreateUID</dt>
+<dd>
+<p>User who created the record.</p>
+</dd>
+<dt class="hdlist1">WriteDate</dt>
+<dd>
+<p>Last modification date of the record.</p>
+</dd>
+<dt class="hdlist1">WriteUID</dt>
+<dd>
+<p>User who last modified the record.</p>
+</dd>
+<dt class="hdlist1">LastUpdate</dt>
+<dd>
+<p>Last time the record was updated (<code>max(CreateDate, WriteDate)</code>).</p>
+</dd>
+<dt class="hdlist1">DisplayName</dt>
+<dd>
+<p>The name to display when this record is refered to.</p>
+</dd>
+<dt class="hdlist1">HexyaExternalID</dt>
+<dd>
+<p>The external ID that is used when importing/exporting data</p>
+</dd>
+<dt class="hdlist1">HexyaVersion</dt>
+<dd>
+<p>The version of the record data used when updating data</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_special_fields">4.3.4. Special fields</h4>
+<div class="paragraph">
+<p>By default, Hexya also requires a <code>Name</code> field on all models that will be used
+as default for <code>DisplayName</code>. This behaviour can be changed by overriding the
+<code>NameGet()</code> method of a model.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resource_files">5. Resource files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Hexya is a highly data driven system. Although behavior is customized using
+Go code, some data can be defined in resource files instead for a better
+readability. They are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Actions</p>
+</li>
+<li>
+<p>Menus</p>
+</li>
+<li>
+<p>Views</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These resources are XML files that must be put in the <code>resources</code> subdirectory
+of the module. The framework automatically scans the <code>resources</code> directory,
+there is no need to declare the files.</p>
+</div>
+<div class="paragraph">
+<p>Create a <code>resources</code> subdirectory in our <code>openacademy</code> module and a
+<code>course.xml</code> file inside with the following content:</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;hexya&gt;
+    &lt;data&gt;
+
+    &lt;/data&gt;
+&lt;/hexya&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Action, menus and view definitions will come inside the <code>data</code> tag.</p>
+</div>
+<div class="sect2">
+<h3 id="_actions">5.1. Actions</h3>
+<div class="paragraph">
+<p>Actions define the behavior of the system in response to user actions: login,
+action button, selection of an invoice, &#8230;&#8203;
+They can be triggered in three ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>by clicking on menu items (linked to specific actions)</p>
+</li>
+<li>
+<p>by clicking on buttons in views (if these are connected to actions)</p>
+</li>
+<li>
+<p>as contextual actions on object</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The main types of actions are:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Window action</dt>
+<dd>
+<p>Opens a specific view in the client</p>
+</dd>
+<dt class="hdlist1">Server action</dt>
+<dd>
+<p>Execute a method on a model on the server</p>
+</dd>
+<dt class="hdlist1">Report action</dt>
+<dd>
+<p>Generate and return a report</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Create a window action to access our Course (inside the <code>data</code> tag):</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+&lt;action id="openacademy_course_action" name="Courses" model="OpenAcademyCourse"
+        view_mode="tree,form" type="ir.actions.act_window"&gt;
+    &lt;help&gt;
+        &lt;p class="oe_view_nocontent_create"&gt;Create the first course&lt;/p&gt;
+    &lt;/help&gt;
+&lt;/action&gt;
+(...)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+By convention, ids in XML files should start with the module name.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_menus">5.2. Menus</h3>
+<div class="paragraph">
+<p>Menus trigger actions when they are clicked. Menus can have a parent to create
+a menu hierarchy.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create menus for our Courses action. Add the <code>menuitem</code> tags inside the
+<code>data</code> tags after the <code>action</code> block.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+&lt;menuitem id="openacademy_main_menu" name="Open Academy"/&gt;
+
+&lt;menuitem id="openacademy_menu" name="Open Academy" parent="openacademy_main_menu"/&gt;
+
+&lt;menuitem id="openacademy_course_menu" name="Courses" parent="openacademy_menu"
+          action="openacademy_course_action"/&gt;
+(...)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+XML files are all loaded before being processed. Therefore, there is no
+need to declare resources in a specific order. For instance, menus can refer
+to actions that are defined afterwards or in another file or module.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_views">5.3. Views</h3>
+<div class="paragraph">
+<p>See next section for view definitions.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_basic_views">6. Basic views</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Views define the way the records of a model are displayed. Each type of view
+represents a mode of visualization (a list of records, a graph of their
+aggregation, …). Views can either be requested generically via their type
+(e.g. <strong>a list of partners</strong>) or specifically via their id. For generic
+requests, the view with the correct type and the lowest priority will be
+used (so the lowest-priority view of each type is the default view for that
+type).</p>
+</div>
+<div class="paragraph">
+<p>View inheritance allows altering views declared elsewhere (adding or removing
+content).</p>
+</div>
+<div class="sect2">
+<h3 id="_generic_view_declaration">6.1. Generic view declaration</h3>
+<div class="paragraph">
+<p>A view is declared with the <code>view</code> tag. The basic view types are: list, form
+and search views.</p>
+</div>
+<div class="sect3">
+<h4 id="_list_views">6.1.1. List views</h4>
+<div class="paragraph">
+<p>List views, also called tree views, display records in a tabular form. Their
+root element is <code>&lt;tree&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>Create a simple list view that only displays one column with the name of the
+course:</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+&lt;view id="openacademy_course_tree" model="OpenAcademyCourse"&gt;
+    &lt;tree&gt;
+        &lt;field name="Name"/&gt;
+    &lt;/tree&gt;
+&lt;/view&gt;
+(...)</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_form_views">6.2. Form views</h3>
+<div class="paragraph">
+<p>Forms are used to create and edit single records. Their root element is
+<code>&lt;form&gt;</code>. They are composed of high-level structure elements (groups,
+notebooks) and interactive elements (buttons and fields).</p>
+</div>
+<div class="paragraph">
+<p>Create a form for our Course model:</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+&lt;view id="openacademy_course_form" model="OpenAcademyCourse"&gt;
+    &lt;form&gt;
+        &lt;sheet&gt;
+            &lt;group&gt;
+                &lt;field name="Name"/&gt;
+            &lt;/group&gt;
+            &lt;notebook&gt;
+                &lt;page string="Description"&gt;
+                    &lt;field name="Description"/&gt;
+                &lt;/page&gt;
+                &lt;page string="About"&gt;
+                    This is an example of notebooks
+                &lt;/page&gt;
+            &lt;/notebook&gt;
+        &lt;/sheet&gt;
+    &lt;/form&gt;
+&lt;/view&gt;
+(...)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Form views can also use plain HTML for more flexible layouts:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Form view with plain HTML</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">    &lt;form string="Idea Form"&gt;
+        &lt;header&gt;
+            &lt;button string="Confirm" type="object" name="ActionConfirm"
+                    states="draft" class="oe_highlight" /&gt;
+            &lt;button string="Mark as done" type="object" name="ActionDone"
+                    states="confirmed" class="oe_highlight"/&gt;
+            &lt;button string="Reset to draft" type="object" name="ActionDraft"
+                    states="confirmed,done" /&gt;
+            &lt;field name="State" widget="statusbar"/&gt;
+        &lt;/header&gt;
+        &lt;sheet&gt;
+            &lt;div class="oe_title"&gt;
+                &lt;label for="Name" class="oe_edit_only" string="Idea Name" /&gt;
+                &lt;h1&gt;&lt;field name="Name" /&gt;&lt;/h1&gt;
+            &lt;/div&gt;
+            &lt;separator string="General" colspan="2" /&gt;
+            &lt;group colspan="2" col="2"&gt;
+                &lt;field name="Description" placeholder="Idea description..." /&gt;
+            &lt;/group&gt;
+        &lt;/sheet&gt;
+    &lt;/form&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_search_views">6.3. Search views</h3>
+<div class="paragraph">
+<p>Search views customize the search field associated with the list view (and
+other aggregated views). Their root element is <code>&lt;search&gt;</code> and they&#8217;re
+composed of fields defining which fields can be searched on.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create a search view on our Course model to search on a course name or
+description.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+&lt;view id="openacademy_course_search" model="OpenAcademyCourse"&gt;
+    &lt;search&gt;
+        &lt;field name="Name"/&gt;
+        &lt;field name="Description"/&gt;
+    &lt;/search&gt;
+&lt;/view&gt;
+(...)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If no search view exists for the model, Hexya generates one which only allows
+searching on the <code>name</code> field.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_synchronising_the_database_and_starting_the_server">7. Synchronising the database and starting the server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>At this stage, we have created:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An <code>OpenAcademyCourse</code> model with two fields <code>Name</code> and <code>Description</code></p>
+</li>
+<li>
+<p>A list view, a form view and a search view for our model</p>
+</li>
+<li>
+<p>A menu and an action to access our model in the interface</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To test our development, we can now synchronise the database with our model
+definitions using the <code>hexya updatedb</code> command in the project root directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-bash" data-lang="bash">$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
+$ hexya updatedb -o</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>-o</code> flag displays the log to the standard output.</p>
+</div>
+<div class="paragraph">
+<p>When the database is synchronised, we can start the server to see our Course
+model in action.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-bash" data-lang="bash">$ hexya server -o</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now open your favorite web browser to <a href="http://localhost:8080" class="bare">http://localhost:8080</a> to access the
+application. Default credentials are:</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+User
+</td>
+<td class="hdlist2">
+<p>admin</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Password
+</td>
+<td class="hdlist2">
+<p>admin</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see on the top menu bar an <code>Open Academy</code> menu and a <code>Courses</code>
+menu on the left. Check that you can create, update, search and delete
+courses through the interface.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Update the database each time you modify a model (add, remove or modify a
+field)</p>
+</li>
+<li>
+<p>Restart the server each time you make a modification to see it applied</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+By adding a <code>?debug</code> param in the address bar, you switch to developer
+mode in the UI, and will provide interesting information as tooltip when you
+hover a field&#8217;s label.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_relations_between_models">8. Relations between models</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A record from a model may be related to a record from another model. For
+instance, a sale order record is related to a client record that contains the
+client data; it is also related to its sale order line records.</p>
+</div>
+<div class="paragraph">
+<p>For the module Open Academy, we consider a model for <strong>sessions</strong>: a session
+is an occurrence of a course taught at a given time for a given audience.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create a model for <strong>sessions</strong>. A session has a name, a start date, a
+duration and a number of seats. Although we could have used the same file
+we will create a new file for sessions to organise our code.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Don&#8217;t forget to run <code>hexya generate</code> and <code>hexya updatedb</code> after creating
+the new model
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models"
+	"github.com/hexya-erp/hexya/hexya/models/types"
+	"github.com/hexya-erp/hexya/pool"
+)
+
+func init() { <b class="conum">(1)</b>
+    pool.OpenAcademySession().DeclareModel()
+    pool.OpenAcademySession().AddCharField("Name", models.StringFieldParams{Required: true})
+    pool.OpenAcademySession().AddDateField("StartDate", models.SimpleFieldParams{})
+    pool.OpenAcademySession().AddFloatField("Duration", models.FloatFieldParams{
+        Digits: types.Digits{Precision: 6, Scale: 2}, Help: "Duration in days"})
+    pool.OpenAcademySession().AddIntegerField("Seats", models.SimpleFieldParams{
+        String: "Number of seats"})
+    pool.OpenAcademySession().AddSelectionField("State", models.SelectionFieldParams{
+        Selection: types.Selection{"planned": "Planned", "in_progress":"In Progress", "done": "Finished"}}) <b class="conum">(2)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>You can define as many <code>init()</code> functions in a Go package</p>
+</li>
+<li>
+<p>A <code>Selection</code> field takes a value from a fixed list</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>types.Digits{Precision: 6, Scale: 2}</code> specifies the precision of a float
+number: 6 is the total number of digits, while 2 is the number of digits after
+the decimal point. Note that it results in the number digits before the decimal
+point is maximum 4.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now we create an action and menu to display our sessions. Here again, we will
+create a new file to organise our code, though this is not mandatory.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/session.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">&lt;hexya&gt;
+    &lt;data&gt;
+
+        &lt;view id="openacademy_session_tree" model="OpenAcademySession"&gt;
+            &lt;tree&gt;
+                &lt;field name="Name"/&gt;
+                &lt;field name="StartDate"/&gt;
+            &lt;/tree&gt;
+        &lt;/view&gt;
+
+        &lt;view id="openacademy_session_form" model="OpenAcademySession"&gt;
+            &lt;form string="Session Form"&gt;
+                &lt;header&gt;
+                    &lt;field name="State" widget="statusbar"/&gt;
+                &lt;/header&gt;
+                &lt;sheet&gt;
+                    &lt;group&gt;
+                        &lt;field name="Name"/&gt;
+                        &lt;field name="StartDate"/&gt;
+                        &lt;field name="Duration"/&gt;
+                        &lt;field name="Seats"/&gt;
+                    &lt;/group&gt;
+                &lt;/sheet&gt;
+            &lt;/form&gt;
+        &lt;/view&gt;
+
+        &lt;action id="openacademy_sessions_action" name="Sessions" model="OpenAcademySession"
+                type="ir.actions.act_window" view_mode="tree,form"/&gt;
+
+        &lt;menuitem id="openacademy_session_menu" name="Sessions"
+                  parent="openacademy_menu" action="openacademy_sessions_action"/&gt;
+
+    &lt;/data&gt;
+&lt;/hexya&gt;</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_relational_fields">8.1. Relational fields</h3>
+<div class="paragraph">
+<p>Relational fields link records, either of the same model (hierarchies) or
+between different models.</p>
+</div>
+<div class="paragraph">
+<p>Relational field types are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Many2One</dt>
+<dd>
+<p>A simple link to another object.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.SaleOrder().AddMany2OneField("Customer", models.ForeignKeyFieldParams{
+    RelationModel: pool.Partner()})
+
+fmt.Println(myOrder().Customer().Name())</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">One2Many</dt>
+<dd>
+<p>A virtual relationship, inverse of a <code>Many2one</code>. A <code>One2many</code> behaves as a
+container of records, accessing its results in a (possibly empty) set of
+records.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.SaleOrder().AddOne2ManyField("OrderLines",
+    models.ReverseFieldParams{RelationModel: pool.SaleOrderLine(), ReverseFK: "Order"})
+
+for _, orderLine := range myOrder().OrderLines().Records() {
+    fmt.Println(orderLine.AmountTotal())
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Because a <code>One2many</code> is a virtual relationship, there <strong>must</strong> be a
+<code>Many2one</code> field in the other model and its name <strong>must</strong> be the name defined by
+<code>ReverseFK</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Many2Many</dt>
+<dd>
+<p>Bidirectional multiple relationship, any record on one side can be related
+to any number of records on the other side. Behaves as a container of records,
+accessing it also results in a possibly empty set of records.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.SaleOrder().AddMany2ManyField("Tags",
+    models.Many2ManyFieldParams{RelationModel: pool.Tag()})
+
+for _, tag := range myOrder().Tags().Records() {
+    fmt.Println(tag.Name())
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add relations to our Course and Session models.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/course.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models"
+	"github.com/hexya-erp/hexya/pool"
+)
+
+func init() {
+    pool.OpenAcademyCourse().DeclareModel()
+    pool.OpenAcademyCourse().AddCharField("Name", models.StringFieldParams{})
+    pool.OpenAcademyCourse().AddTextField("Description", models.StringFieldParams{})
+    pool.OpenAcademyCourse().AddMany2OneField("Responsible", models.ForeignKeyFieldParams{
+        RelationModel: pool.User(), OnDelete: models.SetNull, Index: true})
+    pool.OpenAcademyCourse().AddOne2ManyField("Sessions", models.ReverseFieldParams{
+        RelationModel: pool.OpenAcademySession(), ReverseFK: "Course"})
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models"
+	"github.com/hexya-erp/hexya/hexya/models/types"
+	"github.com/hexya-erp/hexya/pool"
+)
+
+func init() {
+    pool.OpenAcademySession().DeclareModel()
+    pool.OpenAcademySession().AddCharField("Name", models.StringFieldParams{Required: true})
+    pool.OpenAcademySession().AddDateField("StartDate", models.SimpleFieldParams{})
+    pool.OpenAcademySession().AddFloatField("Duration", models.FloatFieldParams{
+        Digits: types.Digits{Precision: 6, Scale: 2}, Help: "Duration in days"})
+    pool.OpenAcademySession().AddIntegerField("Seats", models.SimpleFieldParams{
+        String: "Number of seats"})
+    pool.OpenAcademySession().AddSelectionField("State", models.SelectionFieldParams{
+        Selection: types.Selection{"planned": "Planned", "in_progress":"In Progress", "done": "Finished"}})
+    pool.OpenAcademySession().AddMany2OneField("Instructor", models.ForeignKeyFieldParams{
+        RelationModel: pool.Partner()})
+    pool.OpenAcademySession().AddMany2OneField("Course", models.ForeignKeyFieldParams{
+        RelationModel: pool.OpenAcademyCourse(), Required: true, OnDelete: models.Cascade})
+    pool.OpenAcademySession().AddMany2ManyField("Attendees", models.Many2ManyFieldParams{
+        RelationModel: pool.Partner()})
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we update their views accordingly.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;hexya&gt;
+    &lt;data&gt;
+
+        &lt;view id="openacademy_course_search" model="OpenAcademyCourse"&gt;
+            &lt;search&gt;
+                &lt;field name="Name"/&gt;
+                &lt;field name="Description"/&gt;
+            &lt;/search&gt;
+        &lt;/view&gt;
+
+        &lt;view id="openacademy_course_tree" model="OpenAcademyCourse"&gt;
+            &lt;tree&gt;
+                &lt;field name="Name"/&gt;
+                &lt;field name="Responsible"/&gt;
+            &lt;/tree&gt;
+        &lt;/view&gt;
+
+        &lt;view id="openacademy_course_form" model="OpenAcademyCourse"&gt;
+            &lt;form&gt;
+                &lt;sheet&gt;
+                    &lt;group&gt;
+                        &lt;field name="Name"/&gt;
+                        &lt;field name="Responsible"/&gt;
+                    &lt;/group&gt;
+                    &lt;notebook&gt;
+                        &lt;page string="Description"&gt;
+                            &lt;field name="Description"/&gt;
+                        &lt;/page&gt;
+                        &lt;page string="Sessions"&gt;
+                            &lt;field name="Sessions"&gt;
+                                &lt;tree string="Registered sessions"&gt;
+                                    &lt;field name="Name"/&gt;
+                                    &lt;field name="Instructor"/&gt;
+                                &lt;/tree&gt;
+                            &lt;/field&gt;
+                        &lt;/page&gt;
+                        &lt;page string="About"&gt;
+                            This is an example of notebooks
+                        &lt;/page&gt;
+                    &lt;/notebook&gt;
+                &lt;/sheet&gt;
+            &lt;/form&gt;
+        &lt;/view&gt;
+
+        &lt;action id="openacademy_course_action" name="Courses" model="OpenAcademyCourse"
+                view_mode="tree,form" type="ir.actions.act_window"&gt;
+            &lt;help&gt;
+                &lt;p class="oe_view_nocontent_create"&gt;Create the first course&lt;/p&gt;
+            &lt;/help&gt;
+        &lt;/action&gt;
+
+        &lt;menuitem id="openacademy_main_menu" name="Open Academy"/&gt;
+
+        &lt;menuitem id="openacademy_menu" name="Open Academy" parent="openacademy_main_menu"/&gt;
+
+        &lt;menuitem id="openacademy_course_menu" name="Courses" parent="openacademy_menu"
+                  action="openacademy_course_action"/&gt;
+
+    &lt;/data&gt;
+&lt;/hexya&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/session.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">&lt;hexya&gt;
+    &lt;data&gt;
+
+        &lt;view id="openacademy_session_tree" model="OpenAcademySession"&gt;
+            &lt;tree&gt;
+                &lt;field name="Name"/&gt;
+                &lt;field name="Course"/&gt;
+                &lt;field name="StartDate"/&gt;
+            &lt;/tree&gt;
+        &lt;/view&gt;
+
+        &lt;view id="openacademy_session_form" model="OpenAcademySession"&gt;
+            &lt;form string="Session Form"&gt;
+                &lt;header&gt;
+                    &lt;field name="State" widget="statusbar"/&gt;
+                &lt;/header&gt;
+                &lt;sheet&gt;
+                    &lt;group&gt;
+                        &lt;group string="General"&gt;
+                            &lt;field name="Course"/&gt;
+                            &lt;field name="Name"/&gt;
+                            &lt;field name="Instructor"/&gt;
+                        &lt;/group&gt;
+                        &lt;group string="Schedule"&gt;
+                            &lt;field name="StartDate"/&gt;
+                            &lt;field name="Duration"/&gt;
+                            &lt;field name="Seats"/&gt;
+                        &lt;/group&gt;
+                    &lt;/group&gt;
+                    &lt;label for="Attendees"/&gt;
+                    &lt;field name="Attendees"/&gt;
+                &lt;/sheet&gt;
+            &lt;/form&gt;
+        &lt;/view&gt;
+
+        &lt;action id="openacademy_sessions_action" name="Sessions" model="OpenAcademySession"
+                type="ir.actions.act_window" view_mode="tree,form"/&gt;
+
+        &lt;menuitem id="openacademy_session_menu" name="Sessions"
+                  parent="openacademy_menu" action="openacademy_sessions_action"/&gt;
+
+    &lt;/data&gt;
+&lt;/hexya&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_inheritance">9. Inheritance</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_model_inheritance">9.1. Model inheritance</h3>
+<div class="paragraph">
+<p>Hexya provides two <strong>inheritance</strong> mechanisms to extend an existing model in a
+modular way: extension and embedding.</p>
+</div>
+<div class="paragraph">
+<p>Extension allows a module to modify the behavior of a model defined in another
+module:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>add fields to a model,</p>
+</li>
+<li>
+<p>override the definition of fields on a model,</p>
+</li>
+<li>
+<p>add constraints to a model,</p>
+</li>
+<li>
+<p>add methods to a model,</p>
+</li>
+<li>
+<p>override existing methods on a model.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Embedding allows to link every record of a model to a record in a parent model,
+and provides transparent access to the fields of the parent record.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_view_inheritance">9.2. View inheritance</h3>
+<div class="paragraph">
+<p>Instead of modifying existing views in place (by overwriting them), Hexya
+provides view inheritance where children "extension" views are applied on top
+of root views, and can add or remove content from their parent.</p>
+</div>
+<div class="paragraph">
+<p>An extension view references its parent using the <code>inherit_id</code> attribute
+instead of the <code>id</code> attribute. Instead of a single view its content field is
+composed of any number of <code>xpath</code> elements selecting and altering the content
+of their parent view.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 2. View inheritance</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">    &lt;view inherit_id="id_category_list" model="IdeaCategory"&gt;
+        &lt;!-- find field Description and add the field Ideas after it --&gt;
+        &lt;xpath expr="//field[@name='Description']" position="after"&gt;
+          &lt;field name="Ideas" string="Number of ideas"/&gt;
+        &lt;/xpath&gt;
+    &lt;/view&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">expr</dt>
+<dd>
+<p>An <code>XPath</code> expression selecting a single element in the parent view.
+Raises an error if it matches no element or more than one</p>
+</dd>
+<dt class="hdlist1">position</dt>
+<dd>
+<p>Operation to apply to the matched element. Possible operations are:</p>
+</dd>
+</dl>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">inside</dt>
+<dd>
+<p>Appends `xpath&#8217;s body at the end of the matched element</p>
+</dd>
+<dt class="hdlist1">replace</dt>
+<dd>
+<p>Replaces the matched element with the <code>xpath&#8217;s body, replacing any `$0</code> node
+occurrence in the new body with the original element</p>
+</dd>
+<dt class="hdlist1">before</dt>
+<dd>
+<p>Inserts the `xpath&#8217;s body as a sibling before the matched element</p>
+</dd>
+<dt class="hdlist1">after</dt>
+<dd>
+<p>Inserts the `xpaths&#8217;s body as a sibling after the matched element</p>
+</dd>
+<dt class="hdlist1">attributes</dt>
+<dd>
+<p>Alters the attributes of the matched element using special <code>attribute</code>
+elements in the `xpath&#8217;s body</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When matching a single element, the <code>position</code> attribute can be set directly
+on the element to be found. Both inheritances below will give the same result.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">        &lt;xpath expr="//field[@name='Description']" position="after"&gt;
+            &lt;field name="Ideas" /&gt;
+        &lt;/xpath&gt;
+
+        &lt;field name="Description" position="after"&gt;
+            &lt;field name="Ideas" /&gt;
+        &lt;/field&gt;</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_example">9.3. Example</h3>
+<div class="paragraph">
+<p>Let&#8217;s modify the existing <code>Partner</code> model (defined in Hexya&#8217;s <code>base</code> module)
+to add an <code>instructor</code> boolean field, and a Many2Many field that corresponds to
+the session-partner relation.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/partner.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models"
+	"github.com/hexya-erp/hexya/pool"
+)
+
+func init() {
+    pool.Partner().AddBooleanField("Instructor", models.SimpleFieldParams{})
+    pool.Partner().AddMany2ManyField("AttendedSessions", models.Many2ManyFieldParams{
+        RelationModel: pool.OpenAcademySession()})
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/partner.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;hexya&gt;
+    &lt;data&gt;
+
+        &lt;!-- Add instructor field to existing view --&gt;
+        &lt;view inherit_id="base_view_partner_form" model="Partner"&gt;
+            &lt;notebook position="inside"&gt;
+                &lt;page string="Sessions"&gt;
+                    &lt;group&gt;
+                        &lt;field name="Instructore"/&gt;
+                        &lt;field name="Sessions"/&gt;
+                    &lt;/group&gt;
+                &lt;/page&gt;
+            &lt;/notebook&gt;
+        &lt;/view&gt;
+
+        &lt;action id="openacademy_partners_action" model="Partner"
+                view_mode="tree,form" type="ir.actions.act_window"/&gt;
+
+        &lt;menuitem id="openacademy_configuration_menu" name="Configuration"
+                  parent="openacademy_main_menu"/&gt;
+        &lt;menuitem id="openacademy_contact_menu" name="Contacts"
+                  parent="openacademy_configuration_menu"
+                  action="openacademy_partners_action"/&gt;
+
+    &lt;/data&gt;
+&lt;/hexya&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_conditions_on_related_fields">9.4. Conditions on related fields</h3>
+<div class="paragraph">
+<p>Hexya allows to limit the list of available record candidates for a relation.
+For example, in our Open Academy, for a session, we want to be able to select
+an instructor only among partners that have the boolean field <code>Instructor</code> set
+to true.</p>
+</div>
+<div class="paragraph">
+<p><strong>Not yet implemented</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_model_methods">10. Model methods</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With Hexya, you can define methods on models to implement business logic.</p>
+</div>
+<div class="paragraph">
+<p>Methods are created by <code>DeclareMethod()</code>:</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 3. Creating a method</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.OpenAcademyCourse().Methods().StartSession().DeclareMethod(
+    `StartSession sets the State of the Session to 'Started'`,
+    func(rs pool.OpenAcademyCourseSet) {
+        // Update State for all record in rs
+        rs.SetState("in_progress")
+    })
+
+// calling the method somewhere else
+myCourseSet.StartSession()</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><code>DeclareMethod</code> is called on our new not-yet-created method instance. This
+is because the above statement is a placeholder. The actual method creation
+will be automatically generated by <code>hexya generate</code> command.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<code>pool.OpenAcademyCourseSet</code> is the record set type for the <code>OpenAcademyCourse</code>
+model. It holds a set of <code>OpenAcademyCourse</code> records. All model methods are
+called on (possibly empty) record sets.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Methods can be overridden in other modules with <code>Extend()</code> on the method
+object. Call <code>rs.Super().MyMethod()</code> to execute the original implementation.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 4. Overridding/Extending a method</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.OpenAcademyCourse().Methods().StartSession().Extend("",
+    func(rs pool.OpenAcademyCourseSet) {
+        rs.Super().StartSession()
+        fmt.Println("Session started")
+    })</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_computed_fields_and_default_values">11. Computed fields and default values</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>So far fields have been stored directly in and retrieved directly from the
+database. Fields can also be <strong>computed</strong>. In that case, the field&#8217;s value is not
+retrieved from the database but computed on-the-fly by calling a method of the
+model.</p>
+</div>
+<div class="paragraph">
+<p>To create a computed field, create a field and set its attribute <code>Compute</code> to
+the name of a method. The computation method should have the following
+signature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSet) (*RecordData, []models.FieldNamer)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>RecordSet</code> type depends on the model and is named <code>ModelSet</code> for model <code>Model</code>
+(e.g. <code>OpenAcademySessionSet</code>)</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+In the case of a computation method, the given record set is a singleton.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>RecordData</code> type is a struct with all the fields of the model to hold a
+record. It is named <code>ModelData</code> for model <code>Model</code> (e.g.
+<code>OpenAcademySessionData</code>)</p>
+</div>
+<div class="sect2">
+<h3 id="_dependencies">11.1. Dependencies</h3>
+<div class="paragraph">
+<p>The value of a computed field usually depends on the values of other fields on
+the computed record. The ORM expects the developer to specify those dependencies
+on the compute method by specifying the <code>Depends</code> attribute of the field.
+The given dependencies are used by the ORM to trigger the recomputation of the
+field whenever some of its dependencies have been modified.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add the percentage of taken seats to the <strong>Session</strong> model.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
+(...)
+    pool.OpenAcademySession().AddFloatField("TakenSeats", models.FloatFieldParams{
+        Compute: "ComputeTakenSeats", Depends: []string{"Seats", "Attendees"}})
+
+    pool.OpenAcademySession().Methods().ComputeTakenSeats().DeclareMethod(
+        `ComputeTakenSeats returns the percentage of taken seats in this session`,
+        func(rs pool.OpenAcademySessionSet) (*pool.OpenAcademySessionData, []models.FieldNamer) {
+            var res pool.OpenAcademySessionData
+            // res struct fields default to their Go zero value
+            if rs.Seats() != 0 {
+                res.TakenSeats = 100.0 * float64(rs.Attendees().Len()) / float64(rs.Seats())
+            }
+            return &amp;res, []models.FieldNamer{pool.OpenAcademySession().TakenSeats()}
+        })
+(...)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s add our new field in the form and tree views:</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/session.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">(...tree view...)
+            &lt;tree string="Session Tree"&gt;
+                &lt;field name="Name"/&gt;
+                &lt;field name="Course"/&gt;
+                &lt;field name="TakenSeats" widget="progressbar"/&gt;
+            &lt;/tree&gt;
+        &lt;/view&gt;
+(...)
+
+(...form view...)
+                &lt;field name="StartDate"/&gt;
+                &lt;field name="Duration"/&gt;
+                &lt;field name="Seats"/&gt;
+                &lt;field name="TakenSeats" widget="progressbar"/&gt;
+            &lt;/group&gt;
+        &lt;/group&gt;
+        &lt;label for="Attendees"/&gt;
+(...)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_default_values">11.2. Default values</h3>
+<div class="paragraph">
+<p>Any field can be given a default value. In the field definition, add the option
+<code>Default: X</code> where <code>X</code> is a function with the following signature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (models.Environment, models.FieldMap) interface{}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default function is called twice by the framework:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When providing an empty form in the user interface{} during record creation.</p>
+</li>
+<li>
+<p>When calling the <code>Create</code> method, if the field has not been set. In this
+case, the second argument is filled with the values passed to the <code>Create</code>
+method.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>Environment</code> object gives access to request parameters and other useful
+things. The current Environment can be retrieved from a record set with the
+<code>Env()</code> method.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>rs.Env().Cr()</code> is the database <strong>cursor</strong> object; it is used for querying the
+database directly.</p>
+</li>
+<li>
+<p><code>rs.Env().Uid()</code> is the current user&#8217;s database id</p>
+</li>
+<li>
+<p><code>rs.Env().Context()</code> is the context dictionary</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+For a constant default value, the <code>models</code> package provides a
+<code>DefaultValue</code> function that takes the constant as single argument and returns
+a suitable function for <code>Default:</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now we will set <code>StartDate</code> default value to today, and create a new <code>Active</code>
+field that defaults to true.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
+(...)
+    pool.OpenAcademySession().AddDateField("StartDate", models.SimpleFieldParams{
+        Default: func(env models.Environment, fMap models.FieldMap) interface{} {
+                return types.Today()
+            },
+        })
+(...)
+    pool.OpenAcademySession().AddBooleanField("Active", models.SimpleFieldParams{
+        Default: models.DefaultValue(true)})
+(...)
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_onchange">12. Onchange</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The "onchange" mechanism provides a way for the client interface to update a
+form whenever the user has filled in a value in a field, without saving anything
+to the database.</p>
+</div>
+<div class="paragraph">
+<p>To achieve this, set the <code>OnChange:</code> parameter of the field
+with the name of a computation function.</p>
+</div>
+<div class="paragraph">
+<p>Such fonction have the same signature as the functions in <code>Compute:</code> parameter
+(see <a href="#_computed_fields_and_default_values">Computed fields and default values</a>).</p>
+</div>
+<div class="paragraph">
+<p>For computed fields, valued <code>onchange</code> behavior is built-in as can be seen by
+playing with the <strong>Session</strong> form: change the number of seats or participants, and
+the <code>TakenSeats</code> progressbar is automatically updated.</p>
+</div>
+<div class="paragraph">
+<p>We now add an explicit onchange to prevent negative number of seats.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
+(...)
+    pool.OpenAcademySession().AddIntegerField("Seats", models.SimpleFieldParams{
+        String: "Number of seats", OnChange: "VerifyValidSeats"})
+(...)
+    pool.OpenAcademySession().AddMany2ManyField("Attendees", models.Many2ManyFieldParams{
+        RelationModel: pool.Partner(), OnChange: "VerifyValidSeats"})
+(...)
+
+    pool.OpenAcademySession().Methods().VerifyValidSeats().DeclareMethod(
+        `VerifyValidSeats checks that the number of seats is positive
+        and resets it to zero otherwise`,
+        func (rs pool.OpenAcademySessionSet) (*pool.OpenAcademySessionData, []models.FieldNamer) {
+            var res pool.OpenAcademySessionData
+            if rs.Seats() &lt; 0 {
+                res.Seats = 0
+            }
+            return &amp;res, []models.FieldNamer{pool.OpenAcademySession().Seats()}
+        })
+(...)
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is also possible to send a warning or a new domain to the UI when a field
+is changed:</p>
+</div>
+<div class="paragraph">
+<p><strong>Not yet implemented</strong></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_model_constraints">13. Model constraints</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_filtering_relation_record_candidates">13.1. Filtering Relation Record Candidates</h3>
+<div class="paragraph">
+<p>A <code>Filter</code> parameter can be added to relational fields to limit valid records
+for the relation when trying to select records in the client interface. This
+parameter takes a condition on the relation model.</p>
+</div>
+<div class="paragraph">
+<p>We can add a domain to limit instructors to partners who are instructors:</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">(...)
+    pool.OpenAcademySession().AddMany2OneField("Instructor", models.ForeignKeyFieldParams{
+        RelationModel: pool.Partner(), Filter: pool.Partner().Instructor().Equals(true)})
+(...)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_sql_constraints">13.2. SQL Constraints</h3>
+<div class="paragraph">
+<p>You can add SQL constraints to a model with the <code>AddSQLConstraint()</code> method of
+a Model. This method takes a name for the constraint, the SQL code to enforce
+and a string to display to the user when the constraint is violated.</p>
+</div>
+<div class="paragraph">
+<p>Unique constraints on a single field can also be specified by setting the
+<code>Unique:</code> parameter of the field&#8217;s declaration to true.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add the following SQL constraints to our sessions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CHECK that the course description and the course title are different</p>
+</li>
+<li>
+<p>Make the Course&#8217;s name UNIQUE</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/course.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">(...)
+    pool.OpenAcademyCourse().AddCharField("Name", models.StringFieldParams{Unique: true})
+(...)
+    pool.OpenAcademyCourse().AddSQLConstraint("name_description_check",
+         "CHECK(name != description)",
+         "The title of the course should not be the description")
+(...)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_constraint_by_method">13.3. Constraint by method</h3>
+<div class="paragraph">
+<p>Constraints on models can also be defined as methods on models. This is done by
+setting the <code>Constraint:</code> parameter of a field to the name of a method that
+will check if its given recordset is valid. This method must panic if it is not
+the case.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Several fields can set their <code>Constraint:</code> to the same method. In this
+case the method will only be called once, even if both fields are modified.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now we will add a constraint that checks that the instructor is not present
+in the attendees of his/her own session.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">    pool.OpenAcademySession().AddMany2OneField("Instructor", models.ForeignKeyFieldParams{
+        RelationModel: pool.Partner(), Filter: pool.Partner().Instructor().Equals(true),
+        Constraint: "CheckInstructorNotInAttendees"})
+    pool.OpenAcademySession().AddMany2ManyField("Attendees", models.Many2ManyFieldParams{
+        RelationModel: pool.Partner(), OnChange: "VerifyValidSeats",
+        Constraint: "CheckInstructorNotInAttendees"})
+
+    pool.Methods().CheckInstructorNotInAttendees().DeclareMethod(
+        `CheckInstructorNotInAttendees checks that the instructor is not present
+        in the attendees of his/her own session`,
+        func(rs pool.OpenAcademySessionSet) {
+            for _, attendee := range rs.Attendees() {
+                if attendee.ID() == rs.Instructor().ID() {
+                    panic("The session's instructor can't be an attendee of his own session")
+                }
+            }
+        })</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_advanced_views">14. Advanced Views</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_list_views_2">14.1. List views</h3>
+<div class="paragraph">
+<p>List views can take supplementary attributes to further customize their
+behavior:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">decoration-{$name}</dt>
+<dd>
+<p>Allows changing the style of a row&#8217;s text based on the corresponding
+record&#8217;s attributes.</p>
+<div class="paragraph">
+<p>Values are Python expressions. For each record, the expression is evaluated
+with the record&#8217;s attributes (by their JSON names) as context values and if
+<code>true</code>, the corresponding style is applied to the row. Other context values
+are <code>uid</code> (the id of the current user) and <code>current_date</code> (the current date
+as a string of the form <code>yyyy-MM-dd</code>).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Each field definition has a name and a so-called JSON name which is the
+name of the column in the database and the field name sent to the client.</p>
+</div>
+<div class="paragraph">
+<p>If not specificied in the field definition, the JSON name defaults to the
+snake case value of the field&#8217;s name, with the following subtilties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It is Go camel case aware: <code>DescriptionHTML</code> &#8658; <code>description_html</code></p>
+</li>
+<li>
+<p>Many2One fields are appended <code>_id</code>: <code>Partner</code> &#8658; <code>partner_id</code></p>
+</li>
+<li>
+<p>One2Many and Many2many are appended <code>_ids</code>: <code>OrderLines</code> &#8658; <code>order_lines_ids</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+All field values that are evaluated must appear in the tree view,
+possibly with an <code>invisible="1"</code> attribute, if you don&#8217;t want it displayed.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><code>{$name}</code> can be <code>bf</code> (<code>font-weight: bold</code>), <code>it</code>
+(<code>font-style: italic</code>), or any bootstrap contextual color
+(<a href="http://getbootstrap.com/components/#available-variations" class="bare">http://getbootstrap.com/components/#available-variations</a>: <code>danger</code>,
+<code>info</code>, <code>muted</code>, <code>primary</code>, <code>success</code> or <code>warning</code>).</p>
+</div>
+<div class="exampleblock">
+<div class="title">Example 5. List view with specified row styles</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">    &lt;tree string="Idea Categories" decoration-info="state=='draft'"
+        decoration-danger="state=='trashed'"&gt;
+        &lt;field name="Name"/&gt;
+        &lt;field name="State"/&gt;
+    &lt;/tree&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">editable</dt>
+<dd>
+<p>Either <code>"top"</code> or <code>"bottom"</code>. Makes the tree view editable in-place
+(rather than having to go through the form view), the value is the
+position where new rows appear.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s color our Session tree view in such a way that sessions lasting less than
+5 days are colored blue, and the ones lasting more than 15 days are colored
+red:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+        &lt;view  id="openacademy_session_tree" model="OpenAcademySession"&gt;
+            &lt;tree string="Session Tree" decoration-info="duration&amp;lt;5" decoration-danger="duration&amp;gt;15"&gt;
+                &lt;field name="Name"/&gt;
+                &lt;field name="Course"/&gt;
+                &lt;field name="Duration" invisible="1"/&gt;
+                &lt;field name="TakenSeats" widget="progressbar"/&gt;
+            &lt;/tree&gt;
+        &lt;/view&gt;
+(...)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_calendars">14.2. Calendars</h3>
+<div class="paragraph">
+<p><strong>Not yet implemented</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_search_views_2">14.3. Search views</h3>
+<div class="paragraph">
+<p>Search view <code>&lt;field&gt;</code> elements can have a <code>filter_domain</code> attribute that
+overrides the condition generated for searching on the given field. In the
+given domain, <code>self</code> represents the value entered by the user.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>As Hexya uses Odoo web client, conditions on client side are defined by
+so-called "domains". See the following links for more documentation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.odoo.com/documentation/10.0/howtos/backend.html#domains" class="bare">https://www.odoo.com/documentation/10.0/howtos/backend.html#domains</a></p>
+</li>
+<li>
+<p><a href="https://www.odoo.com/documentation/10.0/reference/orm.html#reference-orm-domains" class="bare">https://www.odoo.com/documentation/10.0/reference/orm.html#reference-orm-domains</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Search views can also contain <code>&lt;filter&gt;</code> elements, which act as toggles for
+predefined searches. Filters must have one of the following attributes:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>domain</code></dt>
+<dd>
+<p>Search condition to apply when the filter is activated</p>
+</dd>
+<dt class="hdlist1"><code>context</code></dt>
+<dd>
+<p>Add some context to the current search; use the key <code>group_by</code> to group
+results on the given field name</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>To use a non-default search view in an action, it should be linked using the
+<code>search_view_id</code> attribute of the action record.</p>
+</div>
+<div class="paragraph">
+<p>The action can also set default values for search fields through its
+<code>context</code> field: context keys of the form <code>search_default_{field_name}</code> will
+initialize <strong>field_name</strong> with the provided value. Search filters must have an
+optional <code>name</code> to have a default and behave as booleans (they can only be
+enabled by default).</p>
+</div>
+<div class="paragraph">
+<p>Now we will</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add a button to filter the courses for which the current user is the
+responsible in the course search view. Make it selected by default.</p>
+</li>
+<li>
+<p>Add a button to group courses by responsible user.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/course.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+            &lt;search&gt;
+                &lt;field name="Name"/&gt;
+                &lt;field name="Description"/&gt;
+                &lt;filter name="my_courses" string="My Courses"
+                        domain="[('responsible_id', '=', uid)]"/&gt;
+                &lt;group string="Group By"&gt;
+                    &lt;filter name="by_responsible" string="Responsible"
+                            context='{"group_by": "responsible_id"}'/&gt;
+                &lt;/group&gt;
+            &lt;/search&gt;
+(...)
+        &lt;action id="openacademy_sessions_action" name="Sessions" model="OpenAcademySession"
+                type="ir.actions.act_window" view_mode="tree,form"
+                context='{"search_default_my_courses": 1}'/&gt;
+(...)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gantt">14.4. Gantt</h3>
+<div class="paragraph">
+<p><strong>Not yet implemented</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_graph_views">14.5. Graph views</h3>
+<div class="paragraph">
+<p><strong>Not yet implemented</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_kanban">14.6. Kanban</h3>
+<div class="paragraph">
+<p><strong>Not yet implemented</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_security">15. Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Access control mechanisms must be configured to achieve a coherent security
+policy.</p>
+</div>
+<div class="sect2">
+<h3 id="_group_based_access_control_mechanisms">15.1. Group-based access control mechanisms</h3>
+<div class="paragraph">
+<p>Groups are created by code and registered in the framework like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">myGroup := security.NewGroup("my_group", "My Group")
+security.Registry.RegisterGroup(newGroup)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>They can be retrieved by id this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">myGroup := security.Registry.GetGroup("my_group")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But it is good practice to define each group as package level variables in
+the module that registers it, so that other modules can import and use the
+variable directly, such as <code>base.GroupUser</code>.</p>
+</div>
+<div class="paragraph">
+<p>Groups are granted menu access via menu definitions. However even without a
+menu, objects may still be accessible indirectly, so actual object-level
+permissions must be defined for groups.</p>
+</div>
+<div class="paragraph">
+<p>Unlike other systems, there is no CRUD permissions on objects. Instead,
+execution permission is granted to groups on a per-method basis. Classical
+CRUD access control is possible by granting execution on <code>Create</code>, <code>Load</code>,
+<code>Write</code> and <code>Unlink</code> methods of a model.</p>
+</div>
+<div class="paragraph">
+<p>It is also possible to restrict access to specific fields on a view or object
+using the field&#8217;s groups attribute.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_method_execution_control">15.2. Method Execution Control</h3>
+<div class="paragraph">
+<p>By default, only members of <code>security.AdminGroup</code> are allowed to execute a
+method. Other groups should be manually added to allowed groups.</p>
+</div>
+<div class="paragraph">
+<p>This is done with <code>AllowGroup()</code> applied on a method object.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+With the helper method <code>AllowAllToGroup()</code> applied on the method
+collection of an object, we can grant access to all methods of a model at once
+to a group, including methods that are not yet declared.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now we create :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a group "OpenAcademy / Session Read" with read access to the <strong>Session</strong>
+model.</p>
+</li>
+<li>
+<p>a group "OpenAcademy / Manager" with full access to our models</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/hexya.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models/security"
+	"github.com/hexya-erp/hexya/hexya/server"
+)
+
+const MODULE_NAME string = "openacademy"
+
+var (
+    SessionRead *security.Group
+    Manager     *security.Group
+)
+
+func init() {
+    server.RegisterModule(&amp;server.Module{
+		Name: MODULE_NAME,
+		PostInit: func() {},
+	})
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/course.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
+    (...)
+    SessionRead = security.Registry.NewGroup("openacademy_session_read", "OpenAcademy / Session Read")
+    Manager = security.Registry.NewGroup("openacademy_manager", "OpenAcademy / Manager", SessionRead)
+
+    pool.OpenAcademyCourse().Methods().Load().AllowGroup(SessionRead)
+    pool.OpenAcademyCourse().Methods().AllowAllToGroup(Manager)
+    (...)
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
+(...)
+    pool.OpenAcademySession().Methods().AllowAllToGroup(Manager)
+(...)
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Since our <code>Manager</code> group inherits from <code>SessionRead</code> we don&#8217;t need to
+give permission on the <code>Load</code> method again.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To test our access control,</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click on the <code>Reload Groups</code> menu in the <code>Settings</code></p>
+</li>
+<li>
+<p>Create a new user "John Smith", and make him a member of <code>SessionRead</code></p>
+</li>
+<li>
+<p>Log in as <strong>John Smith</strong> to check the access rights are correct</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_field_access_control">15.3. Field Access Control</h3>
+<div class="paragraph">
+<p>While Method Execution Control is the main security mechanism used in Hexya,
+it is sometimes necessary to limit read or write access for some users to some
+fields. This is done through Field Access Control.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The following rules apply:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If a user without <code>Read</code> permission on a field retrieve a record, the value of
+the field will be replaced by its Go zero value.</p>
+</li>
+<li>
+<p>If a user without <code>Write</code> permission on a field writes a record, the value of
+the field will not be updated.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+By default, all fields can be accessed for read and write by
+<code>security.GroupEveryOne</code>, a special group to which all users are automatically
+added. Therefore, to change a field access, you <strong>must</strong> revoke access to this
+group first, or your modifications will have no effect.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s make the <code>TakenSeats</code> readable only by managers:</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/session.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
+    (...)
+    pool.OpenAcademySession().Fields().TakenSeats().RevokeAccess(security.GroupEveryOne, security.Read|security.Write)
+    pool.OpenAcademySession().Fields().TakenSeats().GrantAccess(Manager, security.Read)
+    (...)
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_record_rules">15.4. Record rules</h3>
+<div class="paragraph">
+<p>Record Rules allow to grant or deny a group some permissions on a selection of
+records. This could be the case for example to allow a salesman only to see his
+own sales.</p>
+</div>
+<div class="paragraph">
+<p>A Record Rule is a struct with the following definition, in the models package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">type RecordRule struct {
+    Name      string
+    Global    bool
+    Group     *Group
+    Condition *models.Condition
+    Perms     Permission
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add a record rule for the model Course and the group
+"OpenAcademy / Manager", that restricts <code>write</code> and <code>unlink</code> accesses
+to the responsible of a course. If a course has no responsible, all users
+of the group must be able to modify it.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/course.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func getCurrentUser(rs pool.OpenAcademyCourseSet) interface{} {
+    return pool.User().Search(rs.Env(), pool.User().ID().Equals(rs.Env().Uid()))
+}
+
+func init() {
+(...)
+    cond := pool.OpenAcademyCourse().
+        Responsible().EqualsFunc(getCurrentUser).
+        Or().Responsible().IsNull()
+
+    rule := models.RecordRule {
+        Name:      "openacademy_manager_course_write_unlink",
+        Group:     Manager,
+        Condition: cond.Condition,
+        Perms:     security.Write|security.Unlink,
+    }
+    pool.OpenAcademyCourse().AddRecordRule(&amp;rule)
+(...)
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_wizards">16. Wizards</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Wizards describe interactive sessions with the user (or dialog boxes) through
+dynamic forms. A wizard is simply a model that is created with
+<code>DeclareTransientModel</code> instead of <code>DeclareModel</code>. The resulting model has the
+following particularities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Wizard records are not meant to be persistent; they are automatically deleted
+from the database after a certain time. This is why they are called
+<strong>transient</strong>.</p>
+</li>
+<li>
+<p>Wizard models do not require explicit access rights: users have all
+permissions on wizard records.</p>
+</li>
+<li>
+<p>Wizard records may refer to regular records or wizard records through many2one
+fields, but regular records <strong>cannot</strong> refer to wizard records through a
+many2one field.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We want to create a wizard that allow users to create attendees for a particular
+session, or for a list of sessions at once.</p>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/wizard.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
+
+import (
+	"github.com/hexya-erp/hexya/hexya/models"
+	"github.com/hexya-erp/hexya/pool"
+)
+
+func init() {
+    pool.OpenAcademyWizard().DeclareTransientModel()
+    pool.OpenAcademyWizard().AddMany2OneField("Session", models.ForeignKeyFieldParams{
+        RelationModel: pool.OpenAcademySession(), Required: true})
+    pool.OpenAcademyWizard().AddMany2ManyField("Attendees", models.Many2ManyFieldParams{
+        RelationModel: pool.Partner()})
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_launching_wizards">16.1. Launching wizards</h3>
+<div class="paragraph">
+<p>Wizards are launched by window actions, with the attribute <code>target</code> set to the
+value <code>new</code>. The latter opens the wizard view into a popup window. The action
+may be triggered by a menu item.</p>
+</div>
+<div class="paragraph">
+<p>There is another way to launch the wizard: using an <code>ir.actions.act_window</code>
+record like above, but with an extra field <code>src_model</code> that specifies in the
+context of which model the action is available. The wizard will appear in the
+contextual actions of the model, above the main view.</p>
+</div>
+<div class="paragraph">
+<p>Wizards use regular views and their buttons may use the attribute
+<code>special="cancel"</code> to close the wizard window without saving.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Define a form view for the wizard</p>
+</li>
+<li>
+<p>Add the action to launch it in the context of the <strong>Session</strong> model</p>
+</li>
+<li>
+<p>Define a default value for the session field in the wizard</p>
+</li>
+<li>
+<p>Create a method to subscribe users to the session</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/wizard.go</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
+(...)
+    pool.OpenAcademyWizard().AddMany2OneField("Session", models.ForeignKeyFieldParams{
+        RelationModel: pool.OpenAcademySession(), Required: true, Default:
+        func(env models.Environment, fMap models.FieldMap) interface{} {
+            activeID := env.Context().GetInteger("active_id")
+			return pool.OpenAcademySession().Search(env,
+			    pool.OpenAcademySession().ID().Equals(activeID))
+        }})
+
+    pool.OpenAcademyWizard().Methods().Subscribe().DeclareMethod(
+        `Subscribe subscribes the users to the session`,
+        func(rs pool.OpenAcademyWizardSet) {
+            rs.Session().SetAttendees(rs.Session().Attendees().Union(rs.Attendees()))
+        })
+(...)
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">openacademy/resources/wizard.xml</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">&lt;hexya&gt;
+    &lt;data&gt;
+        &lt;view id="openacademy_wizard_form" model="OpenAcademyWizard"&gt;
+            &lt;form string="Add Attendees"&gt;
+                &lt;group&gt;
+                    &lt;field name="Session"/&gt;
+                    &lt;field name="Attendees"/&gt;
+                &lt;/group&gt;
+                &lt;footer&gt;
+                    &lt;button name="Subscribe" type="object"
+                            string="Subscribe" class="oe_highlight"/&gt;
+                    or
+                    &lt;button special="cancel" string="Cancel"/&gt;
+                &lt;/footer&gt;
+            &lt;/form&gt;
+        &lt;/view&gt;
+
+        &lt;action id="openacademy_launch_session_wizard"
+                type="ir.actions.act_window"
+                name="Add Attendees"
+                src_model="OpenAcademySession"
+                model="OpenAcademyWizard"
+                view_mode="form"
+                target="new"/&gt;
+    &lt;/data&gt;
+&lt;/hexya&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_internationalization">17. Internationalization</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_translating_the_application">17.1. Translating the application</h3>
+<div class="paragraph">
+<p>The application terms can be translated by use of PO files that live in the
+`i18n/`subdirectory of our module. Let&#8217;s see how to create a French
+translation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code>$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
+$ mkdir openacademy/i18n
+$ hexya i18n update openacademy/ -l fr</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you should have a PO file inside <code>openacademy/i18n</code> directory with the
+module strings to translate. Go for the translation, and save the file.</p>
+</div>
+<div class="paragraph">
+<p>Restart the application, but pass the <code>-l fr</code> parameter to load the french
+translation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code>hexya server -o -l fr</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After logging in, go to the preferences menu (top right of the screen) and
+set the <code>lang</code> field to <code>fr</code>. Reload your browser&#8217;s page and you should see
+your translated terms instead of the original ones.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_translating_record_data">17.2. Translating record data</h3>
+<div class="paragraph">
+<p><strong>Not implemented yet</strong></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_reporting">18. Reporting</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_printed_reports">18.1. Printed reports</h3>
+<div class="paragraph">
+<p><strong>Not implemented yet</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dashboards">18.2. Dashboards</h3>
+<div class="paragraph">
+<p><strong>Not implemented yet</strong></p>
+</div>
+</div>
+</div>
+</div>
+
+  
+</ul>
+</main>
+  <footer> 
+    <footer id="footer">
+    <nav>
+      <ul>
+        <li><span>Hexya</span></li>
+        <li>
+          <a href="/blog/">Blog</a>
+        </li>
+          <li>
+          <a href="/docs/">Docs</a>
+        </li>
+        <li>
+          <i class="fa fa-github"></i>
+          <a href="https://github.com/hexya-erp">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+    <p>&copy; NDP Systèmes.</p>
+  </footer> 
+</footer>
+
+
+  <script src="/js/kube.js" type="text/javascript">
+  </script>
+  <script src="/js/kube.legenda.js" type="text/javascript">
+  </script>
+  <script src="/js/master.js" type="text/javascript">
+  </script>
+</body>
+
+</html>

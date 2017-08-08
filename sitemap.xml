@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>/docs/design/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/install/</loc>
+  </url>
+  
+  <url>
+    <loc>/blog/welcome/</loc>
+    <lastmod>2017-08-15T10:00:00+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/docs/tutorial/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/models/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/security/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/i18n/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/data/</loc>
+  </url>
+  
+  <url>
+    <loc>/faq/</loc>
+    <lastmod>2017-06-15T21:58:26+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/blog/</loc>
+    <lastmod>2017-08-15T10:00:00+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/contact/</loc>
+  </url>
+  
+  <url>
+    <loc>/docs/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/</loc>
+    <lastmod>2017-08-15T10:00:00+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+</urlset>

@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta name="generator" content="Hugo 0.25.1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Installation </title>
+
+  
+  <meta name="description" content="How to build and install Hexya"> 
+  
+  
+  
+  
+  
+
+    
+
+  <meta name="author" content="NDP Systèmes">
+
+
+  <meta property="og:title" content="Installation" />
+<meta property="og:description" content="How to build and install Hexya" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/install/" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  
+  
+
+  <link rel="canonical" href="/docs/install/">  
+
+  <link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>
+
+  <link href="/css/font.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.legenda.css" rel="stylesheet" type="text/css">
+  <link href="/css/highlight.css" rel="stylesheet" type="text/css">
+  <link href="/css/master.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+ 
+
+  <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
+  </script>
+
+  <script type="text/javascript" src="/js/tocbot.min.js"></script>
+</head>
+
+
+<body class="page-kube">
+  <header> <div class="show-sm">
+    <div id="nav-toggle-box">
+      <div id="nav-toggle-brand">
+        <a href="/"><img src="/img/logo.png"/></a>
+      </div><a data-component="toggleme" data-target="#top" href="#" id="nav-toggle"><i class="kube-menu"></i></a>
+    </div>
+  </div>
+  <div class="hide-sm" id="top">
+    <div id="top-brand">
+      <a href="/" title="home"><img src="/img/logo.png"/></a>
+    </div>
+    <nav id="top-nav-main">
+      <ul>
+       
+       
+    <li><a href="/blog/" >Blog</a></li>
+    
+    <li><a href="/docs/" >Docs</a></li>
+    
+    <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
+    
+      </ul>
+    </nav>
+    <nav id="top-nav-extra">
+    </nav>
+  </div> </header>
+  <main>
+
+<div id="hero" class="wrap">
+  <h1>Installation</h1>
+    <p>How to build and install Hexya</p>
+</div>
+<ul id="posts">
+
+ <div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a></li>
+<li><a href="#_prerequisites">2. Prerequisites</a>
+<ul class="sectlevel2">
+<li><a href="#_install_go">2.1. Install Go</a></li>
+</ul>
+</li>
+<li><a href="#_download">3. Download</a>
+<ul class="sectlevel2">
+<li><a href="#_download_hexya">3.1. Download Hexya</a></li>
+<li><a href="#_download_hexya_modules">3.2. Download Hexya modules</a></li>
+</ul>
+</li>
+<li><a href="#_create_a_project">4. Create a project</a>
+<ul class="sectlevel2">
+<li><a href="#_download_demo_project">4.1. Download Demo Project</a></li>
+<li><a href="#_creating_a_custom_project">4.2. Creating a custom project</a></li>
+<li><a href="#_generate_hexya">4.3. Generate Hexya</a></li>
+</ul>
+</li>
+<li><a href="#_synchronise_database">5. Synchronise database</a>
+<ul class="sectlevel2">
+<li><a href="#_setup_postgresql">5.1. Setup Postgresql</a></li>
+<li><a href="#_synchronise_database_schema_with_models">5.2. Synchronise database schema with models</a></li>
+</ul>
+</li>
+<li><a href="#_running_hexya">6. Running Hexya</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since Hexya is a modular ERP at compile time, it is only distributed as source
+code. The following instructions will guide you through the process of
+downloading the source code, setting up your configuration and compile Hexya.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_prerequisites">2. Prerequisites</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_install_go">2.1. Install Go</h3>
+<div class="paragraph">
+<p>First of all, you need to install the Go SDK. Follow the instructions on the
+Go website to install on your platform: <a href="https://golang.org/dl/" class="bare">https://golang.org/dl/</a> .</p>
+</div>
+<div class="paragraph">
+<p>Then setup your Go workspace and define your <code>$GOPATH</code> environment variable as
+described here: <a href="https://golang.org/doc/code.html#Workspaces" class="bare">https://golang.org/doc/code.html#Workspaces</a></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+It is assumed in the document that you added <code>$GOPATH/bin</code> to your
+<code>$PATH</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_download">3. Download</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_download_hexya">3.1. Download Hexya</h3>
+<div class="paragraph">
+<p>Hexya uses the standard go toolchain. Download Hexya with the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">go get github.com/hexya-erp/hexya</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will download hexya and its dependencies in your workspace and compile the
+<code>hexya</code> command.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_download_hexya_modules">3.2. Download Hexya modules</h3>
+<div class="paragraph">
+<p>Hexya modules are distributed as Go packages. They can be downloaded with
+<code>go get</code> too. For instance, to get the official addons:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">go get -d github.com/hexya-erp/hexya-base
+go get -d github.com/hexya-erp/hexya-addons</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Discard any message about no buildable Go code
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_a_project">4. Create a project</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need to create a project to run a Hexya server. Your project will hold your
+specific configuration, in particular the modules to install.</p>
+</div>
+<div class="sect2">
+<h3 id="_download_demo_project">4.1. Download Demo Project</h3>
+<div class="paragraph">
+<p>If you want to evaluate Hexya, you can download the <code>hexya-demo</code> project.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">go get github.com/hexya-erp/hexya-demo</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_custom_project">4.2. Creating a custom project</h3>
+<div class="paragraph">
+<p>To create a custom project, create a go package with the following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">&lt;projectDir&gt;/
+    config/
+        config.go</pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Since this is a go package, <code>&lt;projectDir&gt;</code> <strong>MUST</strong> be in a
+subdirectory of <code>$GOPATH/src</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Edit the <code>config.go</code> file and make it look like the following, adding one line
+per module to install in your Hexya instance in the <code>import</code> stanza:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">package config
+
+import (
+    _ "github.com/hexya-erp/hexya-addons/sale"
+    _ "github.com/hexya-erp/hexya-addons/stock"
+    _ "github.com/hexya-erp/hexya-addons/purchase"
+    _ "github.com/my-partner/my-super-module"
+)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The leading underscore before each module import path makes the file
+valid Go.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_generate_hexya">4.3. Generate Hexya</h3>
+<div class="paragraph">
+<p>This step will generate some source code that depends on the modules you
+selected in the previous step. It must be performed after each modification
+of the configuration from inside the project directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">cd &lt;projectDir&gt;
+hexya generate</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Type <code>hexya help generate</code> for the list of available options:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">$ hexya help generate
+Generate the source code of the pool package which includes the definition of all the models.
+Additionally, this command creates the startup file of the project.
+This command must be rerun after each source code modification, including module import.
+
+  projectDir: the directory in which to find the go package that imports all the modules we want.
+              If not set, projectDir defaults to the current directory
+
+Usage:
+  hexya generate [projectDir] [flags]
+
+Flags:
+      --empty         Generate an empty pool package. When set projectDir is ignored.
+  -t, --test string   Generate pool for testing the module in the given source directory. When set projectDir is ignored.
+
+Global Flags:
+  -c, --config string        Alternate configuration file to read. Defaults to $HOME/.hexya/
+      --db-driver string     Database driver to use (default "postgres")
+      --db-host string       The database host to connect to. Values that start with / are for unix domain sockets directory (default "/var/run/postgresql")
+      --db-name string       Database name (default "hexya")
+      --db-password string   Database password. Leave empty when connecting through socket
+      --db-port string       Database port. Value is ignored if db-host is not set (default "5432")
+      --db-user string       Database user. Defaults to current user
+      --debug                Enable server debug mode for development
+  -l, --log-file string      File to which the log will be written
+  -L, --log-level string     Log level. Should be one of 'debug', 'info', 'warn', 'error' or 'crit' (default "info")
+  -o, --log-stdout           Enable stdout logging. Use for development or debugging.</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_synchronise_database">5. Synchronise database</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_setup_postgresql">5.1. Setup Postgresql</h3>
+<div class="paragraph">
+<p>For now Hexya only supports Postgresql. Here is the quick setup for evaluating
+Hexya. Please refer to Postgresql documentation for finer setup.</p>
+</div>
+<div class="sect3">
+<h4 id="_create_a_postgres_user">5.1.1. Create a postgres user</h4>
+<div class="paragraph">
+<p>On Linux, use your distribution&#8217;s package, then create a postgres user named
+like your login:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">$ sudo su - postgres -c "createuser -s $USER"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Because the role login is the same as your unix login unix sockets can be use
+without a password.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_create_a_hexya_database">5.1.2. Create a hexya database</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">$ createdb hexya</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_synchronise_database_schema_with_models">5.2. Synchronise database schema with models</h3>
+<div class="paragraph">
+<p>This step will synchronise the database with the models defined.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">cd &lt;projectDir&gt;
+hexya updatedb -o</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Type <code>hexya help updatedb</code> for the list of available options:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">$ hexya help updatedb
+Synchronize the database schema with the models definitions.
+
+Usage:
+  hexya updatedb [flags]
+
+Global Flags:
+  -c, --config string        Alternate configuration file to read. Defaults to $HOME/.hexya/
+      --db-driver string     Database driver to use (default "postgres")
+      --db-host string       The database host to connect to. Values that start with / are for unix domain sockets directory (default "/var/run/postgresql")
+      --db-name string       Database name (default "hexya")
+      --db-password string   Database password. Leave empty when connecting through socket
+      --db-port string       Database port. Value is ignored if db-host is not set (default "5432")
+      --db-user string       Database user. Defaults to current user
+      --debug                Enable server debug mode for development
+  -l, --log-file string      File to which the log will be written
+  -L, --log-level string     Log level. Should be one of 'debug', 'info', 'warn', 'error' or 'crit' (default "info")
+  -o, --log-stdout           Enable stdout logging. Use for development or debugging.</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_running_hexya">6. Running Hexya</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Hexya is launched by the <code>hexya server</code> command from inside the project directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">cd &lt;projectDir&gt;
+hexya server -o</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Type <code>hexya help server</code> to get the list of available options:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="nowrap">$ hexya help server
+Start the Hexya server of the project in 'projectDir'.
+If projectDir is omitted, defaults to the current directory.
+
+Usage:
+  hexya server [projectDir] [flags]
+
+Flags:
+  -i, --interface string   Interface on which the server should listen. Empty string is all interfaces
+  -p, --port string        Port on which the server should listen. (default "8080")
+
+Global Flags:
+  -c, --config string        Alternate configuration file to read. Defaults to $HOME/.hexya/
+      --db-driver string     Database driver to use (default "postgres")
+      --db-host string       The database host to connect to. Values that start with / are for unix domain sockets directory (default "/var/run/postgresql")
+      --db-name string       Database name (default "hexya")
+      --db-password string   Database password. Leave empty when connecting through socket
+      --db-port string       Database port. Value is ignored if db-host is not set (default "5432")
+      --db-user string       Database user. Defaults to current user
+      --debug                Enable server debug mode for development
+  -l, --log-file string      File to which the log will be written
+  -L, --log-level string     Log level. Should be one of 'debug', 'info', 'warn', 'error' or 'crit' (default "info")
+  -o, --log-stdout           Enable stdout logging. Use for development or debugging.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can now access the Hexya server at <a href="http://localhost:8080" class="bare">http://localhost:8080</a></p>
+</div>
+</div>
+</div>
+
+  
+</ul>
+</main>
+  <footer> 
+    <footer id="footer">
+    <nav>
+      <ul>
+        <li><span>Hexya</span></li>
+        <li>
+          <a href="/blog/">Blog</a>
+        </li>
+          <li>
+          <a href="/docs/">Docs</a>
+        </li>
+        <li>
+          <i class="fa fa-github"></i>
+          <a href="https://github.com/hexya-erp">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+    <p>&copy; NDP Systèmes.</p>
+  </footer> 
+</footer>
+
+
+  <script src="/js/kube.js" type="text/javascript">
+  </script>
+  <script src="/js/kube.legenda.js" type="text/javascript">
+  </script>
+  <script src="/js/master.js" type="text/javascript">
+  </script>
+</body>
+
+</html>

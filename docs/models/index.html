@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta name="generator" content="Hugo 0.25.1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Models Reference </title>
+
+  
+  <meta name="description" content="The models API of Hexya"> 
+  
+  
+  
+  
+  
+
+    
+
+  <meta name="author" content="NDP Systèmes">
+
+
+  <meta property="og:title" content="Models Reference" />
+<meta property="og:description" content="The models API of Hexya" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/models/" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  
+  
+
+  <link rel="canonical" href="/docs/models/">  
+
+  <link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>
+
+  <link href="/css/font.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.legenda.css" rel="stylesheet" type="text/css">
+  <link href="/css/highlight.css" rel="stylesheet" type="text/css">
+  <link href="/css/master.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+ 
+
+  <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
+  </script>
+
+  <script type="text/javascript" src="/js/tocbot.min.js"></script>
+</head>
+
+
+<body class="page-kube">
+  <header> <div class="show-sm">
+    <div id="nav-toggle-box">
+      <div id="nav-toggle-brand">
+        <a href="/"><img src="/img/logo.png"/></a>
+      </div><a data-component="toggleme" data-target="#top" href="#" id="nav-toggle"><i class="kube-menu"></i></a>
+    </div>
+  </div>
+  <div class="hide-sm" id="top">
+    <div id="top-brand">
+      <a href="/" title="home"><img src="/img/logo.png"/></a>
+    </div>
+    <nav id="top-nav-main">
+      <ul>
+       
+       
+    <li><a href="/blog/" >Blog</a></li>
+    
+    <li><a href="/docs/" >Docs</a></li>
+    
+    <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
+    
+      </ul>
+    </nav>
+    <nav id="top-nav-extra">
+    </nav>
+  </div> </header>
+  <main>
+
+<div id="hero" class="wrap">
+  <h1>Models Reference</h1>
+    <p>The models API of Hexya</p>
+</div>
+<ul id="posts">
+
+ <div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a></li>
+<li><a href="#_recordsets">2. RecordSets</a>
+<ul class="sectlevel2">
+<li><a href="#_records_and_recordsets_types">2.1. Records and RecordSets types</a></li>
+<li><a href="#_using_recordsets">2.2. Using RecordSets</a></li>
+<li><a href="#_common_recordset_methods">2.3. Common RecordSet Methods</a></li>
+</ul>
+</li>
+<li><a href="#_environment">3. Environment</a>
+<ul class="sectlevel2">
+<li><a href="#_environment_methods">3.1. Environment Methods</a></li>
+<li><a href="#_context_methods">3.2. Context Methods</a></li>
+<li><a href="#_executing_in_a_new_environment">3.3. Executing in a new Environment</a></li>
+<li><a href="#_modifying_the_environment">3.4. Modifying the Environment</a></li>
+<li><a href="#_direct_database_access">3.5. Direct Database Access</a></li>
+</ul>
+</li>
+<li><a href="#_creating_extending_models">4. Creating / extending models</a>
+<ul class="sectlevel2">
+<li><a href="#_creating_a_new_model">4.1. Creating a new model</a></li>
+<li><a href="#_fields_declaration">4.2. Fields declaration</a></li>
+<li><a href="#_defining_methods">4.3. Defining methods</a></li>
+<li><a href="#_extending_a_model">4.4. Extending a model</a></li>
+</ul>
+</li>
+<li><a href="#_sequences">5. Sequences</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The models API allows modules to interact with Hexya&#8217;s models and records. This
+API is mainly an ORM but with additional features needed for business logic.
+Developers familiar with Odoo&#8217;s ORM should find many similarities with the
+latter.</p>
+</div>
+<div class="paragraph">
+<p>Special care has been put in Hexya&#8217;s model API to ease development. In
+particular:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Almost no reflection so that a standard Go IDE can propose relevant
+inspections and autocompletion.</p>
+</li>
+<li>
+<p>Type safety by preferring structs to maps and almost never use string
+references so that most mistakes can be spotted at compile time.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_recordsets">2. RecordSets</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_records_and_recordsets_types">2.1. Records and RecordSets types</h3>
+<div class="paragraph">
+<p>Each model has a definition instance that can be retrieved by using the
+<code><em>Model</em>()</code> function of the pool package. This model instance will be used
+to extend/modify the model definition.</p>
+</div>
+<div class="paragraph">
+<p>Interaction with models and records is performed through RecordSets, a sorted
+set of Records of the same model. Methods defined on a model are executed on a
+RecordSet.</p>
+</div>
+<div class="paragraph">
+<p>Each model has its own RecordSet Go type named by appending "Set" to the
+model&#8217;s name (e.g. the RecordSet type for the <code>Partner</code> model is called
+<code>PartnerSet</code>). All RecordSet types implement the <code>RecordSet</code> interface, but
+also a whole set of methods with defined names but which differ by the
+parameters or return values types. For example, all RecordSets implement a
+<code>Create</code> method but each take a Record struct of its model type and return its
+own type.</p>
+</div>
+<div class="paragraph">
+<p>Each model has also its own Record Go type which is named by appending "Data"
+to its model&#8217;s name (e.g. <code>PartnerData</code>). A Record type is simply a struct
+with all the fields of the model whether they are stored into the database or
+computed on the fly. Record types are used to read and write values to
+RecordSets.</p>
+</div>
+<div class="paragraph">
+<p>All Record and RecordSet types live in the <code>pool</code> package.</p>
+</div>
+<div class="paragraph">
+<p>A constant for the field name of each model of type <code>models.FieldName</code> exists
+in the <code>pool</code> package in the form <code>pool.<em>ModelName_FieldName</em></code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_using_recordsets">2.2. Using RecordSets</h3>
+<div class="paragraph">
+<p>RecordSets are self-querying. One should initialize an empty RecordSet call
+<code>search()</code> on it to populate it from the database. RecordSets implement lazy
+loading, so that data is actually queried only when needed.</p>
+</div>
+<div class="paragraph">
+<p>An empty RecordSet instance of a model <code>ModelName</code> can be instantiated by
+calling the <code>NewSet(env Environment)</code> of its model instance.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_common_recordset_methods">2.3. Common RecordSet Methods</h3>
+<div class="paragraph">
+<p>The following methods can be called RecordSet instances.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>A parameter or return value of type <code>RecordSetType</code> means the actual type of
+the RecordSet for this model (not an interface).</p>
+</div>
+<div class="paragraph">
+<p>A parameter or return value of type <code>RecordType</code> means the actual type of the
+Record struct for this model (e.g. <code>PartnerData</code>).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_data_access_methods">2.3.1. Data Access Methods</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>First() RecordType</strong></code></dt>
+<dd>
+<p>Returns a copy of the first Record of the RecordSet. It returns an empty
+RecordType if the RecordSet is empty.</p>
+</dd>
+<dt class="hdlist1"><code><strong>All() []RecordType</strong></code></dt>
+<dd>
+<p>Returns all Records of the RecordSet as a slice of RecordType. It returns an
+empty slice if the RecordSet is empty.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Read(fields []string) []FieldMap</strong></code></dt>
+<dd>
+<p>Returns all Records of the RecordSet as a slice of FieldMap. It returns an
+empty slice if the RecordSet is empty.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>RecordSets implement type safe getters and setters for all fields of the
+Record struct type.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong><em>FieldName</em>() <em>FieldType</em></strong></code></dt>
+<dd>
+<p>Getter for the field called <code><em>FieldName</em></code> of type <code><em>FieldType</em></code> of the
+<code>First()</code> Record of the RecordSet. Call to the getter will make a call to
+<code>Read()</code> first if the field is not loaded in the RecordSet&#8217;s cache.</p>
+<div class="paragraph">
+<p>It returns the Go zero value of the type if it is called on an empty RecordSet.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code><strong>Set<em>FieldName</em>(value <em>FieldType</em>)</strong></code></dt>
+<dd>
+<p>Setter for the field called <code><em>FieldName</em></code> of type <code><em>FieldType</em></code>. If the
+RecordSet has several Records, all of them will be updated. Each call to the
+setter makes an update query in the database.</p>
+<div class="paragraph">
+<p>It panics if it is called on an empty RecordSet.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code><em>FieldType</em></code> of a relation field (i.e. many2one, &#8230;&#8203;) is a
+RecordSet of the type of the related model.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_crud_methods">2.3.2. CRUD Methods</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(Model) Create(env Environment, data *RecordType) RecordSetType</strong></code></dt>
+<dd>
+<p>Insert a new record in the database with the given data and returns the
+inserted Record. Fields which are not given a value are set to the type&#8217;s zero
+value.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">customer := pool.Partner().Create(env, pool.PartnerData{
+    Name: "Jane Smith",
+    Email: "jsmith@example.com",
+    Position: "Sale's Manager",
+})
+fmt.Println(customer.Name())
+// Returns:
+// Jane Smith</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use the <code>Create</code> alias on a RecordSet instance. In this case,
+the actual values of the RecordSet are silently ignored.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">customer := pool.Partner().NewSet(env).Create(pool.PartnerData{
+    Name: "Jane Smith",
+    Email: "jsmith@example.com",
+    Position: "Sale's Manager",
+})
+fmt.Println(customer.Name())
+// Returns:
+// Jane Smith</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>Write(data *RecordType, fieldsToUnset &#8230;&#8203;models.FieldName) bool</strong></code></dt>
+<dd>
+<p>Update records in the database with the given data. Updates are made with a
+single SQL query. Fields in <code>fieldsToUnset</code> are first set to their Go zero
+value, then all non-zero values of data are updated.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">partner := pool.Partner().Search(env, pool.Partner().Where().Company().Name().Equals("NDP Systèmes"))
+partner.Write(pool.Partner{
+    Lang: "fr_FR",
+})</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+As said above, zero values in the <code>data</code> struct fields will <strong>NOT</strong> be
+updated. If you are not sure whether the values you pass in the <code>data</code> struct
+are zero values or not (e.g. when setting from a variable), include their
+<code>FieldName</code> in the <code>fieldsToUnset</code> to be sure the value will be correctly
+updated in case it is a zero value.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>Unlink() bool</strong></code></dt>
+<dd>
+<p>Deletes the database records that are linked with this RecordSet.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Load(fields &#8230;&#8203;models.FieldName) RecordSetType</strong></code></dt>
+<dd>
+<p>Populates this RecordSet with the data from the database matching the current
+search condition. If fields are given, only those fields are fetched and the
+other fields of the Records are set to their <code>go</code> zero value.</p>
+<div class="paragraph">
+<p>Calling Load on an empty RecordSet with an empty query will have no effect.
+To load a whole table, use <code>FetchAll()</code>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Call to <code>Load()</code> is optional. It will be automatically called (without
+fields arguments) on the first call to a getter or when calling <code>Records()</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Calling <code>Load()</code> with fields arguments before any other call allows to
+finely control which fields will be queried from the database since subsequent
+calls to a getter will not call <code>Read()</code> again if the value is already loaded.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">partners := pool.Partner().NewSet(env)
+partners.Search(pool.Partner().Where().Name().ILike("John")).Read(pool.Partner().Name, pool.Partner().Birthday)
+
+// The following lines will not load from the database, but use
+// the values cached in the RecordSet.
+for _, p := range partners.Records() {
+    fmt.Println(p.Name(), p.Birthday())
+}
+// Returns:
+// John Smith 1982-06-03
+// John Doo 1975-01-06</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>FetchAll() RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a RecordSet with all items of the table, regardless of the current
+RecordSet query. It is mainly meant to be used on an empty RecordSet.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_search_methods">2.3.3. Search Methods</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(Model) Search(env Environment, condition ConditionType) RecordSetType</strong></code></dt>
+<dd>
+<p>Search the database for matching records and return them as RecordSet.
+A new Condition instance can be created from a model instance.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">cond := pool.Users().Email().ILike("example.com").Or().Email().ILike("example.net")
+users := pool.Users().Search(env, cond)</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(RecordSet) Search(condition ConditionType) RecordSetType</strong></code></dt>
+<dd>
+<p>Apply the given search condition to the given RecordSet. This will narrow the
+RecordSet current filter.</p>
+</dd>
+</dl>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="ulist">
+<div class="title">Available methods on Condition type</div>
+<ul>
+<li>
+<p><code>And()</code></p>
+</li>
+<li>
+<p><code>AndNot()</code></p>
+</li>
+<li>
+<p><code>AndCond(condition ConditionType)</code></p>
+</li>
+<li>
+<p><code>Or()</code></p>
+</li>
+<li>
+<p><code>OrNot()</code></p>
+</li>
+<li>
+<p><code>OrCond(condition ConditionType)</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<div class="title">Available operator methods</div>
+<p>Depending on the field type, all or part of the following operator methods
+will be available:</p>
+</div>
+<div class="paragraph">
+<p><code>Equals</code>, <code>NotEquals</code>, <code>Greater</code>, <code>GreaterOrEqual</code>, <code>Lower</code>, <code>LowerOrEqual</code>,
+<code>Like</code>, <code>NotLike</code>,<code>Contains</code>, <code>NotContains</code>, <code>IContains</code>, <code>NotIContains</code>, <code>In</code>,
+<code>NotIn</code>, <code>ChildOf</code>, <code>IsNull</code>, <code>IsNotNull</code></p>
+</div>
+<div class="paragraph">
+<p>Each of these methods take a <code>value</code> parameter which is of the same Go type as
+the field on which it is applied.</p>
+</div>
+<div class="paragraph">
+<p>For each of them there are two derived methods suffixed respectively with
+<code>Func</code> and <code>Eval</code> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Func</code> suffixed methods (e.g. <code>EqualsFunc</code>) take as argument a function
+whose first argument is a RecordSet and that returns a value with the same Go
+type as the field on which it is called.</p>
+<div class="paragraph">
+<p>eg. <code>func(rs models.RecordSet) int64</code></p>
+</div>
+<div class="paragraph">
+<p>The function will be evaluated at the time of the query by passing it the
+RecordSet we are querying and the result will be substituted in the query.</p>
+</div>
+</li>
+<li>
+<p><code>Eval</code> suffixed methods (e.g. <code>EqualsEval</code>) take an expression string as
+argument. This expression will be passed as is to the client and evaluated
+client side.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The returned condition of an <code>Eval</code> suffixed method cannot be
+evaluated on server side. Thus <code>Eval</code> suffixed methods must NOT be used
+within the <code>Search()</code> method.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<div class="title">Searches on joined tables</div>
+<p>Searches can also be performed on joined model fields with the
+<code><em>FK</em>FilteredOn()</code> methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">cond := pool.Users().PartnerFilteredOn(pool.Partner().Function().ILike("manager"))
+users := pool.Users().Search(env, cond)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Conditions with <code><em>FK</em>FilteredOn()</code> can be nested:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">cond := pool.Users().PartnerFilteredOn(pool.Partner().CountryFilteredOn(pool.ResCountry().Code.Equals("F")))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>They can also be mixed with simple conditions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">cond := pool.Users().PartnerFilteredOn(pool.Partner().Function().ILike("manager")).And().Login().ILike("John")</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(Model) Browse(env Environment, ids []int64) RecordSetType</strong></code></dt>
+<dd>
+<p>Search the database and returns a RecordSet with the records having the given ids.</p>
+</dd>
+<dt class="hdlist1"><code><strong>(RecordSet) Browse(ids []int64) RecordSetType</strong></code></dt>
+<dd>
+<p>Narrows this RecordSet by selecting only those with the given ids.
+This function is only a shortcut for <code>Search</code> on a list on ids.</p>
+</dd>
+<dt class="hdlist1"><code><strong>SearchCount() int</strong></code></dt>
+<dd>
+<p>Return the number of records matching the search condition.</p>
+</dd>
+<dt class="hdlist1"><code><strong>NameSearch(params models.NameSearchParams) RecordSetType</strong></code></dt>
+<dd>
+<p>Search for records that have a display name matching the given
+<code>Name</code> pattern when compared with the given <code>Operator</code>, while also
+matching the optional search domain (<code>Args</code>).</p>
+<div class="paragraph">
+<p>This is used for example to provide suggestions based on a partial
+value for a relational field. Sometimes be seen as the inverse
+function of <code>NameGet</code> but it is not guaranteed to be.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="listingblock">
+<div class="title">NameSearchParams</div>
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">type NameSearchParams struct {
+	Args     Domain      `json:"args"`
+	Name     string      `json:"name"`
+	Operator string      `json:"operator"`
+	Limit    interface{} `json:"limit"`
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>FetchAll() RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a RecordSet with all the records in the database for the RecordSet&#8217;s
+model.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Limit(n int) RecordSetType</strong></code></dt>
+<dd>
+<p>Limit the search to <code>n</code> results.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Offset(n int) RecordSetType</strong></code></dt>
+<dd>
+<p>Offset the search by <code>n</code> results.</p>
+</dd>
+<dt class="hdlist1"><code><strong>OrderBy(exprs &#8230;&#8203;string) RecordSetType</strong></code></dt>
+<dd>
+<p>Order the results by the given expressions. Each expression is a string with a
+valid field name and optionally a direction.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">users := pool.Users().NewSet(env).FetchAll().OrderBy("Name ASC", "Email DESC", "ID")</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_recordset_operations">2.3.4. RecordSet Operations</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>Ids() []int64</strong></code></dt>
+<dd>
+<p>Return a slice with all the ids of this RecordSet. Performs a lazy loading of
+the RecordSet if it is not already loaded.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Env() *Environment</strong></code></dt>
+<dd>
+<p>Returns the RecordSet&#8217;s Environment.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Len() int</strong></code></dt>
+<dd>
+<p>Returns the number of records in this RecordSet.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Record(i int) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a new RecordSet with only the i<sup>th</sup> Record inside.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Records() []RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a slice of RecordSets, each with only one Record of the current
+RecordSet.</p>
+</dd>
+<dt class="hdlist1"><code><strong>EnsureOne()</strong></code></dt>
+<dd>
+<p>Check that this RecordSet contains only one Record. Panics if there are more
+than one Record or if there are no Records at all.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Filtered(fn func(RecordType) bool) RecordSetType</strong></code></dt>
+<dd>
+<p>Select the records in this RecordSet such that fn(Record) is true, and return
+them as a RecordSet. Filtered will use the data in cache if present.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Unless the RecordSet is already loaded in cache, it is generally faster
+and more efficient to use <code>Search()</code> on the RecordSet to return a filtered
+Set.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>Sorted(key func(Record) interface{}) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a sorted copy of this RecordSet. <code>key(record)</code> should return a
+sortable value on which the RecordSet will be sorted.</p>
+<div class="paragraph">
+<p>The Sort is not guaranteed to be stable.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code><strong>Union(other RecordSetType) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a new RecordSet that is the union of this RecordSet and the given
+<code>other</code> RecordSet. The result is guaranteed to be a set of unique records.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Subtract(other RecordSetType) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a RecordSet with the Records that are in this RecordSet but not in the
+given 'other' one. The result is guaranteed to be a set of unique records.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Equals(other RecordSetType) bool</strong></code></dt>
+<dd>
+<p>Returns true if this RecordSet is equal to the other RecordSet, that is they
+are from the same model and reference the same ids.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_environment">3. Environment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Environment stores various contextual data used by the ORM: the database
+transaction (for database queries), the current user (for access rights
+checking) and the current context (storing arbitrary metadata).</p>
+</div>
+<div class="paragraph">
+<p>The usual way to get the current Environment is to call <code>Env()</code> on a RecordSet.</p>
+</div>
+<div class="sect2">
+<h3 id="_environment_methods">3.1. Environment Methods</h3>
+<div class="paragraph">
+<p>The following methods are available on the Environment.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>Cr() *Cursor</strong></code></dt>
+<dd>
+<p>Returns the cursor to the database. The cursor is a wrapper around the current
+database transaction that can be used for <a href="#_direct_database_access">Direct Database Access</a>.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Uid() int64</strong></code></dt>
+<dd>
+<p>Returns the user ID of the current user.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Context() *types.Context()</strong></code></dt>
+<dd>
+<p>Returns the context of this Environment. The context is a
+read only map for storing arbitrary metadata. See <a href="#_context_methods">Context Methods</a>.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_context_methods">3.2. Context Methods</h3>
+<div class="paragraph">
+<p>The Context of an Environment is a read only map for storing arbitrary
+metadata. To modify the context, you need to modify the Environment
+(see <a href="#_modifying_the_environment">Modifying the Environment</a>).</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>HasKey(key string) bool</strong></code></dt>
+<dd>
+<p>Returns true if the Context has a value for the given key.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Get(key string) interface{}</strong></code></dt>
+<dd>
+<p>Returns the value of the Context for the given key. It returns nil if the
+Context does not contain this key.</p>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If you know the expected return type, you would probably use one of the
+following typed methods instead.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>GetString(key string) string</strong></code></dt>
+<dd>
+<p>Returns the value of the given key in this Context as a string.
+It panics if the value is not of type string</p>
+</dd>
+<dt class="hdlist1"><code><strong>GetInteger(key string) int64</strong></code></dt>
+<dd>
+<p>Returns the value of the given key in this Context as an int64.
+It panics if the value cannot be casted to int64</p>
+</dd>
+<dt class="hdlist1"><code><strong>GetFloat(key string) float64</strong></code></dt>
+<dd>
+<p>Returns the value of the given key in this Context as a float64.
+It panics if the value cannot be casted to float64</p>
+</dd>
+<dt class="hdlist1"><code><strong>GetStringSlice(key string) []string</strong></code></dt>
+<dd>
+<p>Returns the value of the given key in this Context as a []string.
+It panics if the value is not a slice or if any value is not a string</p>
+</dd>
+<dt class="hdlist1"><code><strong>GetIntegerSlice(key string) []int64</strong></code></dt>
+<dd>
+<p>Returns the value of the given key in this Context as a []int64.
+It panics if the value is not a slice or if any value cannot be casted to int64</p>
+</dd>
+<dt class="hdlist1"><code><strong>GetFloatSlice(key string) []float64</strong></code></dt>
+<dd>
+<p>Returns the value of the given key in this Context as a []float64.
+It panics if the value is not a slice or if any value cannot be casted to
+float64</p>
+</dd>
+<dt class="hdlist1"><code><strong>SetEntry(key string, value interface{}) *Context</strong></code></dt>
+<dd>
+<p>Returns a copy of this Context with the given key set to the given value.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>A pointer to a new empty Context can be created with <code>types.NewContext()</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_executing_in_a_new_environment">3.3. Executing in a new Environment</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>models.ExecuteInNewEnvironment(uid int64, fnct func(Environment)) error</strong></code></dt>
+<dd>
+<p>Executes the given <code>fnct</code> in a new Environment within a new database
+transaction and commit the transaction on success. In case <code>fnct</code> panics, the
+transaction is rolled back instead and the panic data is returned as error.</p>
+</dd>
+<dt class="hdlist1"><code><strong>models.SimulateInNewEnvironment(uid int64, fnct func(Environment)) error</strong></code></dt>
+<dd>
+<p>Executes the given <code>fnct</code> in a new Environment within a new database
+transaction but rolls back the transaction at the end. In case <code>fnct</code> panics,
+the panic data is returned as error.</p>
+<div class="paragraph">
+<p>This function is mainly useful for testing when database modification must be
+avoided.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_modifying_the_environment">3.4. Modifying the Environment</h3>
+<div class="paragraph">
+<p>The Environment is immutable. It can be customized with the following methods
+to be applied on the RecordSet.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>Sudo(uid &#8230;&#8203;int64) RecordSetType</strong></code></dt>
+<dd>
+<p>Call the next method as Super User. If uid is given, use the given user id
+instead.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">noReplyUser := pool.Users().Search(env, pool.Users().Email().Equals("no-reply@ndp-systemes.fr")).Limit(1)
+partners := pool.Partner().Search(env, pool.Partner().Name().ILike("John"))
+
+partners.Sudo(noReplyUser.ID()).SendConfirmationEmail()</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>WithEnv(env Environment) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a copy of the current RecordSet with the given Environment.</p>
+</dd>
+<dt class="hdlist1"><code><strong>WithContext(key string, value interface{}) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a copy of the current RecordSet with its context extended by the
+given key and value.</p>
+</dd>
+<dt class="hdlist1"><code><strong>WithNewContext(context types.Context) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a copy of the current RecordSet with its context replaced by the
+given one.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_direct_database_access">3.5. Direct Database Access</h3>
+<div class="paragraph">
+<p>Direct database access is possible through the Cursor of the Environment. The
+Cursor provides the following methods for accessing the database. All methods
+operate inside the current transaction.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>Execute(query string, args &#8230;&#8203;interface{}) sql.Result</strong></code></dt>
+<dd>
+<p>Execute a query without returning any rows. It panics in case of error.
+The args are for any placeholder parameters in the query. Whatever the database
+backend used, the placeholder is <code>?</code>.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Get(dest interface{}, query string, args &#8230;&#8203;interface{})</strong></code></dt>
+<dd>
+<p>Queries a row into the database and maps the result into dest.
+The query must return only one row. It panics on errors.</p>
+</dd>
+<dt class="hdlist1"><code><strong>Select(dest interface{}, query string, args &#8230;&#8203;interface{})</strong></code></dt>
+<dd>
+<p>Queries multiple rows and map the result into dest which must be a slice.
+Select panics on errors.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">type dbStruct struct {
+    Name: string
+    Age:  int
+}
+var single dbStruct
+var data []dbStruct
+
+rc.env.Cr().Get(&amp;single, "SELECT name, age FROM partner WHERE id = ?", 12)
+rc.env.Cr().Select(&amp;data, "SELECT name, age FROM partner WHERE age &gt; ?", 25)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Direct database access should be avoided whenever possible because it
+by-passes all security restrictions. Use the RecordSet API instead.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_extending_models">4. Creating / extending models</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When developing a Hexya module, you can create your own models and/or
+extend in place existing models created by other modules.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">resPartnerModel := pool.Partner()
+resUsersModel := pool.Users()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All models, fields and methods definitions MUST be made in the <code>init()</code> of
+the main package or of a package called by the module&#8217;s main package.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>After creating or modifying a model, you must run <code>hexya generate</code> to
+generate the types in the <code>pool</code> package before starting the Hexya server.</p>
+</div>
+<div class="paragraph">
+<p>Running <code>hexya generate</code> will also allow you to obtain code completion and
+inspections on the newly created types.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_creating_a_new_model">4.1. Creating a new model</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Model) DeclareModel() *Model</strong></code></dt>
+<dd>
+<p>Declare a new model. This function should be called on a 'not-yet-created'
+instance of the model we want to create. It is actually a placeholder, the code
+generation will make the actual Model creation.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">// Create a new model called 'User'
+pool.User().DeclareModel()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The created model will have a single <code>ID</code> field which is the model&#8217;s primary
+key. It returns an pointer to the created model instance.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>DeclareMixinModel() *Model</strong></code></dt>
+<dd>
+<p>Declare a new mixin model. Mixin model are not meant to be accessible like a
+ regular model but are meant to be mixed in other models.</p>
+<div class="paragraph">
+<p>See <a href="#_model_mix_in">Model Mix In</a></p>
+</div>
+</dd>
+<dt class="hdlist1"><code><strong>DeclareTransientModel() *Model</strong></code></dt>
+<dd>
+<p>Creates a new transient model with the given name. Transient model instances
+have a limited life time and are automatically removed from database. They
+are mainly used for wizards.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_fields_declaration">4.2. Fields declaration</h3>
+<div class="paragraph">
+<p>Models fields are added by specific methods that apply to a model instance as
+in the example below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">course := pool.Course().DeclareModel()
+course.AddCharField("Name", models.StringFieldParams{String: "Name", Help: "This is the name of the course", Required: true})
+course.AddDateField("Date", models.SimpleFieldParams{String: "Date of the Course"}
+course.AddMany2OneField("Teacher", models.ForeignKeyParams{RelationModel: "Partner", String: "Teacher"}
+course.AddDateTimeField("LimitDate", models.SimpleFieldParams{Required: true}
+course.AddMany2ManyField("Attendees", models.Many2manyFieldParams{RelationModel: "Partner", String: "Attendees"}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Available model methods for creating fields are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>AddBinaryField(name string, params SimpleFieldParams)</strong></code></dt>
+<dd>
+<p>A binary field holds arbitrary data that is meant to be delivered to the
+client as a file. Binary fields are mapped to <code>string</code> go type.</p>
+</dd>
+<dt class="hdlist1"><code><strong>AddBooleanField(name string, params SimpleFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>AddCharField(name string, params StringFieldParams)</strong></code></dt>
+<dd>
+<p>A Char field is a string field that is meant to be displayed as a single line
+in the client. Char fields are mapped to go strings.</p>
+</dd>
+<dt class="hdlist1"><code><strong>AddDateField(name string, params SimpleFieldParams)</strong></code></dt>
+<dd>
+<p>Date fields are mapped to models.Date structs.</p>
+</dd>
+<dt class="hdlist1"><code><strong>AddDateTimeField(name string, params SimpleFieldParams)</strong></code></dt>
+<dd>
+<p>DateTime fields are mapped to models.Date structs.</p>
+</dd>
+<dt class="hdlist1"><code><strong>AddFloatField(name string, params FloatFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>AddHTMLField(name string, params StringFieldParams)</strong></code></dt>
+<dd>
+<p>HTML fields are formatted with their HTML content by the client.</p>
+</dd>
+<dt class="hdlist1"><code><strong>AddIntegerField(name string, params SimpleFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>AddMany2ManyField(name string, params Many2ManyFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>AddMany2OneField(name string, params ForeignKeyFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>AddOne2ManyField(name string, params ReverseFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>AddOne2OneField(name string, params ForeignKeyFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>AddRev2OneField(name string, params ReverseFieldParams)</strong></code></dt>
+<dd>
+<p>Rev2One fields are the reverse relation of one2one in the model that does not
+have an FK.</p>
+</dd>
+<dt class="hdlist1"><code><strong>AddSelectionField(name string, params SelectionFieldParams)</strong></code></dt>
+<dd>
+<p>A selection field can have as values only a set of predefined strings.</p>
+</dd>
+<dt class="hdlist1"><code><strong>AddTextField(name string, params StringFieldParams)</strong></code></dt>
+<dd>
+<p>A Text field is a string field that is meant to be displayed on multiple lines
+in the client. Text fields are mapped to go strings.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>As in the example below:</p>
+</div>
+<div class="sect3">
+<h4 id="_overriding_fields">4.2.1. Overriding fields</h4>
+<div class="paragraph">
+<p>Fields attributes can be overridden by using one of the following methods that
+apply on a Field instance.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(f *Field) SetString(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetHelp(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetGroupOperator(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetRelated(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetCompute(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetDepends(value []string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetStored(value bool) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetRequired(value bool) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetUnique(value bool) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetIndex(value bool) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetNoCopy(value bool) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetTranslate(value bool) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetDefault(value func(Environment, FieldMap) interface{}) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetOnchange(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetConstraint(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetInverse(value string) *Field</strong></code></dt>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">course := pool.Course().Fields().Name().SetString("MyNewName").SetHelp("This is the new name of the course")</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_field_parameters">4.2.2. Field parameters</h4>
+<div class="paragraph">
+<p>Field parameters are set in the params struct that is passed to the field&#8217;s
+creation/override method. Params structs only differ by the options available
+to specific types. Below is the list and explanation for each parameter.</p>
+</div>
+<div class="sect4">
+<h5 id="_field_type_parameters">Field type parameters</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>ReverseFK</code> string</dt>
+<dd>
+<p>Set the foreign key field name in the related model for <code>one2many</code> and
+<code>rev2one</code> relations.</p>
+</dd>
+<dt class="hdlist1"><code>RelationModel</code> string</dt>
+<dd>
+<p>Set the other model for a relation field.</p>
+</dd>
+<dt class="hdlist1"><code>M2MLinkModelName</code> string</dt>
+<dd>
+<p>Set the name of the intermediate model for a <code>many2many</code> relation. This
+parameter is mandatory only if there are several <code>many2many</code> relations
+between the two models.</p>
+</dd>
+<dt class="hdlist1"><code>M2MOurField</code> string</dt>
+<dd>
+<p>In a <code>many2many</code> relation, set the name of the field of the intermediate model
+that points to this (our) model. This parameter is mandatory only if the
+<code>many2many</code> relation is pointing to the same model.</p>
+</dd>
+<dt class="hdlist1"><code>M2MTheirField</code> string</dt>
+<dd>
+<p>In a <code>many2many</code> relation, set the name of the field of the intermediate model
+that points to the other (their) model, i.e. the model defined by
+<code>RelationModel</code>. This parameter is mandatory only if the <code>many2many</code> relation
+is pointing to the same model.</p>
+</dd>
+<dt class="hdlist1"><code>OnDelete</code> OnDeleteAction</dt>
+<dd>
+<p>Defines what to do with this record if the target record is deleted. Possible
+values are <code>models.SetNull</code> (default), <code>models.Restrict</code> and <code>models.Cascade</code>.</p>
+</dd>
+<dt class="hdlist1"><code>Selection</code> map[string]string</dt>
+<dd>
+<p>Map of predefined allowed values for a Selection field. The map keys are the
+actual values, and the map values are the labels to display for each value.</p>
+</dd>
+<dt class="hdlist1"><code>Size</code> int</dt>
+<dd>
+<p>Maximum size for the <code>string</code> type in database.</p>
+</dd>
+<dt class="hdlist1"><code>Digits</code> types.Digit</dt>
+<dd>
+<p>Sets the decimal precision to a Go <code>float</code> type to store as a decimal type in
+database. Digit objects have a <code>Scale</code> field that defines the total number of
+digits and a <code>Precision</code> field that defines the number of digits after the
+decimal point.</p>
+</dd>
+<dt class="hdlist1"><code>JSON</code> string</dt>
+<dd>
+<p>Field&#8217;s JSON value that will be used for the column name in the database and
+for json serialization to the client.</p>
+</dd>
+<dt class="hdlist1"><code>Translate</code> bool</dt>
+<dd>
+<p>Set to true if the value of this field must be translated in the user
+interface. This can be the case for product names or descriptions for
+instance.</p>
+</dd>
+<dt class="hdlist1"><code>GoType</code> interface{}</dt>
+<dd>
+<p>Specifies the go type to which the field should be mapped. <code>GoType</code> should be
+set to a pointer to such a type&#8217;s value.</p>
+<div class="paragraph">
+<p>If the given type is not a standard type then it must implement <code>driver.Valuer</code>
+and <code>sql.Scanner</code> interfaces.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">session := pool.Session().DeclareModel()
+session.AddIntegerField("Room No", models.SimpleFieldParams{GoType: new(int16)})</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_field_s_metadata_parameters">Field&#8217;s metadata parameters</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>String</code> string</dt>
+<dd>
+<p>Field&#8217;s label inside the application.</p>
+</dd>
+<dt class="hdlist1"><code>Help</code> string</dt>
+<dd>
+<p>Field&#8217;s help typically displayed as tooltip.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_field_s_modifiers_parameters">Field&#8217;s modifiers parameters</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Required</code> bool</dt>
+<dd>
+<p>Defines the field as required (i.e. not null).</p>
+</dd>
+<dt class="hdlist1"><code>Unique</code> bool</dt>
+<dd>
+<p>Defines the field as unique in the database table.</p>
+</dd>
+<dt class="hdlist1"><code>Index</code> bool</dt>
+<dd>
+<p>Creates an index on this field in the database.</p>
+</dd>
+<dt class="hdlist1"><code>NoCopy</code> bool</dt>
+<dd>
+<p>Fields marked with this tag will not be copied when a record is duplicated.</p>
+</dd>
+<dt class="hdlist1"><code>Default</code> func(Environment, FieldMap) interface{}</dt>
+<dd>
+<p>Function that will be called upon record creation to set unspecified field
+values. The given FieldMap holds the values passed to the Create function.</p>
+<div class="paragraph">
+<p>This function is also called by clients to set a default value in the user
+interface before calling Create. In this case, the FieldMap will be empty.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>OnChange</code> string</dt>
+<dd>
+<p>The name of a method to call when this field is changed in the interface.
+The value must be the name of a method on this RecordSet with the following
+signature, which returns a Record with the values to update and a slice of
+field names to unset.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType) (*RecordType, []models.FieldNamer)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+OnChange function is called only when the modification is done in the
+interface, not by code.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+OnChange methods are executed in an isolated environment that is
+rolled back after execution. You should therefore not try to create or
+write any RecordSet in these methods, or they will fail.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Constraint</code> string</dt>
+<dd>
+<p>The name of a method to call to validate the value of this field in a record.
+The value must be the name of a method on this RecordSet with the following
+signature:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The given method must panic if the given RecordSet is not valid.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Several fields can set their <code>Constraint:</code> to the same method. In this
+case the method will only be called once, even if both fields are modified.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>GroupOperator</code> string</dt>
+<dd>
+<p>A valid database function name that will be used on this field when aggregating
+the model. It defaults to <code>sum</code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_computed_fields_parameters">Computed fields parameters</h5>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Compute</code> string</dt>
+<dd>
+<p>Declares this field as a computed field. The value must be the name of a
+method on this RecordSet with the following signature, which returns a
+Record with the values to update and a slice of field names to unset.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType) (*RecordType, []models.FieldNamer)</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Inverse</code> string</dt>
+<dd>
+<p>Declares a inverse method for a computed field. This method will be called when
+the field is set. The given method must have the following signature:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType, models.FieldMapper)</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Related</code> string</dt>
+<dd>
+<p>Declares this field as a related field, i.e. a field that is automatically
+synchronized with another field. The value must be a path string to the
+related field starting from the current RecordSet
+(e.g. <code>"Customer.Country.Name"</code>).</p>
+</dd>
+<dt class="hdlist1"><code>Stored</code> bool</dt>
+<dd>
+<p>For a computed field, if true then the field will be stored into the database.
+Recomputation will be triggered by the data in the <code>Depends</code> parameter.</p>
+<div class="paragraph">
+<p>Storing a computed field allows to make queries on its value and speeds up
+reading of the RecordSet. However, the updates can be slowed down,
+especially when multiple triggers are fired at the same time.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>Depends</code> string</dt>
+<dd>
+<p>Defines the fields on which to trigger recomputation of this field. This is
+relevant only for computed fields with the <code>Stored</code> parameter set to true.</p>
+<div class="paragraph">
+<p>Value must be a comma separated list of paths to fields used in the
+computation of this field. Paths may go through <code>one2many</code> or <code>many2many</code>
+fields. In this case all the fields that would match will be used as triggers.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>Embed</code> bool</dt>
+<dd>
+<p>Embed the model of the related field into this model. This field must be a
+<code>many2one</code> field.</p>
+<div class="paragraph">
+<p>When embedded, all the fields of the RecordSet pointed by this field
+will be automatically added as <code>Related</code> fields, so that they can be accessed
+directly from this RecordSet.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Only the fields of the embedded model will be accessible from this
+model, not its methods.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_reserved_field_names">4.2.3. Reserved field names</h4>
+<div class="paragraph">
+<p>Fields that are given the following names will have special behaviours
+described below.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Name</code> CharField</dt>
+<dd>
+<p>The Record&#8217;s name. It will be used by default in user interfaces for display
+when this Record is referred to (for instance as an FK of another model).</p>
+<div class="paragraph">
+<p>This behaviour can be changed by overriding the <code>NameGet</code> method of the model.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>Parent</code> Many2OneField</dt>
+<dd>
+<p>Used in recursive models for the foreign key to this Record&#8217;s parent Record of
+the same model.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_setting_constraints_on_fields">4.2.4. Setting constraints on fields</h4>
+<div class="sect4">
+<h5 id="_sql_constraints">SQL constraints</h5>
+<div class="paragraph">
+<p>SQL Constraints are managed by the following Model methods that must be run
+before bootstrap.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Model) AddSQLConstraint(name, sql, errorString string)</strong></code></dt>
+<dd>
+<p>Adds an SQL constraint to this model. <code>name</code> is an arbitrary name to reference
+this constraint. It will be appended by the table name in the database, so
+there is only need to ensure that it is unique in this model. <code>sql</code> is
+constraint definition to pass to the database. <code>errorString</code> is the text to
+display to the user when the constraint is violated</p>
+</dd>
+<dt class="hdlist1"><code><strong>(*Model) RemoveSQLConstraint(name)</strong></code></dt>
+<dd>
+<p>Removes the constraint previously created with the given name. This is
+intended for use in a module that want to override the behaviour of a
+previously installed other module.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_defining_methods">4.3. Defining methods</h3>
+<div class="paragraph">
+<p>Models' methods are defined in a module and can be overridden by any other
+module, with the ability to call the original method through <code>Super()</code>. This
+way, methods can be overridden several times by different modules to
+iteratively add new features.</p>
+</div>
+<div class="paragraph">
+<p>Each override of a method is declared by a so-called "layer function" with the
+actual implementation. Layer functions must meet the following constraints:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Its first argument is the method&#8217;s receiver. It must be of the
+<code><em>RecordSetType</em></code> of the model.</p>
+</li>
+<li>
+<p>It must panic when an error is encountered to force transaction rollback
+(or solve the error directly if possible).</p>
+</li>
+</ul>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Method) DeclareMethod(doc string, layerFunction interface{}) *Method</strong></code></dt>
+<dd>
+<p>Declares a new method on this model and apply the given <code>layerFunction</code> as
+first "layer function". <code>doc</code> is the documentation of the method.</p>
+<div class="paragraph">
+<p>This function should be called on a 'not-yet-created' instance of the method
+we want to create. It is actually a placeholder, the code generation will make
+the actual Method creation.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">// Create a new method called 'UpdateBirthday' on the 'Partner' model
+pool.Partner().Methods().UpdateBirthday().DeclareMethod(
+    `PartnerUpdateBirthday updates this partner birthday.`,
+    func (rs PartnerSet, birthday time.Time) {
+        rs.SetBirthday(Date(birthDay))
+    })</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Method) Extend(doc string, layerFunction interface{}) *Method</strong></code></dt>
+<dd>
+<p>Extends the method with the given <code>layerFunction</code>.
+If <code>doc</code> is not the empty string, it is appended to the documentation of the
+method.</p>
+<div class="paragraph">
+<p>The layer function should call itself on the RecordSet <code>Super()</code> object to
+call the previous layer.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Partner().Methods().UpdateBirthday().Extend(
+    `Extended in myModule to compute age at the same time.`,
+    func(rs PartnerSet, birthday time.Time) {
+        rs.Super().UpdateBirthday(birthday)
+        rs.SetAge(Time.Now().Year() - birthday.Year())
+    })</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code>functionLayer</code> passed to <code>Extend</code> must have the same signature
+as that of the first layer passed to <code>DeclareMethod</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(RecordSetType) Super() RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a RecordSet with a modified callstack so that call to the current
+method will execute the next method layer.</p>
+<div class="paragraph">
+<p>Calls to a different method than the current method will call its next layer
+only if the current method has been called from a layer of the other method.
+Otherwise, it will be the same as calling the other method directly.</p>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extending_a_model">4.4. Extending a model</h3>
+<div class="paragraph">
+<p>Models can be extended by 3 different ways:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Extension</dt>
+<dd>
+<p>Directly add fields and methods to existing models.</p>
+</dd>
+<dt class="hdlist1">Mix In</dt>
+<dd>
+<p>Add all fields and methods from a model to another model.</p>
+</dd>
+<dt class="hdlist1">Embedding</dt>
+<dd>
+<p>Allow direct access to all fields of another model. Embedding only applies to
+fields, not methods.</p>
+</dd>
+</dl>
+</div>
+<div class="sect3">
+<h4 id="_model_extension">4.4.1. Model Extension</h4>
+<div class="paragraph">
+<p>See <a href="#_fields_declaration">Fields declaration</a> for how to add a field in a model. Fields can be
+added to a model in any module, not only the module in which the model is
+created.</p>
+</div>
+<div class="paragraph">
+<p>See also <a href="#_defining_methods">Defining methods</a> to see how to add or override methods in a model.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_mix_in">4.4.2. Model Mix In</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code><strong>(*Model) InheritModel(mixInModel *Model)</strong></code></dt>
+<dd>
+<p>Extend this model by importing all fields and methods of <code>mixInModel</code>.
+<code>mixInModel</code> must have been created by <code>DeclareMixinModel()</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If a field name conflicts with an existing field name in the model, then:</p>
+</div>
+<div class="ulist">
+<div class="title">Field overriding rules</div>
+<ul>
+<li>
+<p>Fields defined in the target model override fields defined in any mixin model</p>
+</li>
+<li>
+<p>Fields defined in a mixin override fields defined in another mixin of same
+priority (i.e. general or specific) imported before.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If a method name conflicts with an existing method name in the model, then:</p>
+</div>
+<div class="ulist">
+<div class="title">Method overriding rules</div>
+<ul>
+<li>
+<p>Methods defined in the target model extend methods of the mixin model.</p>
+</li>
+<li>
+<p>Methods defined in a mixin extend methods defined of another mixin of same
+priority (i.e. general or specific) imported before.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Use <code>Super()</code> in extending implementation to access the implementation of
+the lower level mixins.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+When mixing in a model, the database columns are copied into the table of
+the target model, resulting in an independent model. However, all extensions of
+the mixin model are taken into account and apply to all the target models, even
+if the extension has been defined after the mixing in.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_embedding">4.4.3. Model Embedding</h4>
+<div class="paragraph">
+<p>Model embedding allows a model to read fields of another model just as if they
+were normal fields of the model.</p>
+</div>
+<div class="paragraph">
+<p>To embed a model, define a <code>many2one</code> field pointing at the model to embed and
+add the <code>embed</code> tag to it.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Embedding does not allow direct access to the embedded model methods.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sequences">5. Sequences</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can use the ORM to create and use custom sequences.</p>
+</div>
+<div class="paragraph">
+<p>You can create a new database sequence with the <code>models.NewSequence()</code>
+function. You can then use the <code>NextValue()</code> method to get the next value.</p>
+</div>
+<div class="paragraph">
+<p>Use <code>models.MustGetSequence()</code> to retrieve a sequence.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Since sequences are not rollbacked, several calls to <code>NextValue()</code> do
+not necessarily give two following numbers.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">seq := models.NewSequence("MySequence")
+
+seq2 := models.MustGetSequence("MySequence")
+for i := 0; i &lt; 10; i++ {
+    val := seq2.NextValue()
+    fmt.Println("Sequence: ", i, val)
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+
+  
+</ul>
+</main>
+  <footer> 
+    <footer id="footer">
+    <nav>
+      <ul>
+        <li><span>Hexya</span></li>
+        <li>
+          <a href="/blog/">Blog</a>
+        </li>
+          <li>
+          <a href="/docs/">Docs</a>
+        </li>
+        <li>
+          <i class="fa fa-github"></i>
+          <a href="https://github.com/hexya-erp">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+    <p>&copy; NDP Systèmes.</p>
+  </footer> 
+</footer>
+
+
+  <script src="/js/kube.js" type="text/javascript">
+  </script>
+  <script src="/js/kube.legenda.js" type="text/javascript">
+  </script>
+  <script src="/js/master.js" type="text/javascript">
+  </script>
+</body>
+
+</html>

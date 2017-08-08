@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta name="generator" content="Hugo 0.25.1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Internationalization Reference </title>
+
+  
+  <meta name="description" content="How to localize your module"> 
+  
+  
+  
+  
+  
+
+    
+
+  <meta name="author" content="NDP Systèmes">
+
+
+  <meta property="og:title" content="Internationalization Reference" />
+<meta property="og:description" content="How to localize your module" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/docs/i18n/" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  
+  
+
+  <link rel="canonical" href="/docs/i18n/">  
+
+  <link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>
+
+  <link href="/css/font.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.legenda.css" rel="stylesheet" type="text/css">
+  <link href="/css/highlight.css" rel="stylesheet" type="text/css">
+  <link href="/css/master.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+ 
+
+  <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
+  </script>
+
+  <script type="text/javascript" src="/js/tocbot.min.js"></script>
+</head>
+
+
+<body class="page-kube">
+  <header> <div class="show-sm">
+    <div id="nav-toggle-box">
+      <div id="nav-toggle-brand">
+        <a href="/"><img src="/img/logo.png"/></a>
+      </div><a data-component="toggleme" data-target="#top" href="#" id="nav-toggle"><i class="kube-menu"></i></a>
+    </div>
+  </div>
+  <div class="hide-sm" id="top">
+    <div id="top-brand">
+      <a href="/" title="home"><img src="/img/logo.png"/></a>
+    </div>
+    <nav id="top-nav-main">
+      <ul>
+       
+       
+    <li><a href="/blog/" >Blog</a></li>
+    
+    <li><a href="/docs/" >Docs</a></li>
+    
+    <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
+    
+      </ul>
+    </nav>
+    <nav id="top-nav-extra">
+    </nav>
+  </div> </header>
+  <main>
+
+<div id="hero" class="wrap">
+  <h1>Internationalization Reference</h1>
+    <p>How to localize your module</p>
+</div>
+<ul id="posts">
+
+ <div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_introduction">1. Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#_available_languages">1.1. Available languages</a></li>
+</ul>
+</li>
+<li><a href="#_application_translation">2. Application translation</a>
+<ul class="sectlevel2">
+<li><a href="#_define_what_needs_to_be_translated">2.1. Define what needs to be translated</a></li>
+<li><a href="#_extract_the_po_files">2.2. Extract the PO files</a></li>
+<li><a href="#_translate_the_strings">2.3. Translate the strings</a></li>
+<li><a href="#_load_back_the_translation">2.4. Load back the translation</a></li>
+</ul>
+</li>
+<li><a href="#_displaying_according_to_user_s_locale">3. Displaying according to user&#8217;s locale</a></li>
+<li><a href="#_translating_record_data">4. Translating record data</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="_introduction">1. Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Internationalization in Hexya groups several aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Translating the application so that the user sees the user interface in his own language.</p>
+</li>
+<li>
+<p>Displaying numbers, dates, currency amounts, etc. according to the user&#8217;s locale</p>
+</li>
+<li>
+<p>Translating record data</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_available_languages">1.1. Available languages</h3>
+<div class="paragraph">
+<p>Available languages in the application are defined at startup by passing the <code>--languages</code> (or <code>-l</code>) flag with a comma separated list of language codes:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code>$ hexya server --languages fr,es,it,de</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If a translation does not exist in the source code of one or several modules, then the original string in the default language is displayed (typically English).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_application_translation">2. Application translation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section covers translating the application, that all the text that will appear in the user interface.</p>
+</div>
+<div class="paragraph">
+<p>The translation process is made of 4 stages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Define what needs to be translated</p>
+</li>
+<li>
+<p>Extract the PO files with the translation strings</p>
+</li>
+<li>
+<p>Translate the strings</p>
+</li>
+<li>
+<p>Load back the translation</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_define_what_needs_to_be_translated">2.1. Define what needs to be translated</h3>
+<div class="paragraph">
+<p>Strings to be translated may appear in different contexts:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Strings in resources</dt>
+<dd>
+<p>This includes strings in views, menus and actions.
+No special action is needed here, Hexya knows by itself which strings are to be extracted from their XML definition.</p>
+</dd>
+<dt class="hdlist1">Strings in model definition</dt>
+<dd>
+<p>This includes model fields description and help strings, as well as Selection fields labels.
+These are also extracted automatically without any special declaration.</p>
+</dd>
+<dt class="hdlist1">Strings inside Go Code</dt>
+<dd>
+<p>This includes strings that can be displayed to the client or to the log from inside a Go method.
+To translate such strings, they need to be passed to the <code>T()</code> method of a RecordSet or a model:</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.OpenAcademyCourse().Methods().HelloWorld().DeclareMethod(
+    `HelloWorld returns a localized "Hello World" message`,
+    func(rs pool.PartnerSet) string {
+        return rs.T("Hello World")
+    })</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Strings inside client code</dt>
+<dd>
+<p>This includes strings hardcoded into the client.
+Since Hexya is client-agnostic, each client should register an extract function for their strings.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extract_the_po_files">2.2. Extract the PO files</h3>
+<div class="paragraph">
+<p>A PO file with all the strings to be translated can be created by the hexya command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code>$ hexya i18n update path/to/a/module -l fr,it,de</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above command will create 3 files <code>fr.po</code>, <code>it.po</code> and <code>de.po</code> in the <code>i18n/</code> subdirectory of the module at <code>path/to/a/module</code>.
+The <code>i18n/</code> subdirectory must exist prior to running <code>hexya i18n update</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If there is already a <code>XX.po</code> file in the <code>i18n/</code> directory, its translated strings will be kept in the newly generated PO file.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_translate_the_strings">2.3. Translate the strings</h3>
+<div class="paragraph">
+<p>PO files are a common translation file format and can be edited by many dedicated tools.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_load_back_the_translation">2.4. Load back the translation</h3>
+<div class="paragraph">
+<p>No special step is necessary here other than a server restart with the newly translated language(s) set with the <code>--languages</code> flag.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_displaying_according_to_user_s_locale">3. Displaying according to user&#8217;s locale</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Not implemented yet</strong></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_translating_record_data">4. Translating record data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Not implemented yet</strong></p>
+</div>
+</div>
+</div>
+
+  
+</ul>
+</main>
+  <footer> 
+    <footer id="footer">
+    <nav>
+      <ul>
+        <li><span>Hexya</span></li>
+        <li>
+          <a href="/blog/">Blog</a>
+        </li>
+          <li>
+          <a href="/docs/">Docs</a>
+        </li>
+        <li>
+          <i class="fa fa-github"></i>
+          <a href="https://github.com/hexya-erp">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+    <p>&copy; NDP Systèmes.</p>
+  </footer> 
+</footer>
+
+
+  <script src="/js/kube.js" type="text/javascript">
+  </script>
+  <script src="/js/kube.legenda.js" type="text/javascript">
+  </script>
+  <script src="/js/master.js" type="text/javascript">
+  </script>
+</body>
+
+</html>
