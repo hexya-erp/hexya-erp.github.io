@@ -11,6 +11,11 @@
   </url>
   
   <url>
+    <loc>/blog/welcome/</loc>
+    <lastmod>2017-08-15T10:00:00+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>/docs/tutorial/</loc>
   </url>
   
@@ -36,6 +41,12 @@
   </url>
   
   <url>
+    <loc>/blog/</loc>
+    <lastmod>2017-08-15T10:00:00+02:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>/categories/</loc>
     <priority>0</priority>
   </url>
@@ -51,7 +62,7 @@
   
   <url>
     <loc>/</loc>
-    <lastmod>2017-06-15T21:58:26+02:00</lastmod>
+    <lastmod>2017-08-15T10:00:00+02:00</lastmod>
     <priority>0</priority>
   </url>
   

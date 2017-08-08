@@ -62,10 +62,9 @@
   <link href="/css/highlight.css" rel="stylesheet" type="text/css">
   <link href="/css/master.css" rel="stylesheet" type="text/css">
   <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 
- 
+ <link href="/css/custom.css" rel="stylesheet" type="text/css">
 
   <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
   </script>
@@ -90,11 +89,11 @@
       <ul>
        
        
-    <li><a href="/blog/" >Blog</a></li>
-    
     <li><a href="/docs/"  class="active">Docs</a></li>
     
     <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="/blog/" >Blog</a></li>
     
     <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
     
@@ -104,68 +103,54 @@
     </nav>
   </div> </header>
   <main>
+<div id="main">
+  <div id="hero">
+    <h1>Documentation</h1>
+  </div>
+  <div id="components">
+    <div class="row gutters">
+      
+      <div class="col col-4 item">
+        <h4><a href="/docs/design/">Design</a></h4>
+        <p>The design choices of Hexya</p>
+      </div>
+      
+      <div class="col col-4 item">
+        <h4><a href="/docs/install/">Installation</a></h4>
+        <p>How to build and install Hexya</p>
+      </div>
+      
+      <div class="col col-4 item">
+        <h4><a href="/docs/tutorial/">Module Development Tutorial</a></h4>
+        <p>How to develop a custom module with Hexya</p>
+      </div>
+      
+      <div class="col col-4 item">
+        <h4><a href="/docs/models/">Models Reference</a></h4>
+        <p>The models API of Hexya</p>
+      </div>
+      
+      <div class="col col-4 item">
+        <h4><a href="/docs/security/">Security Reference</a></h4>
+        <p>Security mechanisms in Hexya</p>
+      </div>
+      
+      <div class="col col-4 item">
+        <h4><a href="/docs/i18n/">Internationalization Reference</a></h4>
+        <p>How to localize your module</p>
+      </div>
+      
+      <div class="col col-4 item">
+        <h4><a href="/docs/data/">Data Reference</a></h4>
+        <p>Automatically loading data in custom modules</p>
+      </div>
+      
 
-<div id="hero" class="wrap">
-  <h1>Hexya's Blog</h1>
-    <p></p>
+    </div>
+  </div>
 </div>
-<ul id="posts">
-
-  <div itemscope itemtype="http://schema.org/CreativeWork">
-    <h2 class="title">
-        <a href="/docs/design/" itemprop="headline">Design</a>
-    </h2>
-    <hr>
-    
-    <p itemprop="about">The design choices of Hexya</p>
-    
-</div>
-  <div itemscope itemtype="http://schema.org/CreativeWork">
-    <h2 class="title">
-        <a href="/docs/install/" itemprop="headline">Installation</a>
-    </h2>
-    <hr>
-    
-    <p itemprop="about">How to build and install Hexya</p>
-    
-</div>
-  <div itemscope itemtype="http://schema.org/CreativeWork">
-    <h2 class="title">
-        <a href="/docs/tutorial/" itemprop="headline">Module Development Tutorial</a>
-    </h2>
-    <hr>
-    
-    <p itemprop="about">How to develop a custom module with Hexya</p>
-    
-</div>
-  <div itemscope itemtype="http://schema.org/CreativeWork">
-    <h2 class="title">
-        <a href="/docs/models/" itemprop="headline">Models Reference</a>
-    </h2>
-    <hr>
-    
-    <p itemprop="about">The models API of Hexya</p>
-    
-</div>
- 
-  <section><nav class="pagination pager align-center">
-            <hr>
-    <ul>
-           
-        <li>
-
-        <a href="" class="button round small outline">Page 1 of 2</a>
-        </li>
-            </a>
-        <li class="next"><a href="/docs/page/2/">Next</a></li>
-           
-    </ul>
-</nav></section>
-</ul>
-
 </main>
-  <footer> 
-    <footer id="footer">
+  <footer>   <footer id="footer">
     <nav>
       <ul>
         <li><span>Hexya</span></li>
@@ -182,8 +167,7 @@
       </ul>
     </nav>
     <p>&copy; NDP Systèmes.</p>
-  </footer> 
-</footer>
+  </footer> </footer>
 
 
   <script src="/js/kube.js" type="text/javascript">

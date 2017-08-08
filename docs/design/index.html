@@ -62,10 +62,9 @@
   <link href="/css/highlight.css" rel="stylesheet" type="text/css">
   <link href="/css/master.css" rel="stylesheet" type="text/css">
   <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
-  
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 
- 
+ <link href="/css/custom.css" rel="stylesheet" type="text/css">
 
   <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
   </script>
@@ -90,11 +89,11 @@
       <ul>
        
        
-    <li><a href="/blog/" >Blog</a></li>
-    
     <li><a href="/docs/" >Docs</a></li>
     
     <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="/blog/" >Blog</a></li>
     
     <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
     
@@ -104,14 +103,18 @@
     </nav>
   </div> </header>
   <main>
+  <div id="main">
+    <div id="hero">
+      <h1> Design </h1>
+      <p class="hero-lead">
+           .
+      </p>
 
-<div id="hero" class="wrap">
-  <h1>Design</h1>
-    <p>The design choices of Hexya</p>
-</div>
-<ul id="posts">
+    </div> 
+    <div id="kube-component" class="content">
+    
 
- <div id="preamble">
+    <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
 <p>This document explains the design choices of Hexya, including the reason why we decided to write
@@ -268,29 +271,12 @@ fields or methods in a model, they will autocomplete nicely.</p>
 </div>
 </div>
 
-  
-</ul>
+
+    
+    </div>
+    </div>
 </main>
-  <footer> 
-    <footer id="footer">
-    <nav>
-      <ul>
-        <li><span>Hexya</span></li>
-        <li>
-          <a href="/blog/">Blog</a>
-        </li>
-          <li>
-          <a href="/docs/">Docs</a>
-        </li>
-        <li>
-          <i class="fa fa-github"></i>
-          <a href="https://github.com/hexya-erp">GitHub</a>
-        </li>
-      </ul>
-    </nav>
-    <p>&copy; NDP Systèmes.</p>
-  </footer> 
-</footer>
+  <footer></footer>
 
 
   <script src="/js/kube.js" type="text/javascript">
