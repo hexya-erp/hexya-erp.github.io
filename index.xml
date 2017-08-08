@@ -95,7 +95,8 @@
       
       <guid>/faq/</guid>
       <description>General What is Hexya exactly? Hexya is both a business application development framework and an ERP built with this framework.
-What is the target audience? With its modular and extensible approach, Hexya can address the need of all companies, whatever their business. Because an ERP structures deeply a company&amp;rsquo;s processes we highly recommend that end user who are looking for a ready-to-use solution with commercial guarantees hire a Free Software Service Company.</description>
+What is the target audience? With its modular and extensible approach, Hexya can address the need of all companies, whatever their business.
+Because an ERP involves many aspects from software development to change management through business process assessment, we believe that ERP projects should be led by IT specialists. That is why specific care has been taken in Hexya in order to ease ERP integrators operation, especially in the coding API.</description>
     </item>
     
     <item>
