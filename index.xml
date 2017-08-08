@@ -6,7 +6,7 @@
     <description>Recent content on Hexya</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 15 Aug 2017 10:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Thu, 15 Jun 2017 21:58:26 +0200</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -29,16 +29,6 @@
       
       <guid>/docs/install/</guid>
       <description>Table of Contents 1. Introduction 2. Prerequisites 2.1. Install Go   3. Download 3.1. Download Hexya 3.2. Download Hexya modules   4. Create a project 4.1. Download Demo Project 4.2. Creating a custom project 4.3. Generate Hexya   5. Synchronise database 5.1. Setup Postgresql 5.2. Synchronise database schema with models   6. Running Hexya   1. Introduction Since Hexya is a modular ERP at compile time, it is only distributed as source code.</description>
-    </item>
-    
-    <item>
-      <title>A Homepage for Hexya</title>
-      <link>/blog/welcome/</link>
-      <pubDate>Tue, 15 Aug 2017 10:00:00 +0200</pubDate>
-      
-      <guid>/blog/welcome/</guid>
-      <description> Welcome to Hexya! Hexya&amp;rsquo;s development started in February 2016 with the idea to create a business application develpment framework that would have the same unique modularity concept as Odoo, but would also:
- Be much faster and allow for heavier business computation loads Provide developer friendly API, in particular the ability to have autocompletion  </description>
     </item>
     
     <item>
