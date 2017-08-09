@@ -37,8 +37,8 @@
       <pubDate>Tue, 15 Aug 2017 10:00:00 +0200</pubDate>
       
       <guid>/blog/welcome/</guid>
-      <description> Welcome to Hexya! Hexya&amp;rsquo;s development started in February 2016 with the idea to create a business application develpment framework that would have the same unique modularity concept as Odoo, but would also:
- Be much faster and allow for heavier business computation loads Provide developer friendly API, in particular the ability to have autocompletion  </description>
+      <description>Welcome to Hexya! Hexya&amp;rsquo;s development started in February 2016 with the idea to create a business application develpment framework that would have the same unique modularity concept as Odoo, but would also:
+ Be much faster and allow for heavier business computation loads Provide developer friendly API, in particular the ability to have autocompletion  Today, we have implemented almost all targeted features of the framework, including the unique models, views and controllers iterative declaration principle.</description>
     </item>
     
     <item>
