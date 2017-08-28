@@ -1290,10 +1290,10 @@ values. The given FieldMap holds the values passed to the Create function.</p>
 interface before calling Create. In this case, the FieldMap will be empty.</p>
 </div>
 </dd>
-<dt class="hdlist1"><code>OnChange</code> string</dt>
+<dt class="hdlist1"><code>OnChange</code> Methoder</dt>
 <dd>
-<p>The name of a method to call when this field is changed in the interface.
-The value must be the name of a method on this RecordSet with the following
+<p>The method to call when this field is changed in the interface.
+The value must be a method on this RecordSet with the following
 signature, which returns a Record with the values to update and a slice of
 field names to unset.</p>
 </dd>
@@ -1333,10 +1333,10 @@ write any RecordSet in these methods, or they will fail.
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>Constraint</code> string</dt>
+<dt class="hdlist1"><code>Constraint</code> Methoder</dt>
 <dd>
-<p>The name of a method to call to validate the value of this field in a record.
-The value must be the name of a method on this RecordSet with the following
+<p>The method to call to validate the value of this field in a record.
+The value must be a method on this RecordSet with the following
 signature:</p>
 </dd>
 </dl>
@@ -1376,9 +1376,9 @@ the model. It defaults to <code>sum</code>.</p>
 <h5 id="_computed_fields_parameters">Computed fields parameters</h5>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>Compute</code> string</dt>
+<dt class="hdlist1"><code>Compute</code> Methoder</dt>
 <dd>
-<p>Declares this field as a computed field. The value must be the name of a
+<p>Declares this field as a computed field. The value must be a
 method on this RecordSet with the following signature, which returns a
 Record with the values to update and a slice of field names to unset.</p>
 </dd>
@@ -1391,9 +1391,9 @@ Record with the values to update and a slice of field names to unset.</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code>Inverse</code> string</dt>
+<dt class="hdlist1"><code>Inverse</code> Methoder</dt>
 <dd>
-<p>Declares a inverse method for a computed field. This method will be called when
+<p>Declares an inverse method for a computed field. This method will be called when
 the field is set. The given method must have the following signature:</p>
 </dd>
 </dl>

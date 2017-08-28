@@ -6,7 +6,7 @@
     <description>Recent content on Hexya</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 08 Aug 2017 10:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Mon, 28 Aug 2017 23:00:00 +0200</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -29,6 +29,15 @@
       
       <guid>/docs/install/</guid>
       <description>Table of Contents 1. Introduction 2. Prerequisites 2.1. Install Go   3. Download 3.1. Download Hexya 3.2. Download Hexya modules   4. Create a project 4.1. Download Demo Project 4.2. Creating a custom project 4.3. Generate Hexya   5. Synchronise database 5.1. Setup Postgresql 5.2. Synchronise database schema with models   6. Running Hexya   1. Introduction Since Hexya is a modular ERP at compile time, it is only distributed as source code.</description>
+    </item>
+    
+    <item>
+      <title>Why we chose Go for Hexya</title>
+      <link>/blog/why-go/</link>
+      <pubDate>Mon, 28 Aug 2017 23:00:00 +0200</pubDate>
+      
+      <guid>/blog/why-go/</guid>
+      <description>Origin of Hexya As explained in our design doc, Hexya is a rewrite of Odoo. At the beginning of 2016, a guy who participate in a personnal project written in Python asked me if I ever heard about Go. I didn&amp;rsquo;t, so I went to Go&amp;rsquo;s website and read &amp;ldquo;Go is an attempt to combine the ease of programming of an interpreted, dynamically typed language with the efficiency and safety of a statically typed, compiled language&amp;rdquo;.</description>
     </item>
     
     <item>

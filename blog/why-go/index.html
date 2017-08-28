@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta name="generator" content="Hugo 0.25.1" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Why we chose Go for Hexya </title>
+
+  
+  <meta name="description" content="With a dynamic iterative model definition system, the choice for Hexya&#39;s programming language would logically have gone to a dynamic language. Yet, we chose Go, and we explain why."> 
+  
+  
+  
+  
+  
+
+    
+
+  <meta name="author" content="NDP Systèmes">
+
+
+  <meta property="og:title" content="Why we chose Go for Hexya" />
+<meta property="og:description" content="With a dynamic iterative model definition system, the choice for Hexya&#39;s programming language would logically have gone to a dynamic language. Yet, we chose Go, and we explain why." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="/blog/why-go/" />
+
+
+
+<meta property="article:published_time" content="2017-08-28T23:00:00&#43;02:00"/>
+<meta property="article:modified_time" content="2017-08-28T23:00:00&#43;02:00"/>
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  
+  
+  
+
+  <link rel="canonical" href="/blog/why-go/">  
+
+  <link rel="shortcut icon" type="image/png" href="/img/favicon.ico"/>
+
+  <link href="/css/font.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.legenda.css" rel="stylesheet" type="text/css">
+  <link href="/css/highlight.css" rel="stylesheet" type="text/css">
+  <link href="/css/master.css" rel="stylesheet" type="text/css">
+  <link href="/css/kube.demo.css" rel="stylesheet" type="text/css">
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+
+ <link href="/css/custom.css" rel="stylesheet" type="text/css">
+
+  <script src="/js/jquery-2.1.4.min.js" type="text/javascript">
+  </script>
+
+  <script type="text/javascript" src="/js/tocbot.min.js"></script>
+</head>
+
+
+<body class="page-kube">
+  <header> <div class="show-sm">
+    <div id="nav-toggle-box">
+      <div id="nav-toggle-brand">
+        <a href="/"><img src="/img/logo.png"/></a>
+      </div><a data-component="toggleme" data-target="#top" href="#" id="nav-toggle"><i class="kube-menu"></i></a>
+    </div>
+  </div>
+  <div class="hide-sm" id="top">
+    <div id="top-brand">
+      <a href="/" title="home"><img src="/img/logo.png"/></a>
+    </div>
+    <nav id="top-nav-main">
+      <ul>
+       
+       
+    <li><a href="/docs/" >Docs</a></li>
+    
+    <li><a href="/faq/" >FAQ</a></li>
+    
+    <li><a href="/blog/" >Blog</a></li>
+    
+    <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
+    
+      </ul>
+    </nav>
+    <nav id="top-nav-extra">
+    </nav>
+  </div> </header>
+  <main>
+<div class="push-center" itemscope itemtype="http://schema.org/BlogPosting">
+    
+<meta itemprop="name" content="Why we chose Go for Hexya">
+<meta itemprop="description" content="With a dynamic iterative model definition system, the choice for Hexya&#39;s programming language would logically have gone to a dynamic language. Yet, we chose Go, and we explain why.">
+
+
+<meta itemprop="dateModified" content="2017-08-28T23:00:00&#43;02:00" />
+<meta itemprop="wordCount" content="1599">
+
+
+
+<meta itemprop="keywords" content="" />
+
+<div id="hero">
+    <h1 itemprop="headline">  Why we chose Go for Hexya</h1>
+    
+<blockquote itemprop="description">With a dynamic iterative model definition system, the choice for Hexya&#39;s programming language would logically have gone to a dynamic language. Yet, we chose Go, and we explain why.</blockquote>
+
+<time class="post-time"><span class="icon">
+  <i class="fa fa-clock-o" aria-hidden="true"></i>
+</span>
+<span>8 minute read</span>
+<span class="icon">
+ <i class="fa fa-pencil" aria-hidden="true"></i>
+</span>
+
+  Published: <time datetime="2017-08-28T23:00:00&#43;02:00">28 Aug, 2017</time>
+
+</time>
+</div>
+<div id="post-box">
+<div id="post" itemprop="articleBody">
+    
+    
+
+<h2 id="origin-of-hexya">Origin of Hexya</h2>
+
+<p>As explained in our <a href="/docs/design/">design</a> doc, Hexya is a rewrite of Odoo.
+At the beginning of 2016, a guy who participate in a personnal project written in Python asked me if I ever heard about Go.
+I didn&rsquo;t, so I went to Go&rsquo;s website and read <em>&ldquo;Go is an attempt to combine the ease of programming of an interpreted, dynamically typed language with the efficiency and safety of a statically typed, compiled language&rdquo;</em>.</p>
+
+<p>At the same time, I was struggling on a professional Odoo project.
+The nightly scheduler process for my customer took over 55 hours when we ran it the first time with only initial data.
+With my team, we had to override loads of core Odoo code, by-passing the ORM with direct SQL queries in many places.
+We also had to parallelize some processes to take advantage of the 32 cores our customer had.
+With all our efforts, the same process time was brought back to 2 hours, more compatible with a nightly scheduled process.
+But at the end of the day, we thought: <em>&ldquo;What&rsquo;s the point of having a brilliant ORM if we need to by-pass it all the time?&rdquo;</em></p>
+
+<p>So I had a performance issue with Odoo on the one side, and a language I didn&rsquo;t know and I wanted to test on the other side.
+I had almost always coded in Python and I thought that if I could code Odoo&rsquo;s iterative model definition in Go, then I would definitely be able to do anything with this language.
+And here I went starting developping a proof of concept of an Odoo implementation in Go: Hexya.</p>
+
+<h2 id="iterative-model-definition-imd">Iterative Model Definition (IMD)</h2>
+
+<h3 id="what-is-imd">What is IMD ?</h3>
+
+<p>Iterative model definition (IMD) is the killer feature of Odoo and a must-have for Hexya.
+Before we go on with the reasons of why we chose Go, I&rsquo;ll digress a little on this subject, because the way Hexya is implemented largely depends on this topic.</p>
+
+<p>Iterative model definition is the ability to extend a given model in a different <em>module</em> than the one it has been created in.
+In contrast to usual class inheritance, you do not get a new (inherited) model, but instead replace the original model with the inherited one in all the application.</p>
+
+<p>Typically this would be the ability to have (pseudo code):</p>
+
+<pre><code class="language-cs">// Module A
+class Partner {
+
+    string firstName;
+    string lastName;
+    
+    string Name() {
+        return firstName + &quot; &quot; + lastName;
+    }
+
+}
+    
+// Module B
+class PartnerExtension(Partner) {
+
+    string title;
+    
+    string Name() {
+        return title + &quot;. &quot; + super().Name();
+    }
+        
+// Anywhere else
+myPartner = Partner({
+    firstName: &quot;John&quot;,
+    lastName: &quot;Doe&quot;,
+    title: &quot;Dr&quot;,
+})
+print myPartner.Name()  
+// output: &quot;Dr. John Doe&quot;
+</code></pre>
+
+<h3 id="why-imd">Why IMD ?</h3>
+
+<p>IMD may seem weired or dangerous to people who are not used to Odoo, since it breaks many of the best practices of development such as the SOLID paradigm.</p>
+
+<p>To really understand, one should remember that Odoo (and Hexya too) is a framework for building modular business applications.
+Each module is meant to bring in a functional feature to a monolithic app, but not to be a general purpose library (such as a Go package for instance).
+IMD allows to modify the application without modifying the original code.
+In other words you can adapt an application to your need without making a fork, and thus benefits from the original author&rsquo;s updates too.</p>
+
+<h2 id="fast">Fast</h2>
+
+<p>As I said earlier, the first reason for choosing Go is because it is fast.</p>
+
+<p>Odoo implements IMD with a massive use of Python&rsquo;s dynamic and reflective features.
+Since we also have reflection capabilities in Go, the first IMD implementation of Hexya was also mainly based on reflection.</p>
+
+<p>This led to an (ugly) API which looked like this:</p>
+
+<pre><code class="language-go">package A
+
+func init() {
+    models.NewModel(&quot;Partner&quot;, 
+        &amp;struct {
+            FirstName string `hexya:&quot;string(First Name);help(This is the first name of our partner)&quot;`
+            LastName  string `hexya:&quot;string(Last Name);required&quot;`
+        }{})
+    
+    models.Registry.MustGet(&quot;Partner&quot;).AddMethod(&quot;Name&quot;, 
+        `Name returns the complete display name of this partner.`,
+        func(rc models.RecordCollection) string {
+            return rc.Get(&quot;FirstName&quot;).(string) + &quot; &quot; + rc.Get(&quot;LastName&quot;).(string)
+        })
+}
+</code></pre>
+
+<pre><code class="language-go">package B
+
+func init() {
+    models.ExtendModel(&quot;Partner&quot;, 
+        &amp;struct {
+            Title  string `hexya:&quot;help(e.g. Mr, Mrs, Dr ...)&quot;`
+        }{})
+        
+    models.Registry.MustGet(&quot;Partner&quot;).ExtendMethod(&quot;Name&quot;, 
+        func(rc models.RecordCollection) string {
+            return rc.Get(&quot;Title&quot;).(string) + &quot;. &quot; + rc.Super().(string)
+        })
+}
+</code></pre>
+
+<pre><code class="language-go">// Anywhere else
+partner := env.Pool(&quot;Partner&quot;).Call(&quot;Create&quot;, models.FieldMap{
+    &quot;Title&quot;: &quot;Dr&quot;,
+    &quot;FirstName&quot;: &quot;John&quot;,
+    &quot;LastName&quot;: &quot;Doe&quot;,
+}).(models.RecordCollection)
+fmt.Println(partner.Call(&quot;Name&quot;).(string))
+// output : Dr. John Doe
+</code></pre>
+
+<p>So we had it! A working proof of concept of a IMD ORM like Odoo but written in Go.
+When put together, it was certainly not as fast as it could due to the large amount of reflection that it uses, but it was very much faster than Odoo.
+So our goal first was achieved.</p>
+
+<h2 id="type-safe">Type safe</h2>
+
+<p>Yet, when I looked at the code above, I couldn&rsquo;t say that I was proud of it.
+Actually, one could wonder if this is actually Go.
+Type assertions everywhere increase the probability of runtime errors and makes the code unreadable.
+Finally, one of my colleagues put all this in a few words:</p>
+
+<blockquote>
+<p>&ldquo;Don&rsquo;t expect anybody to use your framework if you don&rsquo;t provide a clean API with autocompletion&rdquo;</p>
+</blockquote>
+
+<p>He was right of course.
+Too much of Python development made me think that it was normal to rely on a function&rsquo;s documentation to know parameters and returned values types.
+And even to jump to the function implementation, reading its whole code to get the information when the documentation is missing (and this is unfortunately often the case with Odoo).<br />
+And that&rsquo;s how I (re)discovered the virtues of type safety.</p>
+
+<p>It also meant that I could not rely only on reflection to build the API.
+Actually there is only one way to have a dynamic behaviour with a statically typed language: <strong>code generation</strong>.
+The final implementation is a mix of the original reflection implementation with a code generated layer on top of it.
+I&rsquo;ll explain this in a future blog post, but for now, here is what the API now looks like:</p>
+
+<pre><code class="language-go">package A
+
+func init() {
+    pool.Partner().AddCharField(&quot;FirstName&quot;, models.StringFieldParams{
+        String: &quot;First Name&quot;, 
+        Help: &quot;This is the first name of our partner&quot;,
+    })
+    pool.Partner().AddCharField(&quot;LastName&quot;, models.StringFieldParams{
+        String: &quot;Last Name&quot;,
+        Required: true,
+    })
+    
+    pool.Partner().Methods().Name().DeclareMethod( 
+        `Name returns the complete display name of this partner.`,
+        func(rc pool.PartnerSet) string {
+            return rc.FirstName() + &quot; &quot; + rc.LastName()
+        })
+}
+</code></pre>
+
+<pre><code class="language-go">package B
+
+func init() {
+    pool.Partner().AddCharField(&quot;Title&quot;, models.StringFieldParams{
+        Help: &quot;e.g. Mr, Mrs, Dr ...&quot;,
+    })
+        
+    pool.Partner().Methods().Name().Extend(
+        func(rc poolPartnerSet) string {
+            return rc.Title() + &quot;. &quot; + rc.Super().Name()
+        })
+}
+</code></pre>
+
+<pre><code class="language-go">// Anywhere else
+partner := pool.Partner().Create(env, pool.PartnerData{
+    Title: &quot;Dr&quot;,
+    FirstName: &quot;John&quot;,
+    LastName: &quot;Doe&quot;,
+})
+fmt.Println(partner.Name())
+// output : Dr. John Doe
+</code></pre>
+
+<h2 id="designed-for-large-code-bases">Designed for large code bases</h2>
+
+<p>While I began to obsess about type safety, I still have profesionnal projects with Odoo at the same time.
+And the more I came to understand Go the more I saw the limitations of Odoo from the code point of view.
+With over a million lines of code of hardly documentated Python code, Odoo is a nightmare.</p>
+
+<p>When trying to implement a new feature in Odoo, my team and I spend about 90% of our time figuring out which method to override, finding it in the code, understanding what it does exactly, inferring its parameter and return types, and then test it again and again since even the smallest type mismatch error will only show up at runtime.
+The remaining 10% we actually think and write our code.</p>
+
+<p>Go is designed for large code bases and makes it easy and natural to have clean code:</p>
+
+<ul>
+<li>Static typing makes function declaration already give half of the information you want</li>
+<li>Simple function documentation format: you don&rsquo;t ask yourself &ldquo;what&rsquo;s the keyword for return type declaration?&rdquo;, but just write the doc.</li>
+<li><code>gofmt</code> makes everyone feel at home on any piece of Go code</li>
+</ul>
+
+<h2 id="simplicity">Simplicity</h2>
+
+<p>I have to admit that my first impression of Go was that it was a harsh language.
+Coming from Python, I missed all the syntactic sugar at first.
+I was used to writing things like:</p>
+
+<pre><code class="language-python">total = sum([item.value for item in my_list if item.ref in ref_list])
+</code></pre>
+
+<p>I know some people don&rsquo;t like this kind of one-line syntax, but I find it really clean.
+It almost reads like English, and I find it easy to understand what the developer meant.
+At least easier than reading the Go equivalent:</p>
+
+<pre><code class="language-go">var total int
+for _, item := range myList {
+    for _, refItem := range refList {
+        if refItem == item.Ref {
+            total += item.Value
+            break
+        }
+    }
+}
+</code></pre>
+
+<p>But then I remembered my performance issue with Odoo in Python, and realize that my clean python code above hides actually 3 iterations (2 nested ones to build the list and the last one to sum the resulting list items).
+And when I looked again at the Go code just above, it became obvious that:</p>
+
+<ul>
+<li>I&rsquo;ve already saved an iteration by summing directly</li>
+<li>Iterating over my <code>refList</code> is a waste of time.</li>
+</ul>
+
+<p>The fact that Go doesn&rsquo;t have a <code>Contains</code> function forces me to write the whole <code>for</code> loop and to admit that my code is clumsy.
+I should have used a <code>refMap</code> of <code>bool</code> values here instead of a <code>refList</code> :</p>
+
+<pre><code class="language-go">var total int
+for _, item := range myList {
+    if refMap[item.Ref] {
+        total += item.Value
+}
+</code></pre>
+
+<p>Because Go is simple, nice looking code is naturally efficient.
+This is particularly important for Hexya which will be mostly used by business developers.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>While the original reason for choosing Go was only a matter of speed, the more I use Go, the more I discovered how all other aspects are as many new reasons to keep using it.
+Now I&rsquo;m sure that Go is the ideal language for Hexya.</p>
+
+
+</div>
+
+    <div class="">
+        <p>
+  Published
+  
+    
+      by <span itemprop="author">NDP Systèmes</span>
+    
+  
+  <time datetime="2017-08-28T23:00:00&#43;02:00">
+    28 Aug, 2017
+  </time>
+  
+  
+  using <span itemprop="wordCount">1599</span> words.
+</p>
+
+        
+
+
+
+    </div>
+    
+    
+    <article>
+        <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "hexya-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+    </article>
+    
+    
+</div>
+</div>
+</main>
+  <footer>   <footer id="footer">
+    <nav>
+      <ul>
+        <li><span>Hexya</span></li>
+        <li>
+          <a href="/blog/">Blog</a>
+        </li>
+          <li>
+          <a href="/docs/">Docs</a>
+        </li>
+        <li>
+          <i class="fa fa-github"></i>
+          <a href="https://github.com/hexya-erp">GitHub</a>
+        </li>
+      </ul>
+    </nav>
+    <p>&copy; NDP Systèmes.</p>
+  </footer> </footer>
+
+
+  <script src="/js/kube.js" type="text/javascript">
+  </script>
+  <script src="/js/kube.legenda.js" type="text/javascript">
+  </script>
+  <script src="/js/master.js" type="text/javascript">
+  </script>
+</body>
+
+</html>
