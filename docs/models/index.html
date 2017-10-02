@@ -1059,63 +1059,64 @@ are mainly used for wizards.</p>
 <div class="sect2">
 <h3 id="_fields_declaration">4.2. Fields declaration</h3>
 <div class="paragraph">
-<p>Models fields are added by specific methods that apply to a model instance as
-in the example below:</p>
+<p>Models fields are added by the <code>AddField</code> method of a model as in the example below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">course := pool.Course().DeclareModel()
-course.AddCharField("Name", models.StringFieldParams{String: "Name", Help: "This is the name of the course", Required: true})
-course.AddDateField("Date", models.SimpleFieldParams{String: "Date of the Course"}
-course.AddMany2OneField("Teacher", models.ForeignKeyParams{RelationModel: "Partner", String: "Teacher"}
-course.AddDateTimeField("LimitDate", models.SimpleFieldParams{Required: true}
-course.AddMany2ManyField("Attendees", models.Many2manyFieldParams{RelationModel: "Partner", String: "Attendees"}</code></pre>
+course.AddFields(map[string]models.FieldDeclaration{
+    "Name":      models.CharField{String: "Name", Help: "This is the name of the course", Required: true},
+    "Date":      models.DateField{String: "Date of the Course"},
+    "Teacher":   models.Many2OneField{RelationModel: pool.Partner(), String: "Teacher"},
+    "LimitDate": models.DateTimeField{Required: true},
+    "Attendees": models.Many2manyField{RelationModel: pool.Partner(), String: "Attendees"},
+})</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Available model methods for creating fields are:</p>
+<p>Available fields types are:</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>AddBinaryField(name string, params SimpleFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>BinaryField{}</strong></code></dt>
 <dd>
 <p>A binary field holds arbitrary data that is meant to be delivered to the
 client as a file. Binary fields are mapped to <code>string</code> go type.</p>
 </dd>
-<dt class="hdlist1"><code><strong>AddBooleanField(name string, params SimpleFieldParams)</strong></code></dt>
-<dt class="hdlist1"><code><strong>AddCharField(name string, params StringFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>BooleanField{}</strong></code></dt>
+<dt class="hdlist1"><code><strong>CharField{}</strong></code></dt>
 <dd>
 <p>A Char field is a string field that is meant to be displayed as a single line
 in the client. Char fields are mapped to go strings.</p>
 </dd>
-<dt class="hdlist1"><code><strong>AddDateField(name string, params SimpleFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>DateField{}</strong></code></dt>
 <dd>
 <p>Date fields are mapped to models.Date structs.</p>
 </dd>
-<dt class="hdlist1"><code><strong>AddDateTimeField(name string, params SimpleFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>DateTimeField{}</strong></code></dt>
 <dd>
 <p>DateTime fields are mapped to models.Date structs.</p>
 </dd>
-<dt class="hdlist1"><code><strong>AddFloatField(name string, params FloatFieldParams)</strong></code></dt>
-<dt class="hdlist1"><code><strong>AddHTMLField(name string, params StringFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>FloatField{}</strong></code></dt>
+<dt class="hdlist1"><code><strong>HTMLField{}</strong></code></dt>
 <dd>
 <p>HTML fields are formatted with their HTML content by the client.</p>
 </dd>
-<dt class="hdlist1"><code><strong>AddIntegerField(name string, params SimpleFieldParams)</strong></code></dt>
-<dt class="hdlist1"><code><strong>AddMany2ManyField(name string, params Many2ManyFieldParams)</strong></code></dt>
-<dt class="hdlist1"><code><strong>AddMany2OneField(name string, params ForeignKeyFieldParams)</strong></code></dt>
-<dt class="hdlist1"><code><strong>AddOne2ManyField(name string, params ReverseFieldParams)</strong></code></dt>
-<dt class="hdlist1"><code><strong>AddOne2OneField(name string, params ForeignKeyFieldParams)</strong></code></dt>
-<dt class="hdlist1"><code><strong>AddRev2OneField(name string, params ReverseFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>IntegerField{}</strong></code></dt>
+<dt class="hdlist1"><code><strong>Many2ManyField{}</strong></code></dt>
+<dt class="hdlist1"><code><strong>Many2OneField{}</strong></code></dt>
+<dt class="hdlist1"><code><strong>One2ManyField{}</strong></code></dt>
+<dt class="hdlist1"><code><strong>One2OneField{}</strong></code></dt>
+<dt class="hdlist1"><code><strong>Rev2OneField{}</strong></code></dt>
 <dd>
 <p>Rev2One fields are the reverse relation of one2one in the model that does not
 have an FK.</p>
 </dd>
-<dt class="hdlist1"><code><strong>AddSelectionField(name string, params SelectionFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>SelectionField{}</strong></code></dt>
 <dd>
 <p>A selection field can have as values only a set of predefined strings.</p>
 </dd>
-<dt class="hdlist1"><code><strong>AddTextField(name string, params StringFieldParams)</strong></code></dt>
+<dt class="hdlist1"><code><strong>TextField{}</strong></code></dt>
 <dd>
 <p>A Text field is a string field that is meant to be displayed on multiple lines
 in the client. Text fields are mapped to go strings.</p>
@@ -1137,7 +1138,7 @@ apply on a Field instance.</p>
 <dt class="hdlist1"><code><strong>(f *Field) SetHelp(value string) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetGroupOperator(value string) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetRelated(value string) *Field</strong></code></dt>
-<dt class="hdlist1"><code><strong>(f *Field) SetCompute(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetCompute(value Methoder) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetDepends(value []string) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetStored(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetRequired(value bool) *Field</strong></code></dt>
@@ -1146,9 +1147,9 @@ apply on a Field instance.</p>
 <dt class="hdlist1"><code><strong>(f *Field) SetNoCopy(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetTranslate(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetDefault(value func(Environment, FieldMap) interface{}) *Field</strong></code></dt>
-<dt class="hdlist1"><code><strong>(f *Field) SetOnchange(value string) *Field</strong></code></dt>
-<dt class="hdlist1"><code><strong>(f *Field) SetConstraint(value string) *Field</strong></code></dt>
-<dt class="hdlist1"><code><strong>(f *Field) SetInverse(value string) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetOnchange(value Methoder) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetConstraint(value Methoder) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetInverse(value Methoder) *Field</strong></code></dt>
 </dl>
 </div>
 <div class="listingblock">
@@ -1242,7 +1243,9 @@ and <code>sql.Scanner</code> interfaces.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">session := pool.Session().DeclareModel()
-session.AddIntegerField("Room No", models.SimpleFieldParams{GoType: new(int16)})</code></pre>
+session.AddFields(map[string]models.FieldDeclaration{
+    "Room No": models.IntegerField{GoType: new(int16)},
+})</code></pre>
 </div>
 </div>
 </div>
@@ -1394,7 +1397,8 @@ Record with the values to update and a slice of field names to unset.</p>
 <dt class="hdlist1"><code>Inverse</code> Methoder</dt>
 <dd>
 <p>Declares an inverse method for a computed field. This method will be called when
-the field is set. The given method must have the following signature:</p>
+the field is set and must write directly its changes to the database. The given
+method must have the following signature:</p>
 </dd>
 </dl>
 </div>
