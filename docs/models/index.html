@@ -608,36 +608,17 @@ This function is only a shortcut for <code>Search</code> on a list on ids.</p>
 <dd>
 <p>Return the number of records matching the search condition.</p>
 </dd>
-<dt class="hdlist1"><code><strong>NameSearch(params models.NameSearchParams) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>SearchByName(name string, op operator.Operator, additionalCond Condition, limit int) RecordSetType</strong></code></dt>
 <dd>
 <p>Search for records that have a display name matching the given
-<code>Name</code> pattern when compared with the given <code>Operator</code>, while also
-matching the optional search domain (<code>Args</code>).</p>
+<code>name</code> pattern when compared with the given <code>op</code> operator, while also
+matching the optional <code>additionalCond</code> condition.</p>
 <div class="paragraph">
 <p>This is used for example to provide suggestions based on a partial
 value for a relational field. Sometimes be seen as the inverse
 function of <code>NameGet</code> but it is not guaranteed to be.</p>
 </div>
 </dd>
-</dl>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="listingblock">
-<div class="title">NameSearchParams</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">type NameSearchParams struct {
-	Args     Domain      `json:"args"`
-	Name     string      `json:"name"`
-	Operator string      `json:"operator"`
-	Limit    interface{} `json:"limit"`
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="dlist">
-<dl>
 <dt class="hdlist1"><code><strong>FetchAll() RecordSetType</strong></code></dt>
 <dd>
 <p>Returns a RecordSet with all the records in the database for the RecordSet&#8217;s
@@ -1408,7 +1389,7 @@ method must have the following signature:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>where <code>valueType</code> is the go type for the given field values.</p>
+<p>where <code>valueType</code> is the go type for the given field value.</p>
 </div>
 <div class="dlist">
 <dl>
