@@ -1045,7 +1045,7 @@ are mainly used for wizards.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">course := pool.Course().DeclareModel()
-course.AddFields(map[string]models.FieldDeclaration{
+course.AddFields(map[string]models.FieldDefinition{
     "Name":      models.CharField{String: "Name", Help: "This is the name of the course", Required: true},
     "Date":      models.DateField{String: "Date of the Course"},
     "Teacher":   models.Many2OneField{RelationModel: pool.Partner(), String: "Teacher"},
@@ -1224,7 +1224,7 @@ and <code>sql.Scanner</code> interfaces.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">session := pool.Session().DeclareModel()
-session.AddFields(map[string]models.FieldDeclaration{
+session.AddFields(map[string]models.FieldDefinition{
     "Room No": models.IntegerField{GoType: new(int16)},
 })</code></pre>
 </div>
