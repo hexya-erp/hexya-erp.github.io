@@ -1127,7 +1127,7 @@ apply on a Field instance.</p>
 <dt class="hdlist1"><code><strong>(f *Field) SetIndex(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetNoCopy(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetTranslate(value bool) *Field</strong></code></dt>
-<dt class="hdlist1"><code><strong>(f *Field) SetDefault(value func(Environment, FieldMap) interface{}) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetDefault(value func(Environment) interface{}) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetOnchange(value Methoder) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetConstraint(value Methoder) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetInverse(value Methoder) *Field</strong></code></dt>
@@ -1267,12 +1267,8 @@ session.AddFields(map[string]models.FieldDefinition{
 </dd>
 <dt class="hdlist1"><code>Default</code> func(Environment, FieldMap) interface{}</dt>
 <dd>
-<p>Function that will be called upon record creation to set unspecified field
-values. The given FieldMap holds the values passed to the Create function.</p>
-<div class="paragraph">
-<p>This function is also called by clients to set a default value in the user
-interface before calling Create. In this case, the FieldMap will be empty.</p>
-</div>
+<p>Function that will be called by clients to set a default value in the user
+interface before calling Create.</p>
 </dd>
 <dt class="hdlist1"><code>OnChange</code> Methoder</dt>
 <dd>

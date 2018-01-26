@@ -1860,19 +1860,7 @@ field whenever some of its dependencies have been modified.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The default function is called twice by the framework:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>When providing an empty form in the user interface{} during record creation.</p>
-</li>
-<li>
-<p>When calling the <code>Create</code> method, if the field has not been set. In this
-case, the second argument is filled with the values passed to the <code>Create</code>
-method.</p>
-</li>
-</ul>
+<p>The default function is called when providing an empty form in the user interface during record creation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1928,7 +1916,7 @@ field that defaults to true.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
 (...)
     "StartDate": models.DateField{
-        Default: func(env models.Environment, fMap models.FieldMap) interface{} {
+        Default: func(env models.Environment) interface{} {
                 return dates.Today()
             },
         },

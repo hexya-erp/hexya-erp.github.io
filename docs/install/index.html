@@ -301,6 +301,33 @@ LogStdout = true
 #Port = 8080</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Alternatively, Hexya can read its configuration from environment variables starting with <code>HEXYA_</code> followed by an upper cased config setting.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>HEXYA_MODULES</code> &#8594; <code>Modules</code></p>
+</li>
+<li>
+<p><code>HEXYA_DB_HOST</code> &#8594; <code>DB.Host</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_generate_hexya">4.3. Generate Hexya</h3>
@@ -348,6 +375,18 @@ Global Flags:
   -L, --log-level string     Log level. Should be one of 'debug', 'info', 'warn', 'error' or 'crit' (default "info")
   -o, --log-stdout           Enable stdout logging. Use for development or debugging.</code></pre>
 </div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Under Windows, <code>hexya generate</code> must be run as admin.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
