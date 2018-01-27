@@ -1269,6 +1269,9 @@ session.AddFields(map[string]models.FieldDefinition{
 <dd>
 <p>Function that will be called by clients to set a default value in the user
 interface before calling Create.</p>
+<div class="paragraph">
+<p>The default value will also be set when calling Create only if this is a required field and not value is set.</p>
+</div>
 </dd>
 <dt class="hdlist1"><code>OnChange</code> Methoder</dt>
 <dd>
