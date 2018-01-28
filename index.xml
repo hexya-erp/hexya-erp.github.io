@@ -6,7 +6,7 @@
     <description>Recent content on Hexya</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 28 Aug 2017 20:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Sun, 28 Jan 2018 10:00:00 +0200</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -29,6 +29,16 @@
       
       <guid>/docs/install/</guid>
       <description>Table of Contents 1. Introduction 2. Prerequisites 2.1. Install Go 2.2. Install lessc   3. Download 3.1. Download Hexya 3.2. Download Hexya modules   4. Create a project 4.1. Download Demo Project 4.2. Creating a custom project 4.3. Generate Hexya   5. Synchronise database 5.1. Setup Postgresql 5.2. Synchronise database schema with models   6. Running Hexya   1. Introduction Since Hexya is a modular ERP at compile time, it is only distributed as source code.</description>
+    </item>
+    
+    <item>
+      <title>First Technology Preview</title>
+      <link>/blog/demo/</link>
+      <pubDate>Sun, 28 Jan 2018 10:00:00 +0200</pubDate>
+      
+      <guid>/blog/demo/</guid>
+      <description>Our first technology preview of Hexya is online at https://demo.hexya.io after almost two years of work.
+It is a quick port of Odoo&amp;rsquo;s sale module with its main dependencies on Hexya&amp;rsquo;s framework. The purpose of this preview is to show how several independent modules interact to build the whole application. So do not expect business features to work seamlessly. In particular, the accounting module has only been scaffolded with all its models, views and menus, but none of the functions have been implemented.</description>
     </item>
     
     <item>
