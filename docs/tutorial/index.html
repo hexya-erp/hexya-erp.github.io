@@ -433,7 +433,7 @@ import (
 )
 
 func init() {
-    pool.OpenAcademyCourse().DeclareModel()
+    h.OpenAcademyCourse().DeclareModel()
 }</code></pre>
 </div>
 </div>
@@ -483,7 +483,7 @@ Pool generated successfully</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>After generation, our models can be accessed in the <code>pool</code> package.</p>
+<p>After generation, our models can be accessed in the <code>h</code> package.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -530,12 +530,12 @@ defined by the <code>AddField</code> method of the model.</p>
 
 import (
 	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool" <b class="conum">(1)</b>
+	"github.com/hexya-erp/hexya/pool/h" <b class="conum">(1)</b>
 )
 
 func init() {
-    pool.OpenAcademyCourse().DeclareModel()
-    pool.OpenAcademyCourse().AddFields(map[string]models.FieldDefinition{
+    h.OpenAcademyCourse().DeclareModel()
+    h.OpenAcademyCourse().AddFields(map[string]models.FieldDefinition{
         "Name":        models.CharField{},
         "Description": models.TextField{},
     })
@@ -545,7 +545,7 @@ func init() {
 <div class="colist arabic">
 <ol>
 <li>
-<p>Note that we need to import the generated <code>pool</code> package to use it</p>
+<p>Note that we need to import the generated <code>h</code> package to use it</p>
 </li>
 </ol>
 </div>
@@ -1121,12 +1121,12 @@ the new model
 import (
 	"github.com/hexya-erp/hexya/hexya/models"
 	"github.com/hexya-erp/hexya/hexya/models/types"
-	"github.com/hexya-erp/hexya/pool"
+	"github.com/hexya-erp/hexya/pool/h"
 )
 
 func init() { <b class="conum">(1)</b>
-    pool.OpenAcademySession().DeclareModel()
-    pool.OpenAcademySession().AddFields(map[string]models.FieldDefinition{
+    h.OpenAcademySession().DeclareModel()
+    h.OpenAcademySession().AddFields(map[string]models.FieldDefinition{
         "Name":      models.CharField{Required: true},
         "StartDate": models.DateField{},
         "Duration":  models.FloatField{Digits: nbutils.Digits{Precision: 6, Scale: 2},
@@ -1225,8 +1225,8 @@ between different models.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.SaleOrder().AddFields(map[string]models.FieldDefinition{
-    "Customer": models.Many2OneField{RelationModel: pool.Partner()},
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.SaleOrder().AddFields(map[string]models.FieldDefinition{
+    "Customer": models.Many2OneField{RelationModel: h.Partner()},
 })
 
 fmt.Println(myOrder().Customer().Name())</code></pre>
@@ -1244,8 +1244,8 @@ records.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.SaleOrder().AddFields(map[string]models.FieldDefinition{
-    "OrderLines": models.One2ManyField{RelationModel: pool.SaleOrderLine(), ReverseFK: "Order"},
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.SaleOrder().AddFields(map[string]models.FieldDefinition{
+    "OrderLines": models.One2ManyField{RelationModel: h.SaleOrderLine(), ReverseFK: "Order"},
 })
 
 for _, orderLine := range myOrder().OrderLines().Records() {
@@ -1279,8 +1279,8 @@ accessing it also results in a possibly empty set of records.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.SaleOrder().AddFields(map[string]models.FieldDefinition{
-    "Tags": models.Many2ManyField{RelationModel: pool.Tag()},
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.SaleOrder().AddFields(map[string]models.FieldDefinition{
+    "Tags": models.Many2ManyField{RelationModel: h.Tag()},
 })
 
 for _, tag := range myOrder().Tags().Records() {
@@ -1298,18 +1298,18 @@ for _, tag := range myOrder().Tags().Records() {
 
 import (
 	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool"
+	"github.com/hexya-erp/hexya/pool/h"
 )
 
 func init() {
-    pool.OpenAcademyCourse().DeclareModel()
-    pool.OpenAcademyCourse().AddFields(map[string]models.FieldDefinition{
+    h.OpenAcademyCourse().DeclareModel()
+    h.OpenAcademyCourse().AddFields(map[string]models.FieldDefinition{
         "Name":        models.CharField{},
         "Description": models.TextField{},
         "Responsible": models.Many2OneField{
-            RelationModel: pool.User(), OnDelete: models.SetNull, Index: true},
+            RelationModel: h.User(), OnDelete: models.SetNull, Index: true},
         "Sessions":    models.One2ManyField{
-            RelationModel: pool.OpenAcademySession(), ReverseFK: "Course"},
+            RelationModel: h.OpenAcademySession(), ReverseFK: "Course"},
     })
 }</code></pre>
 </div>
@@ -1322,12 +1322,12 @@ func init() {
 import (
 	"github.com/hexya-erp/hexya/hexya/models"
 	"github.com/hexya-erp/hexya/hexya/models/types"
-	"github.com/hexya-erp/hexya/pool"
+	"github.com/hexya-erp/hexya/pool/h"
 )
 
 func init() {
-    pool.OpenAcademySession().DeclareModel()
-    pool.OpenAcademySession().AddFields(map[string]models.FieldDefinition{
+    h.OpenAcademySession().DeclareModel()
+    h.OpenAcademySession().AddFields(map[string]models.FieldDefinition{
         "Name":       models.CharField{Required: true},
         "StartDate":  models.DateField{},
         "Duration":   models.FloatField{Digits: nbutils.Digits{Precision: 6, Scale: 2},
@@ -1335,10 +1335,10 @@ func init() {
         "Seats":      models.IntegerField{String: "Number of seats"},
         "State":      models.SelectionField{
             Selection: types.Selection{"planned": "Planned", "in_progress":"In Progress", "done": "Finished"}}, <b class="conum">(2)</b>
-        "Instructor": models.Many2OneField{RelationModel: pool.Partner()},
-        "Course":     models.Many2OneField{RelationModel: pool.OpenAcademyCourse(),
+        "Instructor": models.Many2OneField{RelationModel: h.Partner()},
+        "Course":     models.Many2OneField{RelationModel: h.OpenAcademyCourse(),
             Required: true, OnDelete: models.Cascade},
-        "Attendees":  models.Many2ManyField{RelationModel: pool.Partner()},
+        "Attendees":  models.Many2ManyField{RelationModel: h.Partner()},
     })
 }</code></pre>
 </div>
@@ -1612,13 +1612,13 @@ the session-partner relation.</p>
 
 import (
 	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool"
+	"github.com/hexya-erp/hexya/pool/h"
 )
 
 func init() {
-    pool.Partner().AddFields(map[string]models.FieldDefinition{
+    h.Partner().AddFields(map[string]models.FieldDefinition{
         "Instructor":       models.BooleanField{},
-        "AttendedSessions": models.Many2ManyField{RelationModel: pool.OpenAcademySession()}
+        "AttendedSessions": models.Many2ManyField{RelationModel: h.OpenAcademySession()}
     })
 }</code></pre>
 </div>
@@ -1684,9 +1684,9 @@ to true.</p>
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.OpenAcademyCourse().Methods().StartSession().DeclareMethod(
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.OpenAcademyCourse().Methods().StartSession().DeclareMethod(
     `StartSession sets the State of the Session to 'Started'`,
-    func(rs pool.OpenAcademyCourseSet) {
+    func(rs h.OpenAcademyCourseSet) {
         // Update State for all record in rs
         rs.SetState("in_progress")
     })
@@ -1720,7 +1720,7 @@ will be automatically generated by <code>hexya generate</code> command.</p>
 <div class="title">Note</div>
 </td>
 <td class="content">
-<code>pool.OpenAcademyCourseSet</code> is the record set type for the <code>OpenAcademyCourse</code>
+<code>h.OpenAcademyCourseSet</code> is the record set type for the <code>OpenAcademyCourse</code>
 model. It holds a set of <code>OpenAcademyCourse</code> records. All model methods are
 called on (possibly empty) record sets.
 </td>
@@ -1736,8 +1736,8 @@ object. Call <code>rs.Super().MyMethod()</code> to execute the original implemen
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.OpenAcademyCourse().Methods().StartSession().Extend("",
-    func(rs pool.OpenAcademyCourseSet) {
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.OpenAcademyCourse().Methods().StartSession().Extend("",
+    func(rs h.OpenAcademyCourseSet) {
         rs.Super().StartSession()
         fmt.Println("Session started")
     })</code></pre>
@@ -1804,20 +1804,20 @@ field whenever some of its dependencies have been modified.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
 (...)
     "TakenSeats": models.FloatField{
-        Compute: pool.OpenAcademySession().Methods().ComputeTakenSeats(),
+        Compute: h.OpenAcademySession().Methods().ComputeTakenSeats(),
         Depends: []string{"Seats", "Attendees"}},
 
 (...)
 
-    pool.OpenAcademySession().Methods().ComputeTakenSeats().DeclareMethod(
+    h.OpenAcademySession().Methods().ComputeTakenSeats().DeclareMethod(
         `ComputeTakenSeats returns the percentage of taken seats in this session`,
-        func(rs pool.OpenAcademySessionSet) (*pool.OpenAcademySessionData, []models.FieldNamer) {
-            var res pool.OpenAcademySessionData
+        func(rs h.OpenAcademySessionSet) (*h.OpenAcademySessionData, []models.FieldNamer) {
+            var res h.OpenAcademySessionData
             // res struct fields default to their Go zero value
             if rs.Seats() != 0 {
                 res.TakenSeats = 100.0 * float64(rs.Attendees().Len()) / float64(rs.Seats())
             }
-            return &amp;res, []models.FieldNamer{pool.OpenAcademySession().TakenSeats()}
+            return &amp;res, []models.FieldNamer{h.OpenAcademySession().TakenSeats()}
         })
 (...)
 }</code></pre>
@@ -1962,20 +1962,20 @@ the <code>TakenSeats</code> progressbar is automatically updated.</p>
 (...)
     "Seats": models.IntegerField{
         String: "Number of seats",
-        OnChange: pool.OpenAcademySession().Methods().VerifyValidSeats()},
+        OnChange: h.OpenAcademySession().Methods().VerifyValidSeats()},
 (...)
    "Attendees": models.Many2ManyField{
-        RelationModel: pool.Partner(),
-        OnChange: pool.OpenAcademySession().Methods().VerifyValidSeats()},
+        RelationModel: h.Partner(),
+        OnChange: h.OpenAcademySession().Methods().VerifyValidSeats()},
 (...)
 
-    pool.OpenAcademySession().Methods().VerifyValidSeats().DeclareMethod(
+    h.OpenAcademySession().Methods().VerifyValidSeats().DeclareMethod(
         `VerifyValidSeats checks that the number of seats is positive
         and resets it to zero otherwise`,
-        func (rs pool.OpenAcademySessionSet) (*pool.OpenAcademySessionData, []models.FieldNamer) {
+        func (rs h.OpenAcademySessionSet) (*h.OpenAcademySessionData, []models.FieldNamer) {
             var fieldsToReset []models.FieldNamer
             if rs.Seats() &lt; 0 {
-                fieldsToReset = []models.FieldNamer{pool.OpenAcademySession().Seats()}
+                fieldsToReset = []models.FieldNamer{h.OpenAcademySession().Seats()}
             }
             return &amp;res, fieldsToReset
         })
@@ -2000,7 +2000,8 @@ is changed:</p>
 <div class="paragraph">
 <p>A <code>Filter</code> parameter can be added to relational fields to limit valid records
 for the relation when trying to select records in the client interface. This
-parameter takes a condition on the relation model.</p>
+parameter takes a condition on the relation model.
+Conditions are built with the <code>q</code> package</p>
 </div>
 <div class="paragraph">
 <p>We can add a domain to limit instructors to partners who are instructors:</p>
@@ -2008,9 +2009,13 @@ parameter takes a condition on the relation model.</p>
 <div class="listingblock">
 <div class="title">openacademy/session.go</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">(...)
-    "Instructor": models.Many2OneField{RelationModel: pool.Partner(),
-        Filter: pool.Partner().Instructor().Equals(true)},
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">import (
+(...)
+	"github.com/hexya-erp/hexya/pool/q"
+)
+(...)
+    "Instructor": models.Many2OneField{RelationModel: h.Partner(),
+        Filter: q.Partner().Instructor().Equals(true)},
 (...)</code></pre>
 </div>
 </div>
@@ -2045,7 +2050,7 @@ and a string to display to the user when the constraint is violated.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">(...)
     "Name": models.CharField{Unique: true},
 (...)
-    pool.OpenAcademyCourse().AddSQLConstraint("name_description_check",
+    h.OpenAcademyCourse().AddSQLConstraint("name_description_check",
          "CHECK(name != description)",
          "The title of the course should not be the description")
 (...)</code></pre>
@@ -2081,19 +2086,19 @@ in the attendees of his/her own session.</p>
 <div class="title">openacademy/session.go</div>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">(...)
-    "Instructor": models.Many2OneField{RelationModel: pool.Partner(),
-        Filter: pool.Partner().Instructor().Equals(true),
-        Constraint: pool.OpenAcademySession().Methods().CheckInstructorNotInAttendees()},
-    "Attendees": models.Many2ManyField{RelationModel: pool.Partner(),
-        OnChange: pool.OpenAcademySession().Methods().VerifyValidSeats(),
-        Constraint: pool.OpenAcademySession().Methods().CheckInstructorNotInAttendees()},
+    "Instructor": models.Many2OneField{RelationModel: h.Partner(),
+        Filter: q.Partner().Instructor().Equals(true),
+        Constraint: h.OpenAcademySession().Methods().CheckInstructorNotInAttendees()},
+    "Attendees": models.Many2ManyField{RelationModel: h.Partner(),
+        OnChange: h.OpenAcademySession().Methods().VerifyValidSeats(),
+        Constraint: h.OpenAcademySession().Methods().CheckInstructorNotInAttendees()},
 
 (...)
 
-    pool.OpenAcademySession().Methods().CheckInstructorNotInAttendees().DeclareMethod(
+    h.OpenAcademySession().Methods().CheckInstructorNotInAttendees().DeclareMethod(
         `CheckInstructorNotInAttendees checks that the instructor is not present
         in the attendees of his/her own session`,
-        func(rs pool.OpenAcademySessionSet) {
+        func(rs h.OpenAcademySessionSet) {
             for _, attendee := range rs.Attendees().Records() {
                 if attendee.ID() == rs.Instructor().ID() {
                     panic("The session's instructor can't be an attendee of his own session")
@@ -2461,8 +2466,8 @@ func init() {
     SessionRead = security.Registry.NewGroup("openacademy_session_read", "OpenAcademy / Session Read")
     Manager = security.Registry.NewGroup("openacademy_manager", "OpenAcademy / Manager", SessionRead)
 
-    pool.OpenAcademyCourse().Methods().Load().AllowGroup(SessionRead)
-    pool.OpenAcademyCourse().Methods().AllowAllToGroup(Manager)
+    h.OpenAcademyCourse().Methods().Load().AllowGroup(SessionRead)
+    h.OpenAcademyCourse().Methods().AllowAllToGroup(Manager)
     (...)
 }</code></pre>
 </div>
@@ -2472,7 +2477,7 @@ func init() {
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
 (...)
-    pool.OpenAcademySession().Methods().AllowAllToGroup(Manager)
+    h.OpenAcademySession().Methods().AllowAllToGroup(Manager)
 (...)
 }</code></pre>
 </div>
@@ -2563,8 +2568,8 @@ group first, or your modifications will have no effect.
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
     (...)
-    pool.OpenAcademySession().Fields().TakenSeats().RevokeAccess(security.GroupEveryone, security.Read|security.Write)
-    pool.OpenAcademySession().Fields().TakenSeats().GrantAccess(Manager, security.Read)
+    h.OpenAcademySession().Fields().TakenSeats().RevokeAccess(security.GroupEveryone, security.Read|security.Write)
+    h.OpenAcademySession().Fields().TakenSeats().GrantAccess(Manager, security.Read)
     (...)
 }</code></pre>
 </div>
@@ -2600,13 +2605,18 @@ of the group must be able to modify it.</p>
 <div class="listingblock">
 <div class="title">openacademy/course.go</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func getCurrentUser(rs pool.OpenAcademyCourseSet) pool.UserSet {
-    return pool.User().NewSet(rs.Env()).CurrentUser()
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">import (
+(...)
+	"github.com/hexya-erp/hexya/pool/q"
+)
+
+func getCurrentUser(rs h.OpenAcademyCourseSet) h.UserSet {
+    return h.User().NewSet(rs.Env()).CurrentUser()
 }
 
 func init() {
 (...)
-    cond := pool.OpenAcademyCourse().
+    cond := q.OpenAcademyCourse().
         Responsible().EqualsFunc(getCurrentUser).
         Or().Responsible().IsNull()
 
@@ -2616,7 +2626,7 @@ func init() {
         Condition: cond.Condition,
         Perms:     security.Write|security.Unlink,
     }
-    pool.OpenAcademyCourse().AddRecordRule(&amp;rule)
+    h.OpenAcademyCourse().AddRecordRule(&amp;rule)
 (...)
 }</code></pre>
 </div>
@@ -2662,15 +2672,16 @@ session, or for a list of sessions at once.</p>
 
 import (
 	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool"
+	"github.com/hexya-erp/hexya/pool/h"
+	"github.com/hexya-erp/hexya/pool/q"
 )
 
 func init() {
-    pool.OpenAcademyWizard().DeclareTransientModel()
-    pool.OpenAcademyWizard().AddFields(map[string]models.FieldDefinition{
-        "Session": models.Many2OneField{RelationModel: pool.OpenAcademySession(),
+    h.OpenAcademyWizard().DeclareTransientModel()
+    h.OpenAcademyWizard().AddFields(map[string]models.FieldDefinition{
+        "Session": models.Many2OneField{RelationModel: h.OpenAcademySession(),
             Required: true},
-        "Attendees": models.Many2ManyField{RelationModel: pool.Partner()},
+        "Attendees": models.Many2ManyField{RelationModel: h.Partner()},
     })
 }</code></pre>
 </div>
@@ -2716,20 +2727,20 @@ contextual actions of the model, above the main view.</p>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
 (...)
-    "Session": models.Many2OneField{RelationModel: pool.OpenAcademySession(),
+    "Session": models.Many2OneField{RelationModel: h.OpenAcademySession(),
         Required: true, Default:
             func(env models.Environment, fMap models.FieldMap) interface{} {
                 activeID := env.Context().GetInteger("active_id")
-                return pool.OpenAcademySession().Search(env,
-                    pool.OpenAcademySession().ID().Equals(activeID))
+                return h.OpenAcademySession().Search(env,
+                    q.OpenAcademySession().ID().Equals(activeID))
             }
         },
 
 (...)
 
-    pool.OpenAcademyWizard().Methods().Subscribe().DeclareMethod(
+    h.OpenAcademyWizard().Methods().Subscribe().DeclareMethod(
         `Subscribe subscribes the users to the session`,
-        func(rs pool.OpenAcademyWizardSet) {
+        func(rs h.OpenAcademyWizardSet) {
             rs.Session().SetAttendees(rs.Session().Attendees().Union(rs.Attendees()))
         })
 (...)

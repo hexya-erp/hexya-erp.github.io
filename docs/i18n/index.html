@@ -222,9 +222,9 @@ To translate such strings, they need to be passed to the <code>T()</code> method
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.OpenAcademyCourse().Methods().HelloWorld().DeclareMethod(
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.OpenAcademyCourse().Methods().HelloWorld().DeclareMethod(
     `HelloWorld returns a localized "Hello World" message`,
-    func(rs pool.PartnerSet) string {
+    func(rs h.PartnerSet) string {
         return rs.T("Hello World")
     })</code></pre>
 </div>

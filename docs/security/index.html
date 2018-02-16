@@ -298,13 +298,13 @@ chained
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Users().Methods().SayHello().DeclareMethod(
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.Users().Methods().SayHello().DeclareMethod(
     "SayHello returns Hello",
-    func(rs pool.UsersSet) {
+    func(rs h.UsersSet) {
         return "Hello"
     }).
     AllowGroup(sale.GroupSalesman).
-    AllowGroup(stock.GroupPicker, pool.Users().Methods().Create())
+    AllowGroup(stock.GroupPicker, h.Users().Methods().Create())
     // Pickers can say hello only from the 'Create' method</code></pre>
 </div>
 </div>
@@ -318,7 +318,7 @@ chained
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Users().Methods().AllowAllToGroup(GroupERPManager)</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.Users().Methods().AllowAllToGroup(GroupERPManager)</code></pre>
 </div>
 </div>
 <div class="dlist">
@@ -406,7 +406,7 @@ chained.
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">salesManager := security.Registry.GetGroup("sale_manager")
-pool.Partner().Fields().Phone().
+h.Partner().Fields().Phone().
     RevokeAccess(security.GroupEveryOne, security.Read).
     AllowAccess(salesManager, security.Read)</code></pre>
 </div>
@@ -467,11 +467,11 @@ rule&#8217;s <code>Name</code> already exists, then the rule is overwritten.</p>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">salesman := security.Registry.GetGroup("sale_user")
 
-func getUserID(rs pool.PartnerSet) interface{} {
+func getUserID(rs h.PartnerSet) interface{} {
     return rs.Env().Uid()
 }
 
-cond := pool.Partner().UserFilteredOn(pool.User().ID().EqualsFunc(getUserID))
+cond := q.Partner().UserFilteredOn(h.User().ID().EqualsFunc(getUserID))
 
 rule := models.RecordRule {
     Name:      "salesman_own_partner",
@@ -479,7 +479,7 @@ rule := models.RecordRule {
     Condition: cond,
     Perms:     security.All,
 }
-pool.Partner().AddRecordRule(&amp;rule)</code></pre>
+h.Partner().AddRecordRule(&amp;rule)</code></pre>
 </div>
 </div>
 <div class="dlist">
@@ -493,7 +493,7 @@ given <code>model</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">pool.Partner().RemoveRecordRule("salesman_own_partner")</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">h.Partner().RemoveRecordRule("salesman_own_partner")</code></pre>
 </div>
 </div>
 </div>
