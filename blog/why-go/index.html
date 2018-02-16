@@ -288,18 +288,18 @@ I&rsquo;ll explain this in a future blog post, but for now, here is what the API
 <pre><code class="language-go">package A
 
 func init() {
-    h.Partner().AddCharField(&quot;FirstName&quot;, models.StringFieldParams{
+    pool.Partner().AddCharField(&quot;FirstName&quot;, models.StringFieldParams{
         String: &quot;First Name&quot;, 
         Help: &quot;This is the first name of our partner&quot;,
     })
-    h.Partner().AddCharField(&quot;LastName&quot;, models.StringFieldParams{
+    pool.Partner().AddCharField(&quot;LastName&quot;, models.StringFieldParams{
         String: &quot;Last Name&quot;,
         Required: true,
     })
     
-    h.Partner().Methods().Name().DeclareMethod( 
+    pool.Partner().Methods().Name().DeclareMethod( 
         `Name returns the complete display name of this partner.`,
-        func(rc h.PartnerSet) string {
+        func(rc pool.PartnerSet) string {
             return rc.FirstName() + &quot; &quot; + rc.LastName()
         })
 }
@@ -308,11 +308,11 @@ func init() {
 <pre><code class="language-go">package B
 
 func init() {
-    h.Partner().AddCharField(&quot;Title&quot;, models.StringFieldParams{
+    pool.Partner().AddCharField(&quot;Title&quot;, models.StringFieldParams{
         Help: &quot;e.g. Mr, Mrs, Dr ...&quot;,
     })
         
-    h.Partner().Methods().Name().Extend(
+    pool.Partner().Methods().Name().Extend(
         func(rc poolPartnerSet) string {
             return rc.Title() + &quot;. &quot; + rc.Super().Name()
         })
@@ -320,7 +320,7 @@ func init() {
 </code></pre>
 
 <pre><code class="language-go">// Anywhere else
-partner := h.Partner().Create(env, q.PartnerData{
+partner := pool.Partner().Create(env, pool.PartnerData{
     Title: &quot;Dr&quot;,
     FirstName: &quot;John&quot;,
     LastName: &quot;Doe&quot;,
