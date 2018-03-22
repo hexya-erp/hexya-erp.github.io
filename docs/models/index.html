@@ -695,7 +695,7 @@ them as a RecordSet. Filtered will use the data in cache if present.</p>
 <div class="title">Note</div>
 </td>
 <td class="content">
-Unless the RecordSet is already loaded in cache, it is generally faster
+Unless the RecordSet is already loaded in cache, it might be faster
 and more efficient to use <code>Search()</code> on the RecordSet to return a filtered
 Set.
 </td>
@@ -704,13 +704,22 @@ Set.
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>Sorted(key func(Record) interface{}) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Sorted(less func(RecordSet, RecordSet) bool) RecordSetType</strong></code></dt>
 <dd>
-<p>Returns a sorted copy of this RecordSet. <code>key(record)</code> should return a
-sortable value on which the RecordSet will be sorted.</p>
+<p>Returns a sorted copy of this RecordSet. <code>less(rs1, rs2)</code> should return true
+if rs1 &lt; rs2.</p>
 <div class="paragraph">
 <p>The Sort is not guaranteed to be stable.</p>
 </div>
+</dd>
+<dt class="hdlist1"><code><strong>SortedDefault() RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a sorted copy of this RecordSet according to the model&#8217;s default order.</p>
+</dd>
+<dt class="hdlist1"><code><strong>SortedByField(f FieldNamer, reverse bool) RecordSetType</strong></code></dt>
+<dd>
+<p>Returns a sorted copy of this RecordSet by comparing the given field.
+If reverse is true, the sort is done in reversed order.</p>
 </dd>
 <dt class="hdlist1"><code><strong>Union(other RecordSetType) RecordSetType</strong></code></dt>
 <dd>
@@ -1368,13 +1377,13 @@ the model. It defaults to <code>sum</code>.</p>
 <dd>
 <p>Declares this field as a computed field. The value must be a
 method on this RecordSet with the following signature, which returns a
-Record with the values to update and a slice of field names to unset.</p>
+Record struct with the values to update.</p>
 </dd>
 </dl>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType) (*RecordType, []models.FieldNamer)</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType) *RecordType</code></pre>
 </div>
 </div>
 <div class="dlist">

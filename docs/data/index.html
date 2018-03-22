@@ -136,9 +136,22 @@ ga('send', 'pageview');
 <h2 id="_introduction">1. Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In many cases, it is necessary to include configuration data into the database
-just for the logic to work. In order to manage the configuration of this data,
-the Hexya framework provides a way to load data through the use of CSV files.</p>
+<p>Hexya framework provides a way to load user space data directly into the database through the use of CSV files.</p>
+</div>
+<div class="paragraph">
+<p>Hexya manages two kinds of data:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Configuration data needed for the logic to work.
+They are always loaded.</p>
+</li>
+<li>
+<p>Demo data needed either for evaluating the module or for use as test data.
+Demo data is only loaded if the <code>Demo</code> configuration parameter is set to True.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -146,8 +159,10 @@ the Hexya framework provides a way to load data through the use of CSV files.</p
 <h2 id="_csv_files">2. CSV Files</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>All files that will be put in the <code>data</code> subdirectory of a module will be
-automatically loaded in the database by alphabetical order, following these
+<p>Configuration data must be put in the <code>data</code> subdirectory of a module, whereas demo data must be put in the <code>demo</code> subdirectory.</p>
+</div>
+<div class="paragraph">
+<p>The files inside these subdirectories will be automatically loaded in the database by alphabetical order, following these
 rules:</p>
 </div>
 <div class="ulist">
@@ -178,6 +193,14 @@ will provide one for each record.</p>
 <li>
 <p>Binary fields must be set with the relative path (from this file&#8217;s directory)
 to a file with the binary content to load.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p>Files in the <code>demo</code> subdirectory will only be loaded if the <code>Demo</code> parameter is set in the config.</p>
+</dd>
+</dl>
+</div>
 </li>
 </ul>
 </div>

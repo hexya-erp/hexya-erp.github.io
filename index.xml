@@ -103,8 +103,10 @@ It is a quick port of Odoo&amp;rsquo;s sale module with its main dependencies on
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/docs/data/</guid>
-      <description>Table of Contents 1. Introduction 2. CSV Files 3. Versions 4. Examples   1. Introduction In many cases, it is necessary to include configuration data into the database just for the logic to work. In order to manage the configuration of this data, the Hexya framework provides a way to load data through the use of CSV files.
-   2. CSV Files All files that will be put in the data subdirectory of a module will be automatically loaded in the database by alphabetical order, following these rules:</description>
+      <description>Table of Contents 1. Introduction 2. CSV Files 3. Versions 4. Examples   1. Introduction Hexya framework provides a way to load user space data directly into the database through the use of CSV files.
+ Hexya manages two kinds of data:
+   Configuration data needed for the logic to work. They are always loaded.
+  Demo data needed either for evaluating the module or for use as test data.</description>
     </item>
     
     <item>

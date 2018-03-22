@@ -379,15 +379,25 @@ const MODULE_NAME string = "openacademy"
 func init() {
     server.RegisterModule(&amp;server.Module{
 		Name: MODULE_NAME,
+		PreInit: func() {},
 		PostInit: func() {},
 	})
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The declared <code>PostInit</code> function allows to execute some code at server startup
-after the models are bootstrapped. We leave it as an empty function for the
-moment.</p>
+<p>The declared <code>PreInit</code> and <code>PostInit</code> functions allows to execute some code at server startup.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>PreInit</code> is run after all models are declared and configuration is loaded but before bootstrapping.</p>
+</li>
+<li>
+<p><code>PostInit</code> is run after the models, views and controllers are bootstrapped.
+We leave them as empty functions for the moment.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -1769,7 +1779,7 @@ a method. The computation method should have the following signature:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSet) (*RecordData, []models.FieldNamer)</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSet) *RecordData</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1818,13 +1828,13 @@ field whenever some of its dependencies have been modified.</p>
 
     h.OpenAcademySession().Methods().ComputeTakenSeats().DeclareMethod(
         `ComputeTakenSeats returns the percentage of taken seats in this session`,
-        func(rs h.OpenAcademySessionSet) (*h.OpenAcademySessionData, []models.FieldNamer) {
+        func(rs h.OpenAcademySessionSet) *h.OpenAcademySessionData {
             var res h.OpenAcademySessionData
             // res struct fields default to their Go zero value
             if rs.Seats() != 0 {
                 res.TakenSeats = 100.0 * float64(rs.Attendees().Len()) / float64(rs.Seats())
             }
-            return &amp;res, []models.FieldNamer{h.OpenAcademySession().TakenSeats()}
+            return &amp;res
         })
 (...)
 }</code></pre>
@@ -1951,8 +1961,12 @@ to the database.</p>
 function.</p>
 </div>
 <div class="paragraph">
-<p>Such fonction have the same signature as the functions in <code>Compute:</code> parameter
-(see <a href="#_computed_fields_and_default_values">Computed fields and default values</a>).</p>
+<p>Such fonction have the following signature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSet) (*RecordData, []models.FieldNamer)</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>For computed fields, valued <code>onchange</code> behavior is built-in as can be seen by
@@ -2460,6 +2474,7 @@ var (
 func init() {
     server.RegisterModule(&amp;server.Module{
 		Name: MODULE_NAME,
+		PreInit: func() {},
 		PostInit: func() {},
 	})
 }</code></pre>
