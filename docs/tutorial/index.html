@@ -2,7 +2,7 @@
 <html lang="en-us">
 
 <head>
-  <meta name="generator" content="Hugo 0.25.1" />
+  <meta name="generator" content="Hugo 0.40.1" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -238,23 +238,15 @@ $ mkdir openacademy</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now we also need to declare our new module inside the <code>config/project.go</code> file.
-Edit the file to make it look as follow:</p>
+<p>Now we also need to declare our new module inside the <code>hexya.toml</code> file.
+Change the <code>Modules</code> key to look like this:</p>
 </div>
 <div class="listingblock">
-<div class="title">config/project.go</div>
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">package project
-
-// Import here anonymously all hexya addons you need in your application
-import (
-	// Import webclient module
-	_ "github.com/hexya-erp/hexya-base/web"
-	_ "github.com/hexya-erp/hexya-demo/openacademy"
-)
-
-NOTE: We highly recommend that you use a Go IDE or editor with autocompletion
-to benefit from the static typing of the Hexya framework.</code></pre>
+<pre class="highlight nowrap"><code class="language-toml" data-lang="toml">Modules = [
+    "github.com/hexya-erp/hexya-demo/openacademy"
+    "github.com/hexya-erp/hexya-base/web"
+]</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -264,8 +256,13 @@ to benefit from the static typing of the Hexya framework.</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-All file paths in this tutorial are relative to the
-<code>$GOPATH/src/github.com/hexya-erp/hexya-demo</code> directory.
+<div class="paragraph">
+<p>All file paths in this tutorial are relative to the
+<code>$GOPATH/src/github.com/hexya-erp/hexya-demo</code> directory.</p>
+</div>
+<div class="paragraph">
+<p>However, <code>hexya</code> commands should be run inside the <code>github.com/hexya-erp/hexya-demo</code></p>
+</div>
 </td>
 </tr>
 </table>
@@ -398,6 +395,19 @@ func init() {
 We leave them as empty functions for the moment.</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+We highly recommend that you use a Go IDE or editor with autocompletion
+to benefit from the static typing of the Hexya framework.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1875,7 +1885,7 @@ field whenever some of its dependencies have been modified.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (models.Environment, models.FieldMap) interface{}</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (models.Environment) interface{}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2413,18 +2423,29 @@ CRUD access control is possible by granting execution on <code>Create</code>, <c
 <code>Write</code> and <code>Unlink</code> methods of a model.</p>
 </div>
 <div class="paragraph">
-<p>It is also possible to restrict access to specific fields on a view or object
-using the field&#8217;s groups attribute.</p>
+<p>It is also possible to restrict access to specific fields on a view or through
+the <code>InvisibleFunc</code> and <code>ReadOnlyFunc</code> field attributes.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_method_execution_control">15.2. Method Execution Control</h3>
 <div class="paragraph">
-<p>By default, only members of <code>security.AdminGroup</code> are allowed to execute a
-method. Other groups should be manually added to allowed groups.</p>
+<p>By default:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CRUD methods can only be executed by members of <code>security.AdminGroup</code>.
+Other groups should be manually added to allowed groups.</p>
+</li>
+<li>
+<p>Other methods can be executed by anybody.
+To restrict execution, you should first revoke execution permission from <code>security.GroupEveryone</code> before granting permission to the desired groups.</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>This is done with <code>AllowGroup()</code> applied on a method object.</p>
+<p>This is done with <code>AllowGroup()</code> and <code>RevokeGroup()</code> applied on a method object.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2433,9 +2454,7 @@ method. Other groups should be manually added to allowed groups.</p>
 <div class="title">Note</div>
 </td>
 <td class="content">
-With the helper method <code>AllowAllToGroup()</code> applied on the method
-collection of an object, we can grant access to all methods of a model at once
-to a group, including methods that are not yet declared.
+With the helper method <code>AllowAllToGroup()</code> applied on the method collection of an object, we can grant access to all CRUD methods of a model at once to a group.
 </td>
 </tr>
 </table>
@@ -2537,9 +2556,77 @@ give permission on the <code>Load</code> method again.
 <div class="sect2">
 <h3 id="_field_access_control">15.3. Field Access Control</h3>
 <div class="paragraph">
-<p>While Method Execution Control is the main security mechanism used in Hexya,
-it is sometimes necessary to limit read or write access for some users to some
-fields. This is done through Field Access Control.</p>
+<p>There is no Field Access Control as such in Hexya, but it is possible to hide fields or set
+them as readonly on views, based on the context.</p>
+</div>
+<div class="paragraph">
+<p>This can be done in two ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Through the <code>invisible</code>, <code>readonly</code> and <code>attrs</code> attributes of view definitions.</p>
+</li>
+<li>
+<p>Through the <code>InvisibleFunc</code> and <code>ReadOnlyFunc</code> field attributes in the field declaration.
+In this case, the result applies to all views.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_view_attributes">15.3.1. View attributes</h4>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>invisible</code></dt>
+<dd>
+<p>Setting the attribute <code>invisible="1"</code> to a field node in a view definition will hide the field from the user.
+This is mostly used for technical fields that are needed for client side computation but must not be displayed.</p>
+</dd>
+<dt class="hdlist1"><code>readonly</code></dt>
+<dd>
+<p>Setting the attribute <code>readonly="1"</code> to a field node, will set it as read only for this view.
+Note that computed fields without inverse method are automatically set as read only.</p>
+</dd>
+<dt class="hdlist1"><code>groups</code></dt>
+<dd>
+<p>This attribute can be set to a comma-separated list of security groups IDs.
+If set, the field will be visible only to users of the given groups.</p>
+</dd>
+<dt class="hdlist1"><code>attrs</code></dt>
+<dd>
+<p>This attribute is used to have dynamic values of the readonly and invisible attributes.</p>
+<div class="paragraph">
+<p>The value of this attribute must be a Python dictionary whose keys are <code>invisible</code>, <code>readonly</code> and <code>required</code>.
+The value for each key must be an Odoo domain evaluated on client side that defines when the corresponding attribute should be true.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-xml" data-lang="xml">(...)
+    &lt;field name="TakenSeats" attrs="{'invisible': [('Seats', '=', False)]}"/&gt;
+(...)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_field_attributes">15.3.2. Field attributes</h4>
+<div class="paragraph">
+<p>Fields have <code>Required</code> and <code>ReadOnly</code> attributes which, if true, will be set for every view and will override attributes in the views.</p>
+</div>
+<div class="paragraph">
+<p>Dynamic behaviour can be obtained through the <code>RequiredFunc</code>, <code>ReadOnlyFunc</code> and <code>InvisibleFunc</code> attributes.
+Each of this attribute take as value a function with the following signature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (Environment) (bool, Conditioner)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the second argument is not nil, it must be a condition that will override the <code>attrs</code> attribute of the view.
+If it is nil, the first argument is used to override the corresponding attribute in the view.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2548,52 +2635,11 @@ fields. This is done through Field Access Control.</p>
 <div class="title">Note</div>
 </td>
 <td class="content">
-<div class="paragraph">
-<p>The following rules apply:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>If a user without <code>Read</code> permission on a field retrieve a record, the value of
-the field will be replaced by its Go zero value.</p>
-</li>
-<li>
-<p>If a user without <code>Write</code> permission on a field writes a record, the value of
-the field will not be updated.</p>
-</li>
-</ul>
-</div>
+These functions are evaluated when the client requests the view definition,
+which may be as little as once a session. The returned condition if any is evaluated at each request by the client.
 </td>
 </tr>
 </table>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Important</div>
-</td>
-<td class="content">
-By default, all fields can be accessed for read and write by
-<code>security.GroupEveryone</code>, a special group to which all users are automatically
-added. Therefore, to change a field access, you <strong>must</strong> revoke access to this
-group first, or your modifications will have no effect.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Let&#8217;s make the <code>TakenSeats</code> readable only by managers:</p>
-</div>
-<div class="listingblock">
-<div class="title">openacademy/session.go</div>
-<div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func init() {
-    (...)
-    h.OpenAcademySession().Fields().TakenSeats().RevokeAccess(security.GroupEveryone, security.Read|security.Write)
-    h.OpenAcademySession().Fields().TakenSeats().GrantAccess(Manager, security.Read)
-    (...)
-}</code></pre>
 </div>
 </div>
 </div>

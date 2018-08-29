@@ -2,7 +2,7 @@
 <html lang="en-us">
 
 <head>
-  <meta name="generator" content="Hugo 0.25.1" />
+  <meta name="generator" content="Hugo 0.40.1" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -139,17 +139,11 @@ ga('send', 'pageview');
 <li><a href="#_defining_method_execution_permissions">2.2. Defining Method Execution Permissions</a></li>
 </ul>
 </li>
-<li><a href="#_field_access_control_fac">3. Field Access Control (FAC)</a>
+<li><a href="#_record_rules_rr">3. Record Rules (RR)</a>
 <ul class="sectlevel2">
-<li><a href="#_rationale_2">3.1. Rationale</a></li>
-<li><a href="#_defining_field_access_permissions">3.2. Defining Field Access Permissions</a></li>
-</ul>
-</li>
-<li><a href="#_record_rules_rr">4. Record Rules (RR)</a>
-<ul class="sectlevel2">
-<li><a href="#_definition">4.1. Definition</a></li>
-<li><a href="#_adding_or_removing_record_rules">4.2. Adding or removing Record Rules</a></li>
-<li><a href="#_record_rules_combination">4.3. Record Rules combination</a></li>
+<li><a href="#_definition">3.1. Definition</a></li>
+<li><a href="#_adding_or_removing_record_rules">3.2. Adding or removing Record Rules</a></li>
+<li><a href="#_record_rules_combination">3.3. Record Rules combination</a></li>
 </ul>
 </li>
 </ul>
@@ -271,8 +265,22 @@ only when called from <code>SetToShipped()</code>.</p>
 <div class="sect2">
 <h3 id="_defining_method_execution_permissions">2.2. Defining Method Execution Permissions</h3>
 <div class="paragraph">
-<p>By default, only members of <code>security.AdminGroup</code> are allowed to execute a
-method. Other groups should be manually added to allowed groups.</p>
+<p>By default:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CRUD methods can only be executed by members of <code>security.AdminGroup</code>.
+Other groups should be manually added to allowed groups.</p>
+</li>
+<li>
+<p>Other methods can be executed by anybody.
+To restrict execution, you should first revoke execution permission from <code>security.GroupEveryone</code> before granting permission to the desired groups.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Two methods control execution permissions:</p>
 </div>
 <div class="dlist">
 <dl>
@@ -310,6 +318,7 @@ chained
     func(rs h.UsersSet) {
         return "Hello"
     }).
+    RevokeGroup(security.GroupEveryone).
     AllowGroup(sale.GroupSalesman).
     AllowGroup(stock.GroupPicker, h.Users().Methods().Create())
     // Pickers can say hello only from the 'Create' method</code></pre>
@@ -319,7 +328,7 @@ chained
 <dl>
 <dt class="hdlist1"><code><strong>(*MethodCollection) AllowAllToGroup(group *security.Group)</strong></code></dt>
 <dd>
-<p>This is a helper method to grant access to all methods of a model at once:</p>
+<p>This is a helper method to grant access to all CRUD methods of a model at once:</p>
 </dd>
 </dl>
 </div>
@@ -332,9 +341,7 @@ chained
 <dl>
 <dt class="hdlist1"><code><strong>(*MethodCollection) RevokeAllFromGroup(group *security.Group)</strong></code></dt>
 <dd>
-<p>Revokes permissions on all methods given by AllowAllToGroup.
-It simply removes the group from the groups allowed on every method, but does
-not change any specific permission granted on a per method basis.</p>
+<p>Revokes permissions on all CRUD methods for the given group.</p>
 </dd>
 </dl>
 </div>
@@ -342,90 +349,10 @@ not change any specific permission granted on a per method basis.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_field_access_control_fac">3. Field Access Control (FAC)</h2>
+<h2 id="_record_rules_rr">3. Record Rules (RR)</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_rationale_2">3.1. Rationale</h3>
-<div class="paragraph">
-<p>While MEC is the main security mechanism used in Hexya, it is sometimes necessary
-to limit read or write access for some users to some fields. This is
-particularly true in the user interface.</p>
-</div>
-<div class="paragraph">
-<p>This is done through Field Access Control. The following rules apply:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>If a user without <code>Read</code> permission on a field retrieve a record, the value of
-the field will be replaced by its Go zero value.</p>
-</li>
-<li>
-<p>If a user without <code>Write</code> permission on a field writes a record, the value of
-the field will not be updated.</p>
-</li>
-<li>
-<p>Clients <strong>should</strong> make this behaviour explicit in their UI by removing non
-readable fields and marking as read only fields without <code>Write</code> permission.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_defining_field_access_permissions">3.2. Defining Field Access Permissions</h3>
-<div class="paragraph">
-<p>Two permissions are applicable to fields: <code>security.Read</code> and
-<code>security.Write</code>.</p>
-</div>
-<div class="paragraph">
-<p>By default, <code>security.GroupEveryone</code> is granted <code>security.Read</code> and
-<code>security.Write</code> permissions on all fields.</p>
-</div>
-<div class="paragraph">
-<p>Field permissions can be modified with the following methods:</p>
-</div>
-<div class="dlist">
-<dl>
-<dt class="hdlist1"><code><strong>(*Field) GrantAccess(group *security.Group, perm security.Permission) *Field</strong></code></dt>
-<dd>
-<p>Grant the given <code>perm</code> to the given <code>group</code> on this field.</p>
-</dd>
-<dt class="hdlist1"><code><strong>(*Field) RevokeAccess(group *security.Group, perm security.Permission) *Field</strong></code></dt>
-<dd>
-<p>Revoke the given <code>perm</code> to the given <code>group</code> on this field if it has been
-granted previously, otherwise does nothing.</p>
-</dd>
-</dl>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-These methods return a pointer to the receiver so that they can be
-chained.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">salesManager := security.Registry.GetGroup("sale_manager")
-h.Partner().Fields().Phone().
-    RevokeAccess(security.GroupEveryOne, security.Read).
-    AllowAccess(salesManager, security.Read)</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_record_rules_rr">4. Record Rules (RR)</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_definition">4.1. Definition</h3>
+<h3 id="_definition">3.1. Definition</h3>
 <div class="paragraph">
 <p>Record Rules allow to grant or deny a group some permissions on a selection of
 records. This could be the case for example to allow a salesman only to see his
@@ -456,7 +383,7 @@ get the current user.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_adding_or_removing_record_rules">4.2. Adding or removing Record Rules</h3>
+<h3 id="_adding_or_removing_record_rules">3.2. Adding or removing Record Rules</h3>
 <div class="paragraph">
 <p>Record Rules are added or removed from the Record Rules Registry with the
 following functions:</p>
@@ -505,7 +432,7 @@ given <code>model</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_record_rules_combination">4.3. Record Rules combination</h3>
+<h3 id="_record_rules_combination">3.3. Record Rules combination</h3>
 <div class="paragraph">
 <p>Global rules and group rules (rules restricted to specific groups versus groups
 applying to all users) are used quite differently:</p>

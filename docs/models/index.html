@@ -2,7 +2,7 @@
 <html lang="en-us">
 
 <head>
-  <meta name="generator" content="Hugo 0.25.1" />
+  <meta name="generator" content="Hugo 0.40.1" />
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -317,11 +317,15 @@ RecordSet of the type of the related model.
 <h4 id="_crud_methods">2.3.2. CRUD Methods</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>(Model) Create(env Environment, data *RecordType) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>(Model) Create(env Environment, data *RecordType, fieldsToUnset &#8230;&#8203;models.FieldNamer) RecordSetType</strong></code></dt>
 <dd>
 <p>Insert a new record in the database with the given data and returns the
 inserted Record. Fields which are not given a value are set to the type&#8217;s zero
-value.</p>
+value or the default value if the field is required.</p>
+<div class="paragraph">
+<p>If you want to set a required field to its Go default value instead of the fields default, add this field
+to the fieldsToUnset slice.</p>
+</div>
 </dd>
 </dl>
 </div>
@@ -355,7 +359,7 @@ fmt.Println(customer.Name())
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>Write(data *RecordType, fieldsToUnset &#8230;&#8203;models.FieldName) bool</strong></code></dt>
+<dt class="hdlist1"><code><strong>Write(data *RecordType, fieldsToUnset &#8230;&#8203;models.FieldNamer) bool</strong></code></dt>
 <dd>
 <p>Update records in the database with the given data. Updates are made with a
 single SQL query. Fields in <code>fieldsToUnset</code> are first set to their Go zero
@@ -1137,6 +1141,7 @@ apply on a Field instance.</p>
 <dt class="hdlist1"><code><strong>(f *Field) SetDepends(value []string) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetStored(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetRequired(value bool) *Field</strong></code></dt>
+<dt class="hdlist1"><code><strong>(f *Field) SetReadOnly(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetUnique(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetIndex(value bool) *Field</strong></code></dt>
 <dt class="hdlist1"><code><strong>(f *Field) SetNoCopy(value bool) *Field</strong></code></dt>
@@ -1267,6 +1272,29 @@ session.AddFields(map[string]models.FieldDefinition{
 <dd>
 <p>Defines the field as required (i.e. not null).</p>
 </dd>
+<dt class="hdlist1"><code>RequiredFunc</code> func(Environment) (bool, Conditioner)</dt>
+<dd>
+<p>Defines the field as required depending on the returned values of the given function.</p>
+<div class="paragraph">
+<p>If the second parameter is not nil, the condition is passed as is to the client for evaluation.</p>
+</div>
+<div class="paragraph">
+<p>If the second parameter is nili, then the first returned argument will define if the field is required.</p>
+</div>
+</dd>
+<dt class="hdlist1"><code>ReadOnly</code> bool</dt>
+<dd>
+<p>This field will be shown as read only on all views.
+Note that this does not prevent setting the field by code or through a method.</p>
+</dd>
+<dt class="hdlist1"><code>ReadOnlyFunc</code> func(Environment) (bool, string)</dt>
+<dd>
+<p>Dynamic version of <code>ReadOnly</code>. Works the same way as <code>RequiredFunc</code>.</p>
+</dd>
+<dt class="hdlist1"><code>InvisibleFunc</code> func(Environment) (bool, string)</dt>
+<dd>
+<p>Defines if the field should be visible in views. Works the same way as <code>RequiredFunc</code>.</p>
+</dd>
 <dt class="hdlist1"><code>Unique</code> bool</dt>
 <dd>
 <p>Defines the field as unique in the database table.</p>
@@ -1279,12 +1307,12 @@ session.AddFields(map[string]models.FieldDefinition{
 <dd>
 <p>Fields marked with this tag will not be copied when a record is duplicated.</p>
 </dd>
-<dt class="hdlist1"><code>Default</code> func(Environment, FieldMap) interface{}</dt>
+<dt class="hdlist1"><code>Default</code> func(Environment) interface{}</dt>
 <dd>
 <p>Function that will be called by clients to set a default value in the user
 interface before calling Create.</p>
 <div class="paragraph">
-<p>The default value will also be set when calling Create only if this is a required field and not value is set.</p>
+<p>The default value will also be set when calling Create only if this is a required field and no value is set.</p>
 </div>
 </dd>
 <dt class="hdlist1"><code>OnChange</code> Methoder</dt>
