@@ -6,7 +6,7 @@
     <description>Recent content on Hexya</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 28 Jan 2018 10:00:00 +0200</lastBuildDate>
+    <lastBuildDate>Sat, 17 Nov 2018 14:31:36 +0100</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
@@ -29,6 +29,16 @@
       
       <guid>/docs/install/</guid>
       <description>Table of Contents 1. Introduction 2. Prerequisites 2.1. Install Go 2.2. Install lessc   3. Download 3.1. Download Hexya 3.2. Download Hexya modules   4. Create a project 4.1. Download Demo Project 4.2. Creating a custom project 4.3. Generate Hexya   5. Synchronise database 5.1. Setup Postgresql 5.2. Synchronise database schema with models   6. Running Hexya   1. Introduction Since Hexya is a modular ERP at compile time, it is only distributed as source code.</description>
+    </item>
+    
+    <item>
+      <title>Second Technology Preview</title>
+      <link>/blog/preview2/</link>
+      <pubDate>Sat, 17 Nov 2018 14:31:36 +0100</pubDate>
+      
+      <guid>/blog/preview2/</guid>
+      <description>It&amp;rsquo;s been a long time since we released our first technology preview back in January. But actually, behind the scene, a lot of work has been done since then.
+By playing with the new demo, you will certainly notice the new UI theme and a few improvements here and there. But the main part of the work has been on the core of Hexya, which, sadly, cannot be seen on the demo itself.</description>
     </item>
     
     <item>
