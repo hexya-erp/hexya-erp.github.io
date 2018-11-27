@@ -227,14 +227,27 @@ ga('send', 'pageview');
 <div class="paragraph">
 <p>This tutorial requires having installed Hexya <a href="#install.adoc">[install.adoc]</a>.</p>
 </div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+We suppose that you have created a project called <code>hexya-demo</code> inside a directory of the same name,
+with <code>github.com/hexya-erp/hexya-demo</code> as path.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>During this tutorial, you will create an <code>openacademy</code> module for managing
-training courses. We create this module inside the hexya-demo directory:</p>
+<p>During this tutorial, you will create an <code>openacademy</code> module for managing training courses.
+We create this module inside the <code>hexya-demo</code> project directory as a local module:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
-$ mkdir openacademy</code></pre>
+<pre class="highlight nowrap"><code class="language-shell" data-lang="shell">$ cd hexya-demo
+$ hexya module new openacademy</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -245,7 +258,7 @@ Change the <code>Modules</code> key to look like this:</p>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-toml" data-lang="toml">Modules = [
     "github.com/hexya-erp/hexya-demo/openacademy",
-    "github.com/hexya-erp/hexya-base/web"
+    "github.com/hexya-addons/web"
 ]</code></pre>
 </div>
 </div>
@@ -258,10 +271,7 @@ Change the <code>Modules</code> key to look like this:</p>
 <td class="content">
 <div class="paragraph">
 <p>All file paths in this tutorial are relative to the
-<code>$GOPATH/src/github.com/hexya-erp/hexya-demo</code> directory.</p>
-</div>
-<div class="paragraph">
-<p>However, <code>hexya</code> commands should be run inside the <code>github.com/hexya-erp/hexya-demo</code></p>
+<code>hexya-demo</code> directory where the <code>hexya</code> commands should be run.</p>
 </div>
 </td>
 </tr>
@@ -368,7 +378,7 @@ created above:</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/server"
+	"github.com/hexya-erp/hexya/src/server"
 )
 
 const MODULE_NAME string = "openacademy"
@@ -403,7 +413,7 @@ We leave them as empty functions for the moment.</p>
 <div class="title">Note</div>
 </td>
 <td class="content">
-We highly recommend that you use a Go IDE or editor with autocompletion
+We highly recommend that you use a Go IDE or editor with auto-completion
 to benefit from the static typing of the Hexya framework.
 </td>
 </tr>
@@ -456,7 +466,7 @@ the module.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models"
+	"github.com/hexya-erp/hexya/src/models"
 )
 
 func init() {
@@ -489,12 +499,11 @@ will provide the structs and methods of this model.</p>
 </div>
 <div class="paragraph">
 <p>This is done with the <code>hexya generate</code> command that must be executed at the
-project&#8217;s root (i.e. <code>$GOPATH/src/github.com/hexya-erp/hexya-demo</code>).</p>
+project&#8217;s root (i.e. <code>hexya-demo</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-bash" data-lang="bash">$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
-$ hexya generate</code></pre>
+<pre class="highlight nowrap"><code class="language-bash" data-lang="bash">$ hexya generate .</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -556,8 +565,8 @@ defined by the <code>AddField</code> method of the model.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool/h" <b class="conum">(1)</b>
+	"github.com/hexya-erp/hexya/src/models"
+	"github.com/hexya-erp/pool/h" <b class="conum">(1)</b>
 )
 
 func init() {
@@ -1023,8 +1032,7 @@ definitions using the <code>hexya updatedb</code> command in the project root di
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-bash" data-lang="bash">$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
-$ hexya updatedb -o</code></pre>
+<pre class="highlight nowrap"><code class="language-bash" data-lang="bash">$ hexya updatedb -o</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1146,9 +1154,9 @@ the new model
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/hexya/models/types"
-	"github.com/hexya-erp/hexya/pool/h"
+	"github.com/hexya-erp/hexya/src/models"
+	"github.com/hexya-erp/hexya/src/models/types"
+	"github.com/hexya-erp/pool/h"
 )
 
 func init() { <b class="conum">(1)</b>
@@ -1324,8 +1332,8 @@ for _, tag := range myOrder().Tags().Records() {
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool/h"
+	"github.com/hexya-erp/hexya/src/models"
+	"github.com/hexya-erp/pool/h"
 )
 
 func init() {
@@ -1347,9 +1355,9 @@ func init() {
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/hexya/models/types"
-	"github.com/hexya-erp/hexya/pool/h"
+	"github.com/hexya-erp/hexya/src/models"
+	"github.com/hexya-erp/hexya/src/models/types"
+	"github.com/hexya-erp/pool/h"
 )
 
 func init() {
@@ -1638,8 +1646,8 @@ the session-partner relation.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool/h"
+	"github.com/hexya-erp/hexya/src/models"
+	"github.com/hexya-erp/pool/h"
 )
 
 func init() {
@@ -2042,7 +2050,7 @@ Conditions are built with the <code>q</code> package</p>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">import (
 (...)
-	"github.com/hexya-erp/hexya/pool/q"
+	"github.com/hexya-erp/pool/q"
 )
 (...)
     "Instructor": models.Many2OneField{RelationModel: h.Partner(),
@@ -2479,8 +2487,8 @@ model.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models/security"
-	"github.com/hexya-erp/hexya/hexya/server"
+	"github.com/hexya-erp/hexya/src/models/security"
+	"github.com/hexya-erp/hexya/src/server"
 )
 
 const MODULE_NAME string = "openacademy"
@@ -2675,7 +2683,7 @@ of the group must be able to modify it.</p>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">import (
 (...)
-	"github.com/hexya-erp/hexya/pool/q"
+	"github.com/hexya-erp/pool/q"
 )
 
 func getCurrentUser(rs h.OpenAcademyCourseSet) h.UserSet {
@@ -2739,9 +2747,9 @@ session, or for a list of sessions at once.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">package openacademy
 
 import (
-	"github.com/hexya-erp/hexya/hexya/models"
-	"github.com/hexya-erp/hexya/pool/h"
-	"github.com/hexya-erp/hexya/pool/q"
+	"github.com/hexya-erp/hexya/src/models"
+	"github.com/hexya-erp/pool/h"
+	"github.com/hexya-erp/pool/q"
 )
 
 func init() {
@@ -2861,8 +2869,7 @@ translation:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code>$ cd $GOPATH/src/github.com/hexya-erp/hexya-demo
-$ mkdir openacademy/i18n
+<pre class="highlight nowrap"><code>$ mkdir openacademy/i18n
 $ hexya i18n update ./openacademy -l fr</code></pre>
 </div>
 </div>
