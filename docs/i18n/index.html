@@ -104,6 +104,8 @@ ga('send', 'pageview');
     
     <li><a href="/blog/" >Blog</a></li>
     
+    <li><a href="/contact/" >Contact</a></li>
+    
     <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
     
       </ul>
@@ -231,7 +233,7 @@ To translate such strings, they need to be passed to the <code>T()</code> method
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">h.OpenAcademyCourse().Methods().HelloWorld().DeclareMethod(
     `HelloWorld returns a localized "Hello World" message`,
-    func(rs h.PartnerSet) string {
+    func(rs m.PartnerSet) string {
         return rs.T("Hello World")
     })</code></pre>
 </div>

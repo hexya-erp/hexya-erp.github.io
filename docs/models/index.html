@@ -104,6 +104,8 @@ ga('send', 'pageview');
     
     <li><a href="/blog/" >Blog</a></li>
     
+    <li><a href="/contact/" >Contact</a></li>
+    
     <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
     
       </ul>
@@ -198,22 +200,22 @@ RecordSet.</p>
 </div>
 <div class="paragraph">
 <p>Each model has its own RecordSet Go type named by appending "Set" to the
-model&#8217;s name (e.g. the RecordSet type for the <code>Partner</code> model is called
-<code>PartnerSet</code>). All RecordSet types implement the <code>RecordSet</code> interface, but
+model&#8217;s name in the <code>m</code> package (e.g. the RecordSet type for the <code>Partner</code> model is called
+<code>m.PartnerSet</code>). All RecordSet types implement the <code>models.RecordSet</code> interface, but
 also a whole set of methods with defined names but which differ by the
 parameters or return values types. For example, all RecordSets implement a
-<code>Create</code> method but each take a Record struct of its model type and return its
+<code>Create</code> method but each take a Record data of its model type and return its
 own type.</p>
 </div>
 <div class="paragraph">
 <p>Each model has also its own Record Go type which is named by appending "Data"
-to its model&#8217;s name (e.g. <code>PartnerData</code>). A Record type is simply a struct
-with all the fields of the model whether they are stored into the database or
-computed on the fly. Record types are used to read and write values to
-RecordSets.</p>
+to its model&#8217;s name in the m package (e.g. <code>m.PartnerData</code>).
+A Record data type can hold the values of all the fields of the model whether they are stored into the database or
+computed on the fly.
+Record types are used to read and write values to RecordSets.</p>
 </div>
 <div class="paragraph">
-<p>All Record and RecordSet types live in the <code>h</code> package.</p>
+<p>Record and RecordSet types live in the <code>m</code> package.</p>
 </div>
 </div>
 <div class="sect2">
@@ -241,12 +243,12 @@ calling the <code>NewSet(env Environment)</code> of its model instance.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>A parameter or return value of type <code>RecordSetType</code> means the actual type of
-the RecordSet for this model (not an interface).</p>
+<p>A parameter or return value of type <code>m.ModelSet</code> means the actual type of
+the RecordSet for this model (e.g. <code>m.PartnerSet</code>).</p>
 </div>
 <div class="paragraph">
-<p>A parameter or return value of type <code>RecordType</code> means the actual type of the
-Record struct for this model (e.g. <code>PartnerData</code>).</p>
+<p>A parameter or return value of type <code>m.ModelData</code> means the actual type of the
+Record struct for this model (e.g. <code>m.PartnerData</code>).</p>
 </div>
 </td>
 </tr>
@@ -256,14 +258,14 @@ Record struct for this model (e.g. <code>PartnerData</code>).</p>
 <h4 id="_data_access_methods">2.3.1. Data Access Methods</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>First() RecordType</strong></code></dt>
+<dt class="hdlist1"><code><strong>First() m.ModelData</strong></code></dt>
 <dd>
-<p>Returns a copy of the first Record of the RecordSet. It returns an empty
-RecordType if the RecordSet is empty.</p>
+<p>Returns the values of the first Record of the RecordSet. It returns an empty
+<code>m.ModelData</code> if the RecordSet is empty.</p>
 </dd>
-<dt class="hdlist1"><code><strong>All() []RecordType</strong></code></dt>
+<dt class="hdlist1"><code><strong>All() []m.ModelData</strong></code></dt>
 <dd>
-<p>Returns all Records of the RecordSet as a slice of RecordType. It returns an
+<p>Returns all Records of the RecordSet as a slice of <code>m.ModelData</code>. It returns an
 empty slice if the RecordSet is empty.</p>
 </dd>
 <dt class="hdlist1"><code><strong>Read(fields []string) []FieldMap</strong></code></dt>
@@ -275,7 +277,7 @@ empty slice if the RecordSet is empty.</p>
 </div>
 <div class="paragraph">
 <p>RecordSets implement type safe getters and setters for all fields of the
-Record struct type.</p>
+RecordSet type.</p>
 </div>
 <div class="dlist">
 <dl>
@@ -283,7 +285,7 @@ Record struct type.</p>
 <dd>
 <p>Getter for the field called <code><em>FieldName</em></code> of type <code><em>FieldType</em></code> of the
 <code>First()</code> Record of the RecordSet. Call to the getter will make a call to
-<code>Read()</code> first if the field is not loaded in the RecordSet&#8217;s cache.</p>
+<code>Load()</code> first if the field is not loaded in the RecordSet&#8217;s cache.</p>
 <div class="paragraph">
 <p>It returns the Go zero value of the type if it is called on an empty RecordSet.</p>
 </div>
@@ -317,25 +319,21 @@ RecordSet of the type of the related model.
 <h4 id="_crud_methods">2.3.2. CRUD Methods</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>(Model) Create(env Environment, data *RecordType, fieldsToUnset &#8230;&#8203;models.FieldNamer) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>(Model) Create(env Environment, data m.ModelData) m.ModelSet</strong></code></dt>
 <dd>
 <p>Insert a new record in the database with the given data and returns the
-inserted Record. Fields which are not given a value are set to the type&#8217;s zero
+inserted Record. Fields which are not given a value in data are set to the type&#8217;s zero
 value or the default value if the field is required.</p>
-<div class="paragraph">
-<p>If you want to set a required field to its Go default value instead of the fields default, add this field
-to the fieldsToUnset slice.</p>
-</div>
 </dd>
 </dl>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">customer := h.Partner().Create(env, q.PartnerData{
-    Name: "Jane Smith",
-    Email: "jsmith@example.com",
-    Position: "Sale's Manager",
-})
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">customer := h.Partner().Create(env, h.Partner.NewData().
+    SetName("Jane Smith").
+    SetEmail("jsmith@example.com").
+    SetPosition("Sale's Manager"))
+
 fmt.Println(customer.Name())
 // Returns:
 // Jane Smith</code></pre>
@@ -347,11 +345,11 @@ the actual values of the RecordSet are silently ignored.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">customer := h.Partner().NewSet(env).Create(h.PartnerData{
-    Name: "Jane Smith",
-    Email: "jsmith@example.com",
-    Position: "Sale's Manager",
-})
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">customer := h.Partner().NewSet(env).Create(h.Partner.NewData().
+    SetName("Jane Smith").
+    SetEmail("jsmith@example.com").
+    SetPosition("Sale's Manager"))
+
 fmt.Println(customer.Name())
 // Returns:
 // Jane Smith</code></pre>
@@ -359,37 +357,19 @@ fmt.Println(customer.Name())
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>Write(data *RecordType, fieldsToUnset &#8230;&#8203;models.FieldNamer) bool</strong></code></dt>
+<dt class="hdlist1"><code><strong>Write(data m.ModelData) bool</strong></code></dt>
 <dd>
 <p>Update records in the database with the given data. Updates are made with a
-single SQL query. Fields in <code>fieldsToUnset</code> are first set to their Go zero
-value, then all non-zero values of data are updated.</p>
+single SQL query.</p>
 </dd>
 </dl>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">partner := h.Partner().Search(env, q.Partner().Where().Company().Name().Equals("NDP Systèmes"))
-partner.Write(h.Partner{
-    Lang: "fr_FR",
-})</code></pre>
+partner.Write(h.Partner().NewData().
+    SetLang("fr_FR"))</code></pre>
 </div>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Important</div>
-</td>
-<td class="content">
-As said above, zero values in the <code>data</code> struct fields will <strong>NOT</strong> be
-updated. If you are not sure whether the values you pass in the <code>data</code> struct
-are zero values or not (e.g. when setting from a variable), include their
-<code>FieldName</code> in the <code>fieldsToUnset</code> to be sure the value will be correctly
-updated in case it is a zero value.
-</td>
-</tr>
-</table>
 </div>
 <div class="dlist">
 <dl>
@@ -397,11 +377,11 @@ updated in case it is a zero value.
 <dd>
 <p>Deletes the database records that are linked with this RecordSet.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Load(fields &#8230;&#8203;models.FieldName) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Load(fields &#8230;&#8203;string)</strong></code></dt>
 <dd>
-<p>Populates this RecordSet with the data from the database matching the current
-search condition. If fields are given, only those fields are fetched and the
-other fields of the Records are set to their <code>go</code> zero value.</p>
+<p>Load the data from the database matching the RecordSet current
+search condition and store them in cache for access through the getters.
+If fields are given, only those fields are fetched.</p>
 <div class="paragraph">
 <p>Calling Load on an empty RecordSet with an empty query will have no effect.
 To load a whole table, use <code>FetchAll()</code>.</p>
@@ -431,7 +411,7 @@ fields arguments) on the first call to a getter or when calling <code>Records()<
 <td class="content">
 Calling <code>Load()</code> with fields arguments before any other call allows to
 finely control which fields will be queried from the database since subsequent
-calls to a getter will not call <code>Read()</code> again if the value is already loaded.
+calls to a getter will not call <code>Load()</code> again if the value is already loaded.
 </td>
 </tr>
 </table>
@@ -439,7 +419,7 @@ calls to a getter will not call <code>Read()</code> again if the value is alread
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">partners := h.Partner().NewSet(env)
-partners.Search(q.Partner().Where().Name().ILike("John")).Read(h.Partner().Name, h.Partner().Birthday)
+partners.Search(q.Partner().Where().Name().ILike("John")).Load("Name", "Birthday")
 
 // The following lines will not load from the database, but use
 // the values cached in the RecordSet.
@@ -453,7 +433,7 @@ for _, p := range partners.Records() {
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>FetchAll() RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>FetchAll() m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a RecordSet with all items of the table, regardless of the current
 RecordSet query. It is mainly meant to be used on an empty RecordSet.</p>
@@ -465,10 +445,10 @@ RecordSet query. It is mainly meant to be used on an empty RecordSet.</p>
 <h4 id="_search_methods">2.3.3. Search Methods</h4>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>(Model) Search(env Environment, condition ConditionType) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>(Model) Search(env Environment, condition q.ModelCondition) m.ModelSet</strong></code></dt>
 <dd>
 <p>Search the database for matching records and return them as RecordSet.
-A new Condition instance can be created from a model instance.</p>
+A new Condition instance can be created from <code>q.Model()</code>.</p>
 </dd>
 </dl>
 </div>
@@ -480,7 +460,7 @@ users := h.Users().Search(env, cond)</code></pre>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>(RecordSet) Search(condition ConditionType) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>(RecordSet) Search(condition q.ModelCondition) m.ModelSet</strong></code></dt>
 <dd>
 <p>Apply the given search condition to the given RecordSet. This will narrow the
 RecordSet current filter.</p>
@@ -523,7 +503,7 @@ will be available:</p>
 </div>
 <div class="paragraph">
 <p><code>Equals</code>, <code>NotEquals</code>, <code>Greater</code>, <code>GreaterOrEqual</code>, <code>Lower</code>, <code>LowerOrEqual</code>,
-<code>Like</code>, <code>NotLike</code>,<code>Contains</code>, <code>NotContains</code>, <code>IContains</code>, <code>NotIContains</code>, <code>In</code>,
+<code>Like</code>, <code>ILike</code>, <code>Contains</code>, <code>NotContains</code>, <code>IContains</code>, <code>NotIContains</code>, <code>In</code>,
 <code>NotIn</code>, <code>ChildOf</code>, <code>IsNull</code>, <code>IsNotNull</code></p>
 </div>
 <div class="paragraph">
@@ -604,20 +584,25 @@ users := h.Users().Search(env, cond)</code></pre>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>(Model) Browse(env Environment, ids []int64) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>(Model) Browse(env Environment, ids []int64) m.ModelSet</strong></code></dt>
 <dd>
 <p>Search the database and returns a RecordSet with the records having the given ids.</p>
 </dd>
-<dt class="hdlist1"><code><strong>(RecordSet) Browse(ids []int64) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>(RecordSet) Browse(ids []int64) m.ModelSet</strong></code></dt>
 <dd>
 <p>Narrows this RecordSet by selecting only those with the given ids.
 This function is only a shortcut for <code>Search</code> on a list on ids.</p>
+</dd>
+<dt class="hdlist1"><code><strong>(Model) BrowseOne(env Environment, id int64) m.ModelSet</strong></code></dt>
+<dt class="hdlist1"><code><strong>(RecordSet) BrowseOne(ids int64) m.ModelSet</strong></code></dt>
+<dd>
+<p>Same as Browse but for a single id.</p>
 </dd>
 <dt class="hdlist1"><code><strong>SearchCount() int</strong></code></dt>
 <dd>
 <p>Return the number of records matching the search condition.</p>
 </dd>
-<dt class="hdlist1"><code><strong>SearchByName(name string, op operator.Operator, additionalCond Condition, limit int) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>SearchByName(name string, op operator.Operator, additionalCond Condition, limit int) m.ModelSet</strong></code></dt>
 <dd>
 <p>Search for records that have a display name matching the given
 <code>name</code> pattern when compared with the given <code>op</code> operator, while also
@@ -628,20 +613,20 @@ value for a relational field. Sometimes be seen as the inverse
 function of <code>NameGet</code> but it is not guaranteed to be.</p>
 </div>
 </dd>
-<dt class="hdlist1"><code><strong>FetchAll() RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>FetchAll() m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a RecordSet with all the records in the database for the RecordSet&#8217;s
 model.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Limit(n int) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Limit(n int) m.ModelSet</strong></code></dt>
 <dd>
 <p>Limit the search to <code>n</code> results.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Offset(n int) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Offset(n int) m.ModelSet</strong></code></dt>
 <dd>
 <p>Offset the search by <code>n</code> results.</p>
 </dd>
-<dt class="hdlist1"><code><strong>OrderBy(exprs &#8230;&#8203;string) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>OrderBy(exprs &#8230;&#8203;string) m.ModelSet</strong></code></dt>
 <dd>
 <p>Order the results by the given expressions. Each expression is a string with a
 valid field name and optionally a direction.</p>
@@ -671,11 +656,7 @@ the RecordSet if it is not already loaded.</p>
 <dd>
 <p>Returns the number of records in this RecordSet.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Record(i int) RecordSetType</strong></code></dt>
-<dd>
-<p>Returns a new RecordSet with only the i<sup>th</sup> Record inside.</p>
-</dd>
-<dt class="hdlist1"><code><strong>Records() []RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Records() []m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a slice of RecordSets, each with only one Record of the current
 RecordSet.</p>
@@ -685,7 +666,7 @@ RecordSet.</p>
 <p>Check that this RecordSet contains only one Record. Panics if there are more
 than one Record or if there are no Records at all.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Filtered(fn func(RecordType) bool) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Filtered(fn func(m.ModelSet) bool) m.ModelSet</strong></code></dt>
 <dd>
 <p>Select the records in this RecordSet such that fn(Record) is true, and return
 them as a RecordSet. Filtered will use the data in cache if present.</p>
@@ -708,7 +689,7 @@ Set.
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>Sorted(less func(RecordSet, RecordSet) bool) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Sorted(less func(RecordSet, RecordSet) bool) m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a sorted copy of this RecordSet. <code>less(rs1, rs2)</code> should return true
 if rs1 &lt; rs2.</p>
@@ -716,26 +697,26 @@ if rs1 &lt; rs2.</p>
 <p>The Sort is not guaranteed to be stable.</p>
 </div>
 </dd>
-<dt class="hdlist1"><code><strong>SortedDefault() RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>SortedDefault() m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a sorted copy of this RecordSet according to the model&#8217;s default order.</p>
 </dd>
-<dt class="hdlist1"><code><strong>SortedByField(f FieldNamer, reverse bool) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>SortedByField(f FieldNamer, reverse bool) m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a sorted copy of this RecordSet by comparing the given field.
 If reverse is true, the sort is done in reversed order.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Union(other RecordSetType) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Union(other m.ModelSet) m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a new RecordSet that is the union of this RecordSet and the given
 <code>other</code> RecordSet. The result is guaranteed to be a set of unique records.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Subtract(other RecordSetType) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Subtract(other m.ModelSet) m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a RecordSet with the Records that are in this RecordSet but not in the
 given 'other' one. The result is guaranteed to be a set of unique records.</p>
 </dd>
-<dt class="hdlist1"><code><strong>Equals(other RecordSetType) bool</strong></code></dt>
+<dt class="hdlist1"><code><strong>Equals(other m.ModelSet) bool</strong></code></dt>
 <dd>
 <p>Returns true if this RecordSet is equal to the other RecordSet, that is they
 are from the same model and reference the same ids.</p>
@@ -888,7 +869,7 @@ to be applied on the RecordSet.</p>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>Sudo(uid &#8230;&#8203;int64) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>Sudo(uid &#8230;&#8203;int64) m.ModelSet</strong></code></dt>
 <dd>
 <p>Call the next method as Super User. If uid is given, use the given user id
 instead.</p>
@@ -905,16 +886,16 @@ partners.Sudo(noReplyUser.ID()).SendConfirmationEmail()</code></pre>
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>WithEnv(env Environment) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>WithEnv(env Environment) m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a copy of the current RecordSet with the given Environment.</p>
 </dd>
-<dt class="hdlist1"><code><strong>WithContext(key string, value interface{}) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>WithContext(key string, value interface{}) m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a copy of the current RecordSet with its context extended by the
 given key and value.</p>
 </dd>
-<dt class="hdlist1"><code><strong>WithNewContext(context types.Context) RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>WithNewContext(context types.Context) m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a copy of the current RecordSet with its context replaced by the
 given one.</p>
@@ -1004,7 +985,7 @@ the main package or of a package called by the module&#8217;s main package.</p>
 <td class="content">
 <div class="paragraph">
 <p>After creating or modifying a model, you must run <code>hexya generate</code> to
-generate the types in the <code>h</code> and <code>q</code> packages before starting the Hexya server.</p>
+generate the types in the <code>h</code>, <code>m</code> and <code>q</code> packages before starting the Hexya server.</p>
 </div>
 <div class="paragraph">
 <p>Running <code>hexya generate</code> will also allow you to obtain code completion and
@@ -1122,9 +1103,6 @@ in the client. Text fields are mapped to go strings.</p>
 </dd>
 </dl>
 </div>
-<div class="paragraph">
-<p>As in the example below:</p>
-</div>
 <div class="sect3">
 <h4 id="_overriding_fields">4.2.1. Overriding fields</h4>
 <div class="paragraph">
@@ -1154,7 +1132,9 @@ apply on a Field instance.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">course := h.Course().Fields().Name().SetString("MyNewName").SetHelp("This is the new name of the course")</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">course := h.Course().Fields().Name().
+    SetString("MyNewName").
+    SetHelp("This is the new name of the course")</code></pre>
 </div>
 </div>
 </div>
@@ -1202,7 +1182,7 @@ is pointing to the same model.</p>
 <p>Defines what to do with this record if the target record is deleted. Possible
 values are <code>models.SetNull</code> (default), <code>models.Restrict</code> and <code>models.Cascade</code>.</p>
 </dd>
-<dt class="hdlist1"><code>Selection</code> map[string]string</dt>
+<dt class="hdlist1"><code>Selection</code> types.Selection</dt>
 <dd>
 <p>Map of predefined allowed values for a Selection field. The map keys are the
 actual values, and the map values are the labels to display for each value.</p>
@@ -1326,7 +1306,7 @@ field names to unset.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType) (*RecordType, []models.FieldNamer)</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (m.ModelSet) m.ModelData</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1368,7 +1348,7 @@ signature:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType)</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (m.ModelSet)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1411,7 +1391,7 @@ Record struct with the values to update.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType) *RecordType</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (m.ModelSet) m.ModelData</code></pre>
 </div>
 </div>
 <div class="dlist">
@@ -1426,7 +1406,7 @@ method must have the following signature:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (RecordSetType, valueType)</code></pre>
+<pre class="highlight nowrap"><code class="language-go" data-lang="go">func (m.ModelSet, valueType)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1557,7 +1537,7 @@ actual implementation. Layer functions must meet the following constraints:</p>
 <ul>
 <li>
 <p>Its first argument is the method&#8217;s receiver. It must be of the
-<code><em>RecordSetType</em></code> of the model.</p>
+<code>m.ModelSet</code> type.</p>
 </li>
 <li>
 <p>It must panic when an error is encountered to force transaction rollback
@@ -1588,7 +1568,7 @@ the actual Method creation.</p>
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">// Create a new method called 'UpdateBirthday' on the 'Partner' model
 h.Partner().Methods().UpdateBirthday().DeclareMethod(
     `PartnerUpdateBirthday updates this partner birthday.`,
-    func (rs PartnerSet, birthday time.Time) {
+    func (rs m.PartnerSet, birthday time.Time) {
         rs.SetBirthday(Date(birthDay))
     })</code></pre>
 </div>
@@ -1611,7 +1591,7 @@ call the previous layer.</p>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">h.Partner().Methods().UpdateBirthday().Extend(
     `Extended in myModule to compute age at the same time.`,
-    func(rs PartnerSet, birthday time.Time) {
+    func(rs m.PartnerSet, birthday time.Time) {
         rs.Super().UpdateBirthday(birthday)
         rs.SetAge(Time.Now().Year() - birthday.Year())
     })</code></pre>
@@ -1632,7 +1612,7 @@ as that of the first layer passed to <code>DeclareMethod</code>.
 </div>
 <div class="dlist">
 <dl>
-<dt class="hdlist1"><code><strong>(RecordSetType) Super() RecordSetType</strong></code></dt>
+<dt class="hdlist1"><code><strong>(m.ModelSet) Super() m.ModelSet</strong></code></dt>
 <dd>
 <p>Returns a RecordSet with a modified callstack so that call to the current
 method will execute the next method layer.</p>

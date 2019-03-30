@@ -104,6 +104,8 @@ ga('send', 'pageview');
     
     <li><a href="/blog/" >Blog</a></li>
     
+    <li><a href="/contact/" >Contact</a></li>
+    
     <li><a href="https://github.com/hexya-erp" >GitHub</a></li>
     
       </ul>
@@ -401,7 +403,7 @@ rule&#8217;s <code>Name</code> already exists, then the rule is overwritten.</p>
 <div class="content">
 <pre class="highlight nowrap"><code class="language-go" data-lang="go">salesman := security.Registry.GetGroup("sale_user")
 
-func getUserID(rs h.PartnerSet) interface{} {
+func getUserID(rs m.PartnerSet) interface{} {
     return rs.Env().Uid()
 }
 
